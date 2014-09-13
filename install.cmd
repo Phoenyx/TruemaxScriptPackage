@@ -11,7 +11,7 @@ SET /P downloadLocation=Please enter the scripts download location:
 IF NOT EXIST %downloadLocation%\* ECHO Directory doesn't exist or it's a file. & GOTO getDownloadLocation
 IF NOT EXIST %downloadLocation%\Truemax ECHO This folder doesn't seem to contain our scripts. & GOTO getDownloadLocation
 
-robocopy %downloadLocation% . /XF config.ini* install.cmd /XD .idea /E /NFL /NDL /NJH /NJS
+robocopy %downloadLocation% . /XF LICENSE .gitignore config.ini* install.cmd /XD .idea /E /NFL /NDL /NJH /NJS
 
 IF EXIST %configFile% del /F %configFile%
 
