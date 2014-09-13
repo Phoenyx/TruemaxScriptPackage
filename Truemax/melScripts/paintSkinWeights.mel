@@ -1,0 +1,14 @@
+// paint skin weights run
+
+global proc paintSkinWeights()
+{
+	ConvertSelectionToVertices;
+	ArtPaintSkinWeightsToolOptions;
+	artAttrSkinToolScript 3;
+	artAttrSkinJointMenu( "artJoinListPopupMenu", "artAttrSkinPaintCtx" );
+	toolPropertyWindow1 ("");
+	artAttrSkinValues artAttrSkinContext;
+	toolPropertyShow;
+	changeToolIcon;
+}
+

@@ -1,0 +1,139 @@
+/* This file downloaded from Highend3d.com
+''  
+''  Highend3d.com File Information:
+''  
+''    Script Name: wp shape parent
+''    Author:  
+''    Last Updated: May 25, 2009
+''    Update/Change this file at:
+''    http://Highend3d.com/maya/downloads/mel_scripts/character/4464.html
+''  
+''  Please do not alter any information above this line
+''  it is generated dynamically by Highend3d.com and will
+''  be changed automatically on any updates.
+*/
+//======================================================================
+//======================================================================
+// ---->  Author Information  <----
+//======================================================================
+/*
+
+William Petruccelli
+email:		williampetruccelli@gmail.com
+web site:		www.williampetruccelli.com
+
+*/
+//======================================================================
+//======================================================================
+// ---->  Script Information  <----
+//======================================================================
+/*
+
+Creation Date:		August - 2008
+Version:			2.0
+
+Procedure:
+	wp_shapeParent()
+	wp_ShapeParentWindow()
+	wp_ShapeParent_doIt()
+	
+Description:
+
+	Script for parenting a shape node with another transform node.
+	
+	Maya doesn't allow to create a parent-child relationship to the shape node with 
+	a new transform node using its interface. Actually could be very useful particularly 
+	for creating control boxes that control the joints.
+
+
+Usage and Example:
+
+	Select the parent object, shift select the child and click on the button in the UI. 
+	You can run the script without use the ui as well. Just select the parent object, shift select the child and run the "wp_ShapeParent_doIt()" procedure in the script editor.
+	
+*/
+
+
+//======================================================================
+// entry procedure
+//======================================================================
+
+global proc wp_shapeParent()
+{
+	wp_ShapeParentWindow();
+}
+
+
+//======================================================================
+// shape parent window
+//======================================================================
+
+global proc wp_ShapeParentWindow() 
+{//wp_ShapeParentWindow
+
+	if (`window -q -exists wp_ShapeParentWindow`) deleteUI wp_ShapeParentWindow;
+	
+	window -title "wp Shape Parent - by William Petruccelli"
+		   -wh 230 120
+		   -maximizeButton 0
+		   -minimizeButton 1
+			wp_ShapeParentWindow;
+	
+	columnLayout;
+		text -l "" -h 8;
+		rowColumnLayout -numberOfColumns 3 -columnWidth 1 8 -columnWidth 2 200 -columnWidth 3 10 ;
+		 	text -label "";
+			columnLayout -adjustableColumn 1;
+				text -label "Select Parent, shift select Child...";
+			setParent..;
+			text -label "";
+		setParent..;
+		
+		text -label "" -h 6;
+		
+		rowColumnLayout -numberOfColumns 3 -columnWidth 1 8 -columnWidth 2 200 -columnWidth 3 10 ;
+			text -label "";
+			button -l Parent -bgc 0.675 0.663 0.843 -h 26 -c "wp_ShapeParent_doIt;";
+			text -label "";
+		setParent..;
+		
+	showWindow;
+		
+	window -edit -wh 225 100 wp_ShapeParentWindow;
+
+}// wp_ShapeParentWindow
+
+
+//======================================================================
+// shape parent doIt
+//======================================================================
+
+global proc wp_ShapeParent_doIt()
+{//wp_ShapeParent_doIt
+	
+string $currentSelObjs[] = `ls -sl`;
+// $currentSelObjs[0] = Joint
+// $currentSelObjs[n] = Controllers
+
+int $SelObjSize = size($currentSelObjs);
+int $i;
+
+for ($i=1; $i<$SelObjSize; $i++)
+{
+	select $currentSelObjs[$i];
+	string $ControllerShape[] = `listRelatives -shapes`;
+
+	string $shape;
+	for ($shape in $ControllerShape)
+	{
+		string $ControllerShape = `rename ($shape) ($currentSelObjs[0] + "Shape_" + $i)`;
+		parent $currentSelObjs[$i] $currentSelObjs[0];
+		select $currentSelObjs[$i];
+		makeIdentity -apply true -t 1 -r 1 -s 1 -n 0;
+		parent -w;
+		parent -r -shape $ControllerShape $currentSelObjs[0];
+	}
+	delete $currentSelObjs[$i];
+}
+select $currentSelObjs[0];
+}//wp_ShapeParent_doIt

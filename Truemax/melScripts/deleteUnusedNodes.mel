@@ -1,0 +1,9 @@
+//
+// Sofia Elena Jakobsen Manioudakis
+// Deletes unused nodes in the hypershade window
+//
+
+global proc deleteUnusedNodes()
+{
+	hyperShadePanelMenuCommand("hyperShadePanel1", "deleteUnusedNodes"); 
+}

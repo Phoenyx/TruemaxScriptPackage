@@ -1,0 +1,43 @@
+// set Geos pivot at selection
+
+proc rbSetLocalPivotInternal(string $obj[]){
+
+//string $obj[] = `ls -sl`;
+    
+    string $sl[] = `listRelatives -p $obj`;
+
+	PolySelectConvert 3;
+    string $cluster[] = `newCluster " -envelope 1"`;
+    float $pos[] = `xform -q -ws -rp $cluster[1]`;
+	select -cl;
+
+if (size($sl) != 0)
+{
+    
+    string $parents[] = `listRelatives -fullPath -parent $sl`;
+
+    for ($n in $parents)
+    {
+        move $pos[0] $pos[1] $pos[2] ($n + ".scalePivot");
+        move $pos[0] $pos[1] $pos[2] ($n + ".rotatePivot");
+    }
+}
+else
+{
+    for ($n in $obj)
+    {
+        move $pos[0] $pos[1] $pos[2] ($n + ".scalePivot");
+        move $pos[0] $pos[1] $pos[2] ($n + ".rotatePivot");
+    }
+}
+    
+    delete $cluster[1];
+    clear $cluster;
+    
+    select $sl;
+
+}
+
+global proc rbSetLocalPivot() {
+    rbSetLocalPivotInternal(`ls -sl`);
+}

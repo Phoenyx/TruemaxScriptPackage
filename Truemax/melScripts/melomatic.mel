@@ -1,0 +1,151 @@
+//=========================== melomatic 1.6 =========================================//
+//
+//  Mel-O-Matic 1.6
+//
+//  By Andrew Osiow 2006 Copyright
+//
+//  To be used freely with the aknowledgement that the author is not responsible
+//  for any perceived damage this script may directly (or indirectly) cause.  
+//  Please contact the author if you plan to use this script in a commercial project.
+//
+//  Simple script for managing mel scripts.  The mel scripts should be place in the
+//  default scripts directory, which is usually, "..maya/7.0/scripts.
+//
+//  The user can execute or source and execute any mel script from a conveinent list gadget.
+//
+//  Installation: Place the script in the scripts folder under the version number
+//	ie.  ../maya/7.0/scripts
+//  
+//  Tip: You might want to make "melomatic" a shelf button, by highlighting and 
+//  dragging the command to your shelf.
+//
+//  version 1.1 removes the .mel from the list display and also prevent Melomatic from
+//  adding itself to the list.
+//  version 1.2 fixed minor bug with eval statement sourcing a script for the first time
+//  version 1.3 adding browser button to setelat alternate mel directories
+//     note: button produces a file browser and not a path browser
+//  version 1.4 adds a radio button to select: run, source and run, source only
+//  version 1.5 fixed radio button allignment
+//  version 1.6 no longer displays an error when nothing is selected
+//
+//==================================================================================//
+
+global proc melomatic()
+{
+  string $melPath = `internalVar -userScriptDir`;
+  string $melFiles[] = `getFileList -fld $melPath`;
+
+ // Interface Begins
+  if (`window -ex melomaticWindow`) deleteUI melomaticWindow;
+  string $melomaticWin = `window 
+	  -title "Mel-O-Matic 1.6" 
+	  -iconName "Melomatic" 
+	  -rtf 1 -s 0
+	 melomaticWindow`;
+	 
+  string $melomaticForm = `formLayout -numberOfDivisions 100`;
+  
+ // Create Controllers
+  text -label "Select a Mel Script to run:" mLabelName;
+
+  textField -text $melPath  -width 356 dirNameField;
+  button -width 70 -height 22 -label "Browse" 
+         -command "browseForDirectory" browseButton;
+
+  textScrollList -w 430
+    -numberOfRows 12 -allowMultiSelection false 
+ 		-showIndexedItem 1 melList;
+  string $melFile;
+  for ( $melFile in $melFiles )
+    if ($melFile != "melomatic.mel") // don't include this script in the list
+      if ( fileExtension($melFile) == "mel")
+        textScrollList -e -append (basename($melFile,".mel")) melList;
+  
+  text -label "Action" actionText;
+  radioCollection  actionType;
+    radioButton -label "Run" runButton;
+    radioButton -label "Source and Run" sourceAndRunButton;
+    radioButton -label "Source Only" sourceOnlyButton;
+    
+  radioCollection -e -sl "runButton" actionType;
+  
+  button -width 150 -height 26 -label "Execute" -align "center"
+         -command "runMel; deleteUI melomaticWindow" createButton;  // executes and closes
+  button -width 150 -height  26 -label "Apply" 
+         -command "runMel" applyButton;                     // executes and stays open             
+  button -width 150 -height 26 -label "Close" 
+         -command "deleteUI melomaticWindow" closeButton;   // closes interface
+ 
+ // Layout Interface
+
+  formLayout -e	// arrange layout
+       	-af "mLabelName" "left" 10
+     	-af "mLabelName" "top" 12
+     	-af "dirNameField" "left" 18
+     	-ac "dirNameField" "top" 8 "mLabelName"
+     	-ac "browseButton" "top" 8 "mLabelName"
+       	-ac "browseButton" "left" 4 "dirNameField"   	
+     	-af "melList" "left" 18
+     	-ac "melList" "top" 6 "dirNameField"
+     	-af "actionText" "left" 30
+     	-ac "actionText" "top" 12 "melList" 
+     	-ac "runButton" "left" 20 "actionText"
+     	-ac "runButton" "top" 12 "melList" 
+     	-ac "sourceAndRunButton" "left" 24 "runButton"
+     	-ac "sourceAndRunButton" "top" 12 "melList" 
+     	-ac "sourceOnlyButton" "left" 24 "sourceAndRunButton"
+     	-ac "sourceOnlyButton" "top" 12 "melList"      	
+      	-ac "createButton" "top" 12 "runButton"    	
+	-af "createButton" "left" 4 
+	-af "createButton" "bottom" 4
+      	-ac "applyButton" "top" 12 "runButton"  	
+	-ac "applyButton" "left" 4 "createButton"
+	-af "applyButton" "bottom" 4
+	-ac "closeButton" "top" 12 "runButton"  
+	-ac "closeButton" "left" 4 "applyButton"
+	-af "closeButton" "bottom" 4
+	-af "closeButton" "right" 4	
+	$melomaticForm;
+ // Interface Ends
+
+  showWindow $melomaticWin;
+}
+
+
+global proc browseForDirectory()
+{// Open file browser to default Mel Directory
+  string $melPath = `internalVar -userScriptDir`;
+  $melPath = `fileDialog -directoryMask $melPath`;
+  string $melDirectory = dirname ($melPath) + "/";
+  textField -e -tx $melDirectory dirNameField;
+  textScrollList -e -ra melList;
+  string $melFiles[] = `getFileList -fld $melDirectory`;
+  string $melFile;
+  for ( $melFile in $melFiles )
+    if ($melFile != "melomatic.mel") // don't include this script in the list
+      if ( fileExtension($melFile) == "mel")
+        textScrollList -e -append (basename($melFile,".mel")) melList;  
+}
+
+
+global proc runMel ()
+{ // execute mel script - source first if requested
+  string $melPath = `textField -q -tx dirNameField`;
+  string $selectedMelFile = stringArrayToString (`textScrollList -q -si melList`,"");
+  if (size($selectedMelFile)>0)
+  {
+    string $actionSelection = `radioCollection -q -sl actionType`;
+    switch ($actionSelection)
+    { case "runButton":
+        eval $selectedMelFile;
+        break;
+      case "sourceAndRunButton":
+        eval ( "source " + "\"" + $melPath + $selectedMelFile + ".mel\"");
+        eval $selectedMelFile;
+        break;
+      case "sourceOnlyButton":
+        eval ( "source " + "\"" + $melPath + $selectedMelFile + ".mel\"");
+        break;
+    }
+  }
+}

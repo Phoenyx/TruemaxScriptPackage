@@ -1,0 +1,22 @@
+// Written by Peter Lønquist Thomasen
+// Email: futurismstudios@gmail.com
+
+global int $thmbnailUpdTglInt = 0;
+
+global proc thmbnailUpdTgl()
+{
+    global int $thmbnailUpdTglInt;
+    
+    if ($thmbnailUpdTglInt == 0)
+    {
+        renderThumbnailUpdate false;
+        $thmbnailUpdTglInt = 1;
+        print("renderThumbnailUpdate Off\n");
+    }
+    else
+    {
+        renderThumbnailUpdate true;
+        $thmbnailUpdTglInt = 0;
+        print("renderThumbnailUpdate On\n");
+    }
+}

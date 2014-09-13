@@ -1,0 +1,14 @@
+//Creates a joint set to world in center of selection.
+//Made to work on polygons
+
+
+global proc joint_at_pivot()
+{
+	PolySelectConvert 3;
+    string $cluster[] = `newCluster " -envelope 1"`;
+    float $pos[] = `xform -q -ws -rp $cluster[1]`;
+	select -cl;
+    joint -p $pos[0] $pos[1] $pos[2];
+    delete $cluster[1];
+    clear $cluster;
+}

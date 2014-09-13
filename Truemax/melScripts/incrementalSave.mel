@@ -1,0 +1,117 @@
+global proc incrementalSaveTimeStamp()
+{
+    /* Set timestamp for last incrementalSave */
+    string $date = `date`;
+	textField -e -text ("Last Save: " + $date) dateFld;
+}
+
+global proc incrementalSaveAs()
+{
+    if (`window -exists "incrementalSaveNewFileWindow"`)
+    {
+        deleteUI "incrementalSaveNewFileWindow";
+    }
+    
+    SaveSceneAs;
+    
+    /* Check if the scene file exists */
+    int $fileExists = `file -q -exists`;
+
+    if ($fileExists > 0)
+    {
+        incrementalSaveTimeStamp();
+    }
+}
+
+global proc incrementalSave()
+{
+    /* Check if the scene file exists */
+    int $fileExists = `file -q -exists`;
+    
+    if ($fileExists > 0)
+    {
+        /* Create incrementalSave folder if it does not exist */
+        $currentFilePath = dirname(`file -q -sceneName`);
+        $incrementalSaveFolder = $currentFilePath + "/incrementalSave";
+        sysFile -makeDir $incrementalSaveFolder;
+    
+        /* Copy existing file into the incrementalSave folder */
+	    string $sceneName = `file -q -sn`;
+	    string $fileName = match( "[^/\\]*$", $sceneName );
+        $destFile = ($currentFilePath + "/incrementalSave/" + $fileName);
+        $srcFile = ($currentFilePath + "/" + $fileName);
+        sysFile -copy $destFile $srcFile;
+	    sysFile -delete $srcFile;	
+
+	    /* Extract Name And Current Version */
+	    string $fileNameNoExt = `file -q -ns`;
+        string $nameWithNoVersion = `match ".*[0-9]+" $fileNameNoExt`;
+        string $nameWithNoVersion = `match ".*[_]" $nameWithNoVersion`;
+        string $currentVersion = `match "v[0-9]+" $fileNameNoExt`;
+        string $currentVersion = `match "[0-9]+" $currentVersion`;
+    
+        /* Extract User Initials */
+        $user = `getenv user`;
+        string $initA = `match "^." $user`;
+        string $initB = `match ".$" $user`;
+        string $currentInitials = ($initA + $initB);
+	
+	    /* Increment Version */
+	    if($currentVersion == "")
+	    {
+	        $currentVersion = "000";
+	    }
+	
+	    int $int = $currentVersion;
+	    $int++;
+	
+    	int $beforeCount = size($currentVersion);
+	    string $incVersion = $int;
+	    int $afterCount = size($incVersion);
+	
+    	if($beforeCount > $afterCount)
+    	{
+    	    while($beforeCount > $afterCount)
+	        {
+	    		$incVersion = ("0"+$incVersion);
+	    		$afterCount = size($incVersion);
+	    	}
+	    }
+	
+	    /* Make New Filename and Save it */
+	    string $extension = `fileExtension $sceneName`;
+	    string $newFileName = ($nameWithNoVersion + "v" + $incVersion + "_" + $currentInitials + "." + $extension);
+	    string $newFileDest = $currentFilePath + "/" + $newFileName;
+	    file -rename $newFileDest;
+	    file -f -save;
+
+        incrementalSaveTimeStamp();
+
+	    /* Show a message with the new filename */
+	    print ("Saved new file: " + $newFileName + "\n");  
+    }
+    else
+    {
+        if (`window -exists "incrementalSaveNewFileWindow"`)
+        {
+            deleteUI "incrementalSaveNewFileWindow";
+        }
+
+        string $incrementalSaveNewFileWindow = `window -sizeable false -title "File does not exists!" "incrementalSaveNewFileWindow"`;
+        $cancel = ("deleteUI " + $incrementalSaveNewFileWindow);
+        
+        columnLayout -adjustableColumn true;
+	    text -width 306 -label "";
+	    text -label "Scene has not yet been saved!";
+	    text -label "Do you want to save it now?";
+	    text -label "";
+        text -label "(Example: sceneName_v001_pt.ma)";
+        text -label "";
+	    rowLayout -numberOfColumns 2;
+   	        button -width 150 -label "Save New" -command "incrementalSaveAs";
+	        button -width 150 -label "Cancel" -command $cancel;
+	    setParent..;
+	    
+        showWindow $incrementalSaveNewFileWindow;
+    }
+}
