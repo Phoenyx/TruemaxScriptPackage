@@ -261,7 +261,7 @@ class TruemaxModuleManager():
                 files = os.listdir(location)
                 for f in files:
                     try:
-                        if f != "Truemax" or f != "userSetup.py":
+                        if f != "Truemax" and f != "userSetup.py":
                             continue
 
                         full_path = location + os.path.sep + f
