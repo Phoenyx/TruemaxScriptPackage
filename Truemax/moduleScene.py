@@ -27,7 +27,7 @@ class ModuleScene(manager.Module):
         cmds.file(newFile=True, force=True)
         location = "{0}{1}{2}".format(os.path.dirname(os.path.realpath(__file__)), os.path.sep, self.cleanScene)
         self.set_project(location)
-        cmds.file("cleanScene.mb", open=True)
+        cmds.file("cleanScene.ma", open=True)
         cmds.file(renameToSave=True)
         window = cmds.window(title="Oi!", widthHeight=(250, 100))
         cmds.columnLayout(adjustableColumn=True)
