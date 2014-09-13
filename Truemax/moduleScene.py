@@ -21,6 +21,9 @@ class ModuleScene(manager.Module):
             if cmds.window(window, exists=True):
                 cmds.deleteUI(window, window=True)
 
+            self.setProjectAsCurrDirectory()
+
+
         cmds.file(newFile=True, force=True)
         location = "{0}{1}{2}".format(os.path.dirname(os.path.realpath(__file__)), os.path.sep, self.cleanScene)
         self.set_project(location)
@@ -36,19 +39,19 @@ class ModuleScene(manager.Module):
     def set_project(self, location):
         mel.setProject(location)
 
-    def create_ui(self):
+    def setProjectAsCurrDirectory(self):
+        filePath = cmds.file(query =True, expandName=True)
+        directory = os.path.dirname(filePath)
+        self.set_project(directory)
 
-        def setProjectAsCurrDirectory():
-            filePath = cmds.file(query =True, expandName=True)
-            directory = os.path.dirname(filePath)
-            self.set_project(directory)
+    def create_ui(self):
 
         tab = str(cmds.columnLayout())
         cmds.separator(style="none")
         cmds.frameLayout(collapsable=True, label="Common")
         cmds.columnLayout()
         cmds.button(command=lambda *args: self.new_scene(), label="New Work Scene")
-        cmds.button(command=lambda *args: setProjectAsCurrDirectory(), label="Set Project")
+        cmds.button(command=lambda *args: self.setProjectAsCurrDirectory(), label="Set Project")
         cmds.button(command=lambda *args: mel.deleteUnusedNodes(), label="Delete Unused Nodes")
         cmds.setParent('..')
         cmds.setParent('..')
