@@ -33,7 +33,7 @@ int $forcePublic = 0;
 // -------------------------------------------------------------
 // Dependencies:
 
-$poseLibModule = "poseLibModule";
+$poseLibModule = "Truemax.external.poseLibModule";
 $poseLibPublicStatus = "[Public]";
 
 /*if (`filetest -d "F:/maya_scripts/my_scripts"` && $forcePublic == 0)

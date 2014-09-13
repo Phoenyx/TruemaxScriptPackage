@@ -54,7 +54,7 @@ global proc tweenMachine() {
 	$tmSpecTick = 0;
 	
 	// Source needed libraries
-	source xml_lib.mel;
+	source "Truemax/melScripts/xml_lib.mel";
 
 	// OS check -- this will probably go away once the UI is built using forms
 	if (`about -mac`) {
