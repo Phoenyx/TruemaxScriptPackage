@@ -1,0 +1,81 @@
+global proc scLockUnlockSkinJntWeights(string $skinObj, int $lock){
+/**
+\brief Locks or unlocks influence weights of joints in the object's skinCluster.
+
+\details User callable proc.
+	Finds the skinCluster for the given object with related joints and locks or unlocks
+	joint weight influences for them, depending on value of $lock.
+	If keyword "SELECTED" used as $skinObj, 
+	operation will be performed on currently selected object, first found in the selection list.
+	Will also work with subobject mode selections.
+
+\param string $skinObj:  Object for which to find the skin cluster and lock or unlock influences.
+                         Legal keywords: "SELECTED" 
+\param int $lock:        Value 1 is for locking, value 0 is for unlocking. 
+                         Any other value will lock influences by default.
+
+\return Nothing
+
+\author Alexandra "Sasha" Ciolac
+\version 1.4
+\last update 03.10.2011
+
+\b Example:
+\code scLockUnlockSkinJntWeights("SELECTED", 1) endcode
+\code scLockUnlockSkinJntWeights("jacketMesh", 1) endcode
+*/
+
+	// Standard print message
+	string $printMessage;
+	string $skinClust;
+	string $influences[];
+	string $buf[];
+	string $activeTool;
+	
+	//Check for "SELECTED"
+	if($skinObj == "SELECTED"){
+		string $sel[] = `ls -sl`;
+		$skinObj = $sel[0];
+	}
+
+	//Check if selection list is not empty
+	if(size($skinObj) == 0){
+		$printMessage = ("Sellection list is empty! Sellect object with skinCluster to lock/unlock joint influences!");
+	}else if(!(`objExists $skinObj`)){
+		$printMessage = ("Object \"" + $skinObj + "\" doesn't exist! Sellect object with skinCluster to lock/unlock joint influences!");
+	}else{	
+		tokenize $skinObj "." $buf;
+		$skinObj = $buf[0];
+
+		$skinClust = findRelatedSkinCluster($skinObj);
+		//Check if object has a skin cluster on it
+		if(size($skinClust) == 0){
+			$printMessage = ("Nothing done: object \"" + $skinObj + "\" doesn't have a skinCluster associated with it.");
+		}else{
+			$influences = `skinCluster -q -influence $skinClust`;
+			for($i in $influences){
+				if(`nodeType $i` == "joint"){
+					if($lock == 0){
+						setAttr ($i + ".liw") $lock;
+					}else{
+						setAttr ($i + ".liw") 1;
+					}
+				}
+			}
+			if($lock == 0){
+				$printMessage = ("Done! Joint influences for object \"" + $skinObj + "\" are unlocked.");
+			}else{
+				$printMessage = ("Done! Joint influences for object \"" + $skinObj + "\" are locked.");
+			}
+		}
+
+	}
+	
+	//Update the paintWaights window if it is open
+	$activeTool = `currentCtx`;
+	if($activeTool == "artAttrSkinContext"){
+		artAttrSkinToolScript 3;
+	}
+
+	print($printMessage + "\n");
+}

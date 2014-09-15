@@ -1,0 +1,36 @@
+global proc rb_ShapesWindow() 
+{//rb_ShapesWindow
+
+	if (`window -q -exists rb_ShapesWindow`) deleteUI rb_ShapesWindow;
+	
+	window -title "rb Shapes"
+		   -wh 60 320
+		   -maximizeButton 0
+		   -minimizeButton 1
+			rb_ShapesWindow;
+	
+	columnLayout;
+    button -l ("null") -c ("source \"wireShape.mel\"; wireShape(\"null\"); ") -ann ("Makes a group.") -h 20 -w 60;
+    button -l ("locator") -c ("source \"wireShape.mel\"; wireShape(\"locator\"); ") -ann ("Makes a locator.") -h 20 -w 60;
+    button -l ("plus") -c ("source \"wireShape.mel\"; wireShape(\"plus\"); ") -ann ("Makes a plus.") -h 20 -w 60;
+    text -label "";
+    button -l ("circleX") -c ("source \"wireShape.mel\"; wireShape(\"circleX\"); ") -ann ("Makes a circleX.") -h 20 -w 60;
+    button -l ("circleY") -c ("source \"wireShape.mel\"; wireShape(\"circleY\"); ") -ann ("Makes a circleY.") -h 20 -w 60;
+    button -l ("circleZ") -c ("source \"wireShape.mel\"; wireShape(\"circleZ\"); ") -ann ("Makes a circleZ.") -h 20 -w 60;
+    button -l ("square") -c ("source \"wireShape.mel\"; wireShape(\"square\"); ") -ann ("Makes a square.") -h 20 -w 60;
+    button -l ("cube") -c ("source \"wireShape.mel\"; wireShape(\"cube\"); ") -ann ("Makes a cube.") -h 20 -w 60;
+    button -l ("sphere") -c ("source \"wireShape.mel\"; wireShape(\"sphere\"); ") -ann ("Makes a sphere.") -h 20 -w 60;
+    button -l ("arrow") -c ("source \"wireShape.mel\"; wireShape(\"arrow\"); ") -ann ("Makes an arrow.") -h 20 -w 60;
+    button -l ("cross") -c ("source \"wireShape.mel\"; wireShape(\"cross\"); ") -ann ("Makes a cross.") -h 20 -w 60;
+    button -l ("orient") -c ("source \"wireShape.mel\"; wireShape(\"orient\"); ") -ann ("Makes an orient.") -h 20 -w 60;
+    button -l ("bulb") -c ("source \"wireShape.mel\"; wireShape(\"bulb\"); ") -ann ("Makes a bulb.") -h 20 -w 60;
+    text -label "";
+    button -l ("joint") -c ("source \"wireShape.mel\"; wireShape(\"joint\"); ") -ann ("Makes a joint.") -h 20 -w 60;
+	setParent..;
+		
+	showWindow;
+		
+	window -edit -wh 60 320 rb_ShapesWindow;
+
+}// rb_ShapesWindow
+

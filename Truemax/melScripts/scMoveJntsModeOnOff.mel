@@ -1,0 +1,51 @@
+global proc scMoveJntsModeOnOff(int $mode){
+/**
+\brief Allows to move joints without modifying the skinning.
+
+\details User callable proc.
+	Basically, it's an envelope for Maya 2008 new flag for skinCluster command -moveJointsMode.
+	Procedure does all input checks, and extracts a skin cluster from selected geometry.
+	Command will be performed on the first object found in the selection list
+
+\param int $mode:   1 for setting the move joint mode on, 0 - for setting it off.
+
+\return Nothing
+
+\author Alexandra "Sasha" Ciolac
+\version 1.0
+\last update 03.11.2011
+
+\b Example:
+\code scMoveJntsModeOnOff(1) endcode
+*/
+	string $printMessage; // Standard print message
+	string $sel[];
+	string $skinClst;
+
+	//Check the running Maya version, because the flag for skinCluster command -moveJointsMode is new in Maya 2008
+	if (getApplicationVersionAsFloat() >= 2008){
+		$sel = `ls -sl`;
+		if(size($sel) == 0){
+			$printMessage = "Nothing done! Selection list is empty. Please select a skinned geometry or a skinCluster node.";
+		}else if(!(`nodeType $sel[0]` == "skinCluster")){
+			//Get the skin cluster
+			$skinClst = findRelatedSkinCluster($sel[0]);
+			if($skinClst == ""){
+				$printMessage = ("Nothing done! Object \"" + $sel[0] + "\" is not a skinCluster, or not a mesh/surface that have a skinCluster associated with it.");
+			}else{
+				if($mode >= 1){
+					skinCluster -e -moveJointsMode true $skinClst;
+					$printMessage = ("DONE! Move Joints Mode is setted to \"ON\" for skinCluster, associated with \"" + $sel[0] + "\".");
+				}else{
+					skinCluster -e -moveJointsMode false $skinClst;
+					$printMessage = ("DONE! Move Joints Mode is setted to \"OFF\" for skinCluster, associated with \"" + $sel[0] + "\".");
+				}
+			}
+		}
+	}else{
+		$printMessage = "Nothing done! Version of Maya prior to Maya 2008 is running. This tool unfortunately is only avaliable for Maya 2008 or later.";
+	}
+
+	print $printMessage;
+
+}
