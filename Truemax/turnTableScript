@@ -1,0 +1,34 @@
+from pymel.all import *
+# Create the Camera
+camera(filmFit='Fill',name ="createdCam", horizontalPan=0,shutterAngle=144,verticalPan=0,horizontalFilmOffset=0,focalLength=35,centerOfInterest=5,motionBlur=0,horizontalFilmAperture=1.41732,overscan=1,panZoomEnabled=0,nearClipPlane=0.1,farClipPlane=10000,orthographic=0,verticalFilmOffset=0,verticalFilmAperture=0.94488,lensSqueezeRatio=1,orthographicWidth=30,cameraScale=1,zoom=1)
+mel.objectMoveCommand()
+mel.cameraMakeNode(1, "")
+rename("createdCam1","turnTableCam")
+
+# Set the attributes of the camera
+setAttr("turnTableCam.translateX",0)
+setAttr("turnTableCam.translateY",5)
+setAttr("turnTableCam.translateZ",18.6)
+setAttr("turnTableCam.rotateX",-6.357)
+setAttr("turnTableCam.rotateY",0)
+setAttr("turnTableCam.rotateZ",0)
+setAttr("turnTableCam.scaleX",300)
+setAttr("turnTableCam.scaleY",300)
+setAttr("turnTableCam.scaleZ",300)
+
+# Create and animate the dummy locator
+spaceLocator(p=(0, 0, 0), name = "dummyLocator")
+currentTime(1)
+setAttr("dummyLocator.rotateY",0)
+setKeyframe("dummyLocator.ry")
+currentTime(150)
+setAttr("dummyLocator.rotateY",360)
+setKeyframe("dummyLocator.ry")
+
+# Parent the top node under the dummy locator
+
+
+# Set up the render settings
+
+
+# Render .mov to the turnTable folder
