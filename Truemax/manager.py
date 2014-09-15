@@ -21,21 +21,28 @@ class TruemaxModuleManager():
     config = {}
 
     scripts = [{"name": "autoTangent", "version": "1.3m", "author": " Michael B. Comet"},
-               {"name": "cometRename", "version": "1.2 ", "author": "Michael B. Comet"},
+               {"name": "cometRename", "version": "1.2", "author": "Michael B. Comet"},
+               {"name": "cometSaveSkinWeights", "version": "1.03", "author": "Michael B. Comet"},
                {"name": "DeleteUnusedNodes", "version": "1.0", "author": "Sofia M."},
                {"name": "dkAnim", "version": "0.98", "author": "Daniel Kramer"},
                {"name": "jh_findDuplicateNames", "version": "1.0", "author": u"Jørn-Harald Paulsen"},
                {"name": "hfKillComponentShading", "version": "2.05", "author": " Henry Foster"},
-               {"name": "hierarchySelection", "version": "1.0", "author": "N/A"},
+               {"name": "hierarchySelection", "version": "1.0", "author": "Unknown"},
+               {"name": "Image Plane-O-Rizer", "version": "1.0", "author": "Chris Whitaker"},
                {"name": "incrementalSave", "version": "1.0", "author": "Peter L. Thomasen"},
-               {"name": "Joint-At-Pivot", "version": "1.0", "author": "N/A"},
+               {"name": "Joint-At-Pivot", "version": "1.0", "author": "Unknown"},
                {"name": "Mel-O-Matic", "version": "1.6", "author": "Andrew Osiow"},
                {"name": "NewScene", "version": "1.0", "author": "Sofia M."},
+               {"name": "PolyPlanarize", "version": "1.0", "author": "Chris Whitaker"},
                {"name": "PoseLib", "version": "6.2.3", "author": "Lionel Gallat"},
-               {"name": "SetLocalPivot", "version": "1.0", "author": "N/A"},
+               {"name": "rbShapesWindow", "version": "1.0", "author": "Rasmus B"},
+               {"name": "SetLocalPivot", "version": "1.0", "author": "Unknown"},
                {"name": "SetProject", "version": "1.0", "author": "Sofia M."},
                {"name": "thmbnailUpdTgl", "version": "1.0", "author": "Peter L. Thomasen"},
+               {"name": "TweenMachine", "version": "2.04", "author": "Justin Barrett"},
                {"name": "wp_shapeParent", "version": "1.0", "author": "William Petruccelli"},
+               {"name": "Vertex Paint Skin Weights", "version": "1.0", "author": "Unknown"},
+               {"name": "ZeroJoint", "version": "1.0", "author": "Rasmus B"},
                {"name": "Zoomerator", "version": "1.0", "author": "Jeremie Talbot"}]
 
     def __init__(self, reloaded):
