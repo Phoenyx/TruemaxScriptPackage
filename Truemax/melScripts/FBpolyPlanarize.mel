@@ -1,0 +1,432 @@
+/*--------------------------------Updated 11-22-2008----
+ FB poly Planarize -version: 1.0-
+by Chris "Funky Bunnies" Whitaker
+=======================================================
+Main Procedure: FBpolyPlanarize();
+========================================================
+-Concept: This script is my attempt at a 'Make Planar' tool for Maya
+
+-What it does: 
+		Creates a GUI and tries to make polygonal components planar along X,Y,Z, or a Best Plane with options
+
+-"Okay, but what do all these options mean???":
+	-Planarize to: obviously controls which axis to make components planar
+		[ X ] [ Y ] [ Z ] = typical Axes to make planar upon
+		[ Best Plane ]	  = Allows script to try and find an arbitrary plane
+	-Position: determines the position for the CENTER of the plane
+			[Avg] = Average positions (will weight towards position of more selections)
+			[Ctr] = Center of boundbox (NOT quite the same as Avg, but faster) 
+			[Obj] = Object's pivot
+	-Orientation: determines the direction of Axes for the plane (doesn't affect Best Plane)
+			[Wrld] = Uses World space to determine direction
+			[Obj]  = Uses Object space to determine direction
+
+		
+Important vars and such:
+	optionVar: FBpolyPlanarizePivPos - determines whether the pivot position for the plane should be the average position or object position...what if i also had a center...
+	optionVar: FBpolyPlanarizePivOrnt - determines whether to use world space or object space for the axes (ignores Best Plane option)
+========================================================
+-Notes and Known Bugs/ Limitations in functionality:
+	- Only works on polygonal components
+	- OH MY GOD I ONLY HAVE 2 PROCEDURES.  This grew a lot larger than I'd imagined... Sorry it's messy
+	- Works on multiple objects for all modes, but it has different behaviour depending on the settings.  Try them out and see
+	- No options yet for Min/Max component.  Not sure if it's necessary
+	-'Best Plane' feature adds 3 nodes to your history :O
+	- For the sake of speed, I took a lot of shortcuts which slightly compromise accuracy
+		-most notably, 'Best Plane' feature actually uses the best planar uv projection, so differences of more than 90º may result in undesirable projection
+========================================================
+Thanks:
+	to 'Claydough' from Polycount.com for the use of his method for arbitrary axis alignment used in the 'Best Plane' part (starts at line 293)
+		and also to Alex Jerez for his ideas and help.
+
+==========================================================================
+//     Please feel free to contact me with any suggestions or bugs      \\
+//----------------------------------------------------------------------\\
+//            Contact Me: Chris@FunkyBunnies3d.com                      \\
+==========================================================================
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Generic Disclaimer: Use at your own risk.  I won't be responsible for anything bad that happens to your objects, scenes, or your car.//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+*/
+
+//////////////////////////////////////////////////////////////////
+//proc: FBpolyPlanarizeDoIt(int $FBppInput)						//
+//Desc: aligns the components on a plane based on $FBppInput	//
+//   $FBppInput:												//
+//			0: align to X										//
+//			1: align to Y										//
+//			2: align to Z										//
+//			3: align to 'Best Plane'							//
+//////////////////////////////////////////////////////////////////
+global proc FBpolyPlanarizeDoIt(int $FBppInput)
+{
+	//First bring in a couple optionVariables to determine pivot position and orientation later on
+	int $FBppPivPos, $FBppPivOrnt;
+	//but set them to defaults if they don't exist
+	if (!`optionVar -ex FBpolyPlanarizePivPos`)
+		optionVar -iv FBpolyPlanarizePivPos 1;
+	if (!`optionVar -ex FBpolyPlanarizePivOrnt`)
+		optionVar -iv FBpolyPlanarizePivOrnt 1;
+	//then store them to the local variables
+	$FBppPivPos = `optionVar -q FBpolyPlanarizePivPos`;
+	$FBppPivOrnt = `optionVar -q FBpolyPlanarizePivOrnt`;
+	
+	
+	float $sumX=0, $sumY=0, $sumZ=0;
+	if (size( `polyEvaluate -vc -ec -fc`) == 3) //if there are any polygonal verts/edges/faces selected... (if an object is selected it still goes through with "0 0 0", but I check for that later)
+	{
+		string $selectedComponents[];//create var first so we can take shortcuts if necessary
+		if ($FBppPivPos!=2)
+			$selectedComponents = `filterExpand -ex 1 -sm 31 -sm 32 -sm 34`; //store the poly verts/edges/faces into an array...
+		else
+			$selectedComponents = `filterExpand -ex 0 -sm 31 -sm 32 -sm 34`; //store the poly verts/edges/faces into an array...
+		if (!`size $selectedComponents`)
+			error "must have components selected to use FBpolyPlanarize";
+		
+		string $actualSelection[] = `ls -sl`; //first store original selection so we can reapply it later
+		string $actualHilited[] = `ls -hl`; //just another wasted variable to reapply the hiliting at the end :P
+		string $shapeNode[] = `ls -sl -o`;
+		string $hilited[] = `filterExpand -sm 12 -expand true $shapeNode`;//if that's a poly object, store it into $hilited
+		
+		//but we just care about the components right now, so replace it with components
+		select -r $selectedComponents;
+		if ($FBppPivPos<2)//if in Average Position, define sums... 
+		{
+			for ($i=0;$i<`size $selectedComponents`;$i++)
+			{	//just check out the center position of each component and sum 'em up!
+				float $temp[] = `exactWorldBoundingBox $selectedComponents[$i]`;
+				$sumX += ($temp[0]+$temp[3])/2;
+				$sumY += ($temp[1]+$temp[4])/2;
+				$sumZ += ($temp[2]+$temp[5])/2;
+			} 
+		}
+		else if ($FBppPivPos==2) //the ever-sloppy last-minute feature of 'Centering' rather than averaging
+		{
+			float $temp[] = `exactWorldBoundingBox`; 
+			$sumX = (($temp[0]+$temp[3])/2*`size $selectedComponents`);//multiply by the size so that I don't have to change any other lines... lolaziness...
+			$sumY = (($temp[1]+$temp[4])/2*`size $selectedComponents`);
+			$sumZ = (($temp[2]+$temp[5])/2*`size $selectedComponents`);
+		}
+		//and if ==3 it's in Object mode - which would get overwritten anyway, so we avoid the unnecessary step
+		
+		if ($FBppInput == 0)
+		{//average to X
+			if ($FBppPivPos==3) //object position
+			{
+				if($FBppPivOrnt==2)//if orientation is set to object...
+				{
+					for($h=0;$h<`size $hilited`;$h++)
+					{	//I end up using this a lot for multi-object support.  Selects only components on 'focused' object at a mild cost to speed.
+						select -r `ls -sl ($hilited[$h]+".vtx[*]") ($hilited[$h]+".e[*]") ($hilited[$h]+".f[*]")`;
+						move -a -os -x 0; //move to x=0 in object space (to center to object's pivot)
+						select -tgl $selectedComponents;//then toggle that with the original component selection (to reduce number of members to sort) and loop
+					}
+				}
+				else //it's in world space orientation
+				{// Objectpivot position, world orientation
+					for($h=0;$h<`size $hilited`;$h++)
+					{	//sort out to hilited objects
+						select -r `ls -sl ($hilited[$h]+".vtx[*]") ($hilited[$h]+".e[*]") ($hilited[$h]+".f[*]")`;
+						float $tempObjPos[] = `xform -ws -a -q -rp $hilited[$h]`; //find object pivot in world space
+						move -a -ws -x ($tempObjPos[0]); //smash selected components to x=(object pivot)
+						select -tgl $selectedComponents; //toggle off components instead of reapplying
+					}
+				}
+				
+			}				
+			else if ($FBppPivPos==2 && $FBppPivOrnt==2 ) //Centered Position in object space
+			{											//if world space orientation, the usual move will be fine, so i let it drop to the average pos version
+				for($h=0;$h<`size $hilited`;$h++)
+				{	
+					$sumX = $sumY = $sumZ = 0; //reset sums vars
+					select -r `ls -sl ($hilited[$h]+".vtx[*]") ($hilited[$h]+".e[*]") ($hilited[$h]+".f[*]")`; //split to hilited
+					float $temp[] = `xform -q -a -os -bb`; //bounding box
+					move -a -os -x (($temp[0]+$temp[3])/2);
+					select -tgl $selectedComponents;
+				}
+			}
+			else //average position
+			{
+				if($FBppPivOrnt==2)//in object space
+				{
+					for($h=0;$h<`size $hilited`;$h++)
+					{	//reset sums in loop
+						$sumX = $sumY = $sumZ = 0;
+						ConvertSelectionToVertices; //convert to verts and sort to hilited
+						string $hilitComponents[] = `ls -sl -fl ($hilited[$h]+".vtx[*]")`;
+						select -r $hilitComponents;
+						for ($i=0;$i<`size $hilitComponents`;$i++)
+						{	//just check out the position of each component (IN OBJECT SPACE) and sum 'em up
+							float $temp[] = `pointPosition -l $hilitComponents[$i]`;
+							$sumX += $temp[0];
+						}
+						move -a -os -x ($sumX/(`size $hilitComponents`)); //find the average X position and smash to that value
+						select -r $selectedComponents; //reapply selection
+					}
+				}
+				else //worldspace, so don't worry about individual object pivots
+					move -a -ws -x ($sumX/(`size $selectedComponents`));
+			}
+		}
+		else if ($FBppInput == 1)
+		{//average to Y
+			if ($FBppPivPos==3) //object position
+			{
+				if($FBppPivOrnt==2)//object orientation
+				{	
+					for($h=0;$h<`size $hilited`;$h++)
+					{
+						select -r `ls -sl ($hilited[$h]+".vtx[*]") ($hilited[$h]+".e[*]") ($hilited[$h]+".f[*]")`;
+						move -a -os -y 0;
+						select -tgl $selectedComponents;
+					}
+					select -r $selectedComponents;
+				}
+				else
+				{// Objectpivot position, world orientation
+					for($h=0;$h<`size $hilited`;$h++)
+					{
+						select -r `ls -sl ($hilited[$h]+".vtx[*]") ($hilited[$h]+".e[*]") ($hilited[$h]+".f[*]")`;
+						float $tempObjPos[] = `xform -ws -a -q -rp $hilited[$h]`;
+						move -a -ws -y ($tempObjPos[1]);
+						select -tgl $selectedComponents;
+					}
+					select -r $selectedComponents;
+				}
+				
+			}				
+			else if ($FBppPivPos==2 && $FBppPivOrnt==2 ) //Centered Position in object space
+			{											//if world space orientation, the usual move will be fine, so i didn't put a catch for that
+				for($h=0;$h<`size $hilited`;$h++)
+				{
+					$sumX = $sumY = $sumZ = 0;
+					select -r `ls -sl ($hilited[$h]+".vtx[*]") ($hilited[$h]+".e[*]") ($hilited[$h]+".f[*]")`;
+					float $temp[] = `xform -q -a -os -bb`; 
+					move -a -os -y (($temp[1]+$temp[4])/2);
+					select -r $selectedComponents;
+				}
+			}
+			else //average position
+			{
+				if($FBppPivOrnt==2)//in object space
+				{
+					
+					for($h=0;$h<`size $hilited`;$h++)
+					{
+						$sumX = $sumY = $sumZ = 0;
+						ConvertSelectionToVertices;
+						string $hilitComponents[] = `ls -sl -fl ($hilited[$h]+".vtx[*]")`;
+						select -r $hilitComponents;
+						for ($i=0;$i<`size $hilitComponents`;$i++)
+						{	//just check out the position of each component (IN OBJECT SPACE) and sum 'em up
+							float $temp[] = `pointPosition -l $hilitComponents[$i]`;
+							$sumY += $temp[1];
+						}
+						move -a -os -y ($sumY/(`size $hilitComponents`));
+						select -r $selectedComponents;
+					}
+				}
+				else //world space
+					move -a -ws -y ($sumY/(`size $selectedComponents`));
+			}
+		}
+		else if ($FBppInput == 2)
+		{//average to Z
+			if ($FBppPivPos==3) //object position
+			{
+				if($FBppPivOrnt==2)//switch to object space
+				{	
+					for($h=0;$h<`size $hilited`;$h++)
+					{
+						select -r `ls -sl ($hilited[$h]+".vtx[*]") ($hilited[$h]+".e[*]") ($hilited[$h]+".f[*]")`;
+						move -a -os -z 0;
+						select -tgl $selectedComponents;
+					}
+					select -r $selectedComponents;
+				}
+				else
+				{// Objectpivot position, world orientation
+					for($h=0;$h<`size $hilited`;$h++)
+					{
+						select -r `ls -sl ($hilited[$h]+".vtx[*]") ($hilited[$h]+".e[*]") ($hilited[$h]+".f[*]")`;
+						float $tempObjPos[] = `xform -ws -a -q -rp $hilited[$h]`;
+						move -a -ws -z ($tempObjPos[2]);
+						select -tgl $selectedComponents;
+					}
+					select -r $selectedComponents;
+				}
+			}
+			else if ($FBppPivPos==2 && $FBppPivOrnt==2 ) //Centered Position in object space
+			{											//if world space orientation, the usual move will be fine, so i didn't put a catch for that
+				for($h=0;$h<`size $hilited`;$h++)
+				{
+					$sumX = $sumY = $sumZ = 0;
+					select -r `ls -sl ($hilited[$h]+".vtx[*]") ($hilited[$h]+".e[*]") ($hilited[$h]+".f[*]")`;
+					float $temp[] = `xform -q -a -os -bb`; 
+					move -a -os -z (($temp[2]+$temp[5])/2);
+					select -r $selectedComponents;
+				}
+			}
+			else //average position
+			{
+				if($FBppPivOrnt==2)//in object space
+				{
+					
+					for($h=0;$h<`size $hilited`;$h++)
+					{
+						$sumX = $sumY = $sumZ = 0;
+						ConvertSelectionToVertices;
+						string $hilitComponents[] = `ls -sl -fl ($hilited[$h]+".vtx[*]")`;
+						select -r $hilitComponents;
+						for ($i=0;$i<`size $hilitComponents`;$i++)
+						{	//just check out the position of each component (IN OBJECT SPACE) and sum 'em up
+							float $temp[] = `pointPosition -l $hilitComponents[$i]`;
+							$sumZ += $temp[2];
+						}
+						move -a -os -z ($sumZ/(`size $hilitComponents`));
+						select -r $selectedComponents;
+					}
+				}
+				else //world space
+					move -a -ws -z ($sumZ/(`size $selectedComponents`));
+			}
+		}
+		else if ($FBppInput == 3)
+		{	//average to 'bestPlane'
+			//we don't care about orientation, so we won't even check for that
+			hilite $hilited; // make sure hilited so when undoing, it'll be alright
+			ConvertSelectionToFaces; // convert to faces and create a polyProjection with 'bestPlane'
+			undoInfo -swf 1; //set undo queue to on, just in case it's off
+			string $planarProjectNode[] = `polyProjection -md "bestPlane"`;
+			//store the orientation from the polyprojection node
+			float $bestOrient[] = { float(`getAttr ($planarProjectNode[0]+".rotateX")`), 
+									float(`getAttr ($planarProjectNode[0]+".rotateY")`), 
+									float(`getAttr ($planarProjectNode[0]+".rotateZ")`)};
+			
+			
+			//now we're done with it, so go ahead and undo that polyProjection.
+			// - yeah, I know it's a hack and not as accurate, but doing the math in mel makes the tool unacceptably slow :P
+			undo;
+			
+			//set $objAvg to the average of selected components... if 'Center' was selected, we've already overwritten sumXYZ, so we'll overwrite only for object position
+			float $objAvg[] = {$sumX/(`size $selectedComponents`), $sumY/(`size $selectedComponents`), $sumZ/(`size $selectedComponents`)};
+						
+			for ($hilitedObject in $hilited) //repeat the following process for every hilited object
+			{
+				//first check to see if pivot is set to object's position
+				if ($FBppPivPos==3)
+				{//if so, we'll store the current 'hilited' object as the target position
+						float $tempObjPos[] = `xform -ws -a -q -rp $hilitedObject`;
+						$objAvg[0] = $tempObjPos[0];
+						$objAvg[1] = $tempObjPos[1];
+						$objAvg[2] = $tempObjPos[2];
+				}
+				
+				string $parent[] = `listRelatives -allParents $hilitedObject`;//for parent-check later on
+				
+				string $defaultPivot[] = `spaceLocator -p 0 0 0 -n nullOrigPivot`; //locator null to store original pivot
+					parentConstraint -weight 1 $hilitedObject $defaultPivot[0];
+					delete -constraints $defaultPivot[0];
+					
+				string $davidBowie[] = `spaceLocator -p 0 0 0 -n nullTempPivot`; //create temp pivot locator to which we can parent object(s)
+				move -ws -a $objAvg[0] $objAvg[1] $objAvg[2]; //move pivot to average position, although not totally necessary, just to keep it clean
+					setAttr ($davidBowie[0] +".rotateX") ($bestOrient[0]);
+					setAttr ($davidBowie[0] +".rotateY") ($bestOrient[1]);
+					setAttr ($davidBowie[0] +".rotateZ") ($bestOrient[2]);
+				parent $hilitedObject $davidBowie[0];
+				makeIdentity -apply true -t 1 -r 1 -s 1 -n 0 $hilitedObject;
+							
+				select -r $selectedComponents; //reselect the original components...
+				select -r `ls -sl ($hilitedObject+".vtx[*]") ($hilitedObject+".e[*]") ($hilitedObject+".f[*]")`;
+				
+			scale -r -p $objAvg[0] $objAvg[1] $objAvg[2]  1 1 0; //this part actually does the work!
+				parent $hilitedObject $defaultPivot[0]; //now reset the pivot
+				makeIdentity -apply true -t 1 -r 1 -s 1 -n 0 $hilitedObject;
+				
+				//if any parents for object existed, reparent them, otherwise just unparent from $defaultPiv
+				if (`size $parent`)
+					parent $hilitedObject $parent;
+				else
+					parent -w $hilitedObject;
+				delete $davidBowie[0] $defaultPivot[0];
+				
+				//and just because I don't like leaving mysterious floating nodes, I'll rename them...
+				string $recentNodes[] = `listHistory $hilitedObject`;
+				for($i=0;$i<4;$i++)
+				{
+					if(`startsWith $recentNodes[$i] "transformGeometry"`)
+					{
+						if ($i<2)
+							rename $recentNodes[$i] "FBpPlnrzReset#";
+						else
+							rename $recentNodes[$i] "FBpPlnrzAlign#";
+					}
+					else if (`startsWith $recentNodes[$i] "polyTweak"`)
+						//addAttr -longName Weight -attributeType "float" -hxv 1 -hnv 1 -min 0 -max 1 -dv 1 -k 1 $recentNodes[$i];
+						rename $recentNodes[$i] "FBpolyPlanarize#";
+				}
+			}
+		if (`size $hilited`>1)
+			warning "It's recommended that you select only one object at a time for Best Plane!";
+		}
+		//cleanup: we'll just select and hilite objects
+		select -r $actualSelection;
+		hilite $actualHilited;
+	}
+	
+}
+//////////////////////////////////////////////////////////////////
+//proc: FBpolyPlanarize()										//
+//Desc: main proc that creates GUI for FBpolyPlanarizeDoIt	    //
+//////////////////////////////////////////////////////////////////
+global proc FBpolyPlanarize()
+{
+	//again with these optionVariables, we're just setting them to 1 if they're not == 2 
+	//				(if they don't exist, they have a different value somehow, etc...)
+	if (!`optionVar -ex FBpolyPlanarizePivPos`)
+		optionVar -iv FBpolyPlanarizePivPos 1;
+	if (!`optionVar -q FBpolyPlanarizePivOrnt`)
+		optionVar -iv FBpolyPlanarizePivOrnt 1;		
+
+						
+	//check if window exists and if windowprefs exist and delete them
+	if (`window -ex FBpolyPlanarizeWin`)
+		deleteUI -window FBpolyPlanarizeWin;
+	if (`windowPref -ex FBpolyPlanarizeWin`)
+		windowPref -r FBpolyPlanarizeWin;
+ 	//make the window
+	window -wh 193 165 -s 0 -t "FB poly Planarize" FBpolyPlanarizeWin;
+		//build the gui
+		columnLayout;
+			frameLayout -lv 0 -labelAlign "top" -borderStyle "etchedOut" -width 185;
+				columnLayout -rs 5;
+					rowLayout -nc 4 -cw4 68 40 40 40;
+						text -l " Planarize to:" -ann "Choose axis or plane to align selected components";
+						button -l "  X  " -ann "average to YZ plane" -c "FBpolyPlanarizeDoIt(0)" Xbutton;
+						button -l "  Y  " -ann "average to XZ plane" -c "FBpolyPlanarizeDoIt(1)" Ybutton;
+						button -l "  Z  " -ann "average to XY plane" -c "FBpolyPlanarizeDoIt(2)" Zbutton;
+					setParent ..;
+					rowLayout -cw2 70 120 -nc 2;
+						separator -style none;
+						button -l " Best Plane " -ann "average to Average plane" -c "FBpolyPlanarizeDoIt(3)" Bestbutton;
+					setParent ..;
+				setParent ..;
+			setParent ..;
+			frameLayout -lv 0 -labelAlign "top" -borderStyle "etchedOut" -width 185;
+				columnLayout -rs 3 ;
+					radioButtonGrp -l "Position: " -ann "Pivot position for FBpolyPlanarize to use: Average components or Object's pivots" -cat 1 "left" 2 -cw4 55 45 40 40
+						-nrb 3 -sl `optionVar -q FBpolyPlanarizePivPos` -la3 "Avg " "Ctr" "Obj"
+						-on1 "optionVar -iv FBpolyPlanarizePivPos 1;"
+						-on2 "optionVar -iv FBpolyPlanarizePivPos 2;"
+						-on3 "optionVar -iv FBpolyPlanarizePivPos 3;"; 
+				
+					radioButtonGrp -l "Orientation: " -ann "Axis orientation for FBpolyPlanarize to use (doesn't affect 'Best Plane')" -cat 1 "left" 2 -cw3 70 60 40 
+						-nrb 2 -sl `optionVar -q FBpolyPlanarizePivOrnt` -la2 "Wrld " "Obj" 
+						-on1 "optionVar -iv FBpolyPlanarizePivOrnt 1" 
+						-on2 "optionVar -iv FBpolyPlanarizePivOrnt 2";
+				setParent ..;
+			setParent ..;
+			columnLayout -rs 2;
+				button -l "Close" -c "deleteUI -window FBpolyPlanarizeWin;"  -h 25 -w 185;
+ 	showWindow FBpolyPlanarizeWin;
+}

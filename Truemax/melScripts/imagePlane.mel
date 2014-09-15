@@ -1,0 +1,355 @@
+ ////////////////////////////Updated 12-15-2007//
+ ///////////////////////////////////////////////
+ //    FB Image Plane-O-Rizer thingy          //
+ //-------------------------------------------//
+ //              written by                   //
+ //      Chris "Funky Bunnies" Whitaker       //
+ //         www.FunkyBunnies3d.com            //
+ //===========================================//
+ //--DESCRIPTION:                             //
+ //    Quick script to set up image planes    //
+ //    with correct dimensions to fit image.  //
+ ///////////////////////////////////////////////
+ //===========================================//
+ //       Feel free to contact me with        //
+ //         any suggestions or bugs           //
+ //-------------------------------------------//
+ //   Contact Me: Chris@FunkyBunnies3d.com    //
+ //===========================================//
+ //    Use and/or modify at your own risk.    //
+//=============================================\\
+ 
+global proc FBImgpln(){
+if ( (`window -exists FBimgplane `) == true ) deleteUI  FBimgplane;
+
+
+window -title "FB Image-plane-o-rizer" -wh 320 280 -menuBar on -mxb false FBimgplane;
+menu
+   -label "Help"
+   -tearOff 0;
+   
+   menuItem
+	-label "About"
+	-c "FBimgplnInfo()"
+	helpmenu;
+   menuItem
+	-label "Visit my website"
+	-c "showHelp -absolute \"http:\//www.FunkyBunnies3d.com\"";
+   
+   
+string $monkeys = `formLayout`;
+
+string $Scroller = `scrollLayout `;
+   columnLayout -rs 4 ;
+	textFieldGrp
+	  	-cat 1 "left" 10
+	  	-cw2 75 205
+		-label "PrefixName"
+		-ann "Name to use as prefix in created nodes"
+		name;
+   separator -style "in" -w 290;
+   rowLayout 
+		-w 400 
+		-nc 2 
+		-cw2 255 30 
+		-cal 1 "left" 
+		ImgRow;
+		
+	   textFieldGrp -l "Image File" -fi "" -ed 0 -cw2 75 180 -w 255 Imgfield;
+	   symbolButton 
+		-enable true 
+		-image "navButtonBrowse.xpm" 
+		-c "FBimgBrowse"	
+		imagebrowser;
+	setParent..;
+		  
+separator -style "none";
+
+   optionMenuGrp
+	-cat 1 "left" 41
+	-cw2 76 100
+	-label "View"
+	-ann "Direction of Image plane"
+	ViewDropdown;
+
+	menuItem -label "Front";
+	menuItem -label "Back";
+	menuItem -label "Left";
+	menuItem -label "Right";
+	menuItem -label "Top";
+	menuItem -label "Bottom";
+	
+    floatSliderGrp 
+		-label "Scale" 
+		-field 1
+		-pre 3
+		-cat 3 "left" 9
+		-cw3 75 40 25
+		-minValue 0 
+		-maxValue 1
+ 		-fieldMinValue 0 
+		-fieldMaxValue 15
+ 		-value .5 
+		scaleSlider;
+
+   floatSliderGrp
+	-label "Offset "
+	-cw3 75 50 155
+	-v 0
+	-min -25
+	-max 25
+	-fmx 100000
+    -pre 3
+	-ann "Offset from Origin"
+	-field true
+	OffsetSlider;
+
+   rowLayout 
+		-w 400 
+		-nc 3 
+		-cw2 100 100 
+		-cal 1 "left" 
+		ChkRow;
+	checkBoxGrp
+		-cat 1 "left" 12
+		-cw2 75 20
+		-numberOfCheckBoxes 1
+   		-label "One sided "
+   		-ann "single sided or double sided"
+	Singleside;
+	
+	checkBoxGrp
+		-cat 1 "left" 12
+		-cw2 75 20
+		-numberOfCheckBoxes 1
+   		-label "Renderable "
+   		-ann "renderable or not"
+	Renderable;
+	checkBoxGrp 
+		-cat 1 "left" 10
+		-cw2 65 20
+		-numberOfCheckBoxes 1
+   		-label "Use alpha "
+   		-ann "use supplied Alpha (if applicable)"
+	useAlpha;
+   setParent..;
+   setParent..;
+setParent..;
+
+button -l "Create" -ann "Create Image plane" -align "center" -w 105 -h 30 -c "FBimgplnMake()" Createbut;
+button -l "Cancel" -ann "Cancel operation" -align "center" -w 105 -h 30 -c "deleteUI FBimgplane " Cancelbut;
+
+formLayout -edit
+	-af $Scroller "top" 0
+	-af $Scroller "bottom" 40
+	-af $Scroller "left" 0
+	-af $Scroller "right" 0
+
+	-attachNone     Createbut     "top"
+	-attachForm     Createbut     "left"   4
+	-attachForm     Createbut     "bottom" 4 
+	-attachPosition  Createbut     "right"   2 50
+	
+	-attachNone     Cancelbut     "top"
+	-attachPosition  Cancelbut     "left"   2 50
+	-attachForm     Cancelbut     "bottom" 4
+	-attachForm     Cancelbut     "right"  4  $monkeys;
+
+showWindow FBimgplane;
+}
+
+
+
+	
+global proc FBimgBrowse()
+{
+   fileBrowserDialog -m 0 -fc "FBimportImage" -ft "image" -an "Import_image" -om "Import";
+}
+
+global proc int FBimportImage( string $filename, string $fileType )
+{
+	textFieldGrp -e -fi ($filename) Imgfield;
+	return 1;
+}
+
+global proc FBimgplnMake()
+{
+	int $imagex;
+	int $imagey;
+	string $name;
+	if (`textFieldGrp	-q -tx name`!="" ) $name = `textFieldGrp -q -tx name`;
+	else $name = "FBimgpln";
+	
+	string $view;
+	{
+		int $viewIndex = `optionMenuGrp -q -sl ViewDropdown`;
+		
+		switch ($viewIndex)
+		{
+			case 1:
+				$view = "_Frnt";
+			break;
+			case 2:
+				$view = "_Back";
+			break;
+			case 3:
+				$view = "_Left";
+			break;
+			case 4:
+				$view = "_Right";
+			break;
+			case 5:
+				$view = "_Top";
+			break;
+			case 6:
+				$view = "_Bot";
+			break;
+		}
+	}
+	string $imagename =`textFieldGrp -q -fi Imgfield`;
+	string $FBshader;
+	string $FBSG; 
+
+//create shader
+if ($imagename!="")
+{
+
+
+string $file = `shadingNode -asTexture file -n ($name+$view+"_file")`;
+string $fileplacement = `shadingNode -asUtility place2dTexture -n ($name+$view+"_place")`;
+
+//connect it up to the file placement node
+	eval(
+	"connectAttr -f " + $fileplacement + ".outUV " + $file+".uvCoord;" +
+	"connectAttr -f " + $fileplacement + ".outUvFilterSize " + $file + ".uvFilterSize;" +
+	"connectAttr -f " + $fileplacement + ".coverage " + $file + ".coverage;" +
+	"connectAttr -f " + $fileplacement + ".translateFrame " + $file + ".translateFrame;" +
+	"connectAttr -f " + $fileplacement + ".rotateFrame " + $file + ".rotateFrame;" +
+	"connectAttr -f " + $fileplacement + ".mirrorU " + $file + ".mirrorU;" +
+	"connectAttr -f " + $fileplacement + ".mirrorV " + $file + ".mirrorV;" +
+	"connectAttr -f " + $fileplacement + ".stagger " + $file + ".stagger;" +
+	"connectAttr -f " + $fileplacement + ".wrapU " + $file + ".wrapU;" +
+	"connectAttr -f " + $fileplacement + ".wrapV " + $file + ".wrapV;" +
+	"connectAttr -f " + $fileplacement + ".repeatUV " + $file + ".repeatUV;" +
+	"connectAttr -f " + $fileplacement + ".vertexUvOne " + $file + ".vertexUvOne;" +
+	"connectAttr -f " + $fileplacement + ".vertexUvTwo " + $file + ".vertexUvTwo;" +
+	"connectAttr -f " + $fileplacement + ".vertexUvThree " + $file + ".vertexUvThree;" +
+	"connectAttr -f " + $fileplacement + ".vertexCameraOne " + $file + ".vertexCameraOne;" +
+	"connectAttr -f " + $fileplacement + ".noiseUV " + $file + ".noiseUV;" +
+	"connectAttr -f " + $fileplacement + ".offset " + $file + ".offset;" +
+	"connectAttr -f " + $fileplacement + ".rotateUV " + $file + ".rotateUV;"
+	);
+
+setAttr ($file + ".ftn") -type "string" $imagename;
+
+$FBshader = `shadingNode -asShader lambert -n ($name+$view)`;
+$FBSG = `sets -renderable true -noSurfaceShader true -empty -n ($name + $view + "SG")`;
+connectAttr -f ($FBshader + ".outColor") ($FBSG + ".surfaceShader");
+connectAttr -force ($file + ".outColor") ($FBshader + ".color");
+
+$imagex = `getAttr ($file+".outSizeX")`;
+$imagey = `getAttr ($file +".outSizeY")`;
+
+if (`getAttr ($file +".fileHasAlpha")` && `checkBoxGrp -query -v1 useAlpha`)
+{
+	//if the image has alpha AND user sets to use alpha, connect it up the alpha
+	connectAttr -force ($file + ".outTransparency") ($FBshader + ".transparency");
+}
+}	
+	else 
+	{
+		warning "No image selected!";
+		$imagex = 1;
+		$imagey = 1;
+	}
+	
+	float $offset = `floatSliderGrp -q -v OffsetSlider`;
+	vector $axis;
+	
+//front
+	if (`optionMenuGrp -query -select ViewDropdown`==1)
+		$axis = <<0, 0, 1>>;
+//back
+	else if (`optionMenuGrp -query -select ViewDropdown`==2)
+	$axis = <<0, 0, -1>>;
+	
+//left
+	else if (`optionMenuGrp -query -select ViewDropdown`==3)
+	$axis = <<-1, 0, 0>>;
+//right
+	else if (`optionMenuGrp -query -select ViewDropdown`==4)
+	$axis = <<1, 0, 0>>;
+	
+//top
+	else if (`optionMenuGrp -query -select ViewDropdown`==5)
+	$axis = <<0, 1, 0>>;
+//bottom
+	else if (`optionMenuGrp -query -select ViewDropdown`==6)
+	$axis = <<0, -1, 0>>;
+		
+polyPlane -w $imagex -h $imagey -sx 1 -sy 1 -ax ($axis.x) ($axis.y) ($axis.z) -tx 1 -ch 1;
+move -a (($axis.x)*-($offset)) (($axis.y)*-($offset)) (($axis.z)*-($offset));
+
+string $currentplane[] = `ls -sl -o -dag`;
+
+setAttr ($currentplane[0]+".scaleX") (`floatSliderGrp -q -v scaleSlider`);
+setAttr ($currentplane[0]+".scaleY") (`floatSliderGrp -q -v scaleSlider`);
+setAttr ($currentplane[0]+".scaleZ") (`floatSliderGrp -q -v scaleSlider`);
+
+rename $currentplane[0] ($name+$view);
+
+$currentplane = `ls -sl -o -dag -s`;
+
+
+
+//oops maybe I should assign the shader I guess, huh? :P
+if ($imagename!="") sets -e -forceElement $FBSG $currentplane[0];
+
+
+if (`checkBoxGrp -query -v1 Singleside`) 
+   setAttr ($currentplane[0] + ".doubleSided") 0;
+else setAttr ($currentplane[0] + ".doubleSided") 1;
+
+if (`checkBoxGrp -query -v1 Renderable`) 
+   {
+	    setAttr ($currentplane[0] + ".primaryVisibility") 1;
+		setAttr ($currentplane[0] + ".visibleInReflections") 1;
+		setAttr ($currentplane[0] + ".visibleInRefractions") 1;
+		setAttr ($currentplane[0] + ".receiveShadows") 1;
+		setAttr ($currentplane[0] + ".castsShadows") 1;
+   }
+else
+   {
+	    setAttr ($currentplane[0] + ".primaryVisibility") 0;
+		setAttr ($currentplane[0] + ".visibleInReflections") 0;
+		setAttr ($currentplane[0] + ".visibleInRefractions") 0;
+		setAttr ($currentplane[0] + ".receiveShadows") 0;
+		setAttr ($currentplane[0] + ".castsShadows") 0;
+   }
+   
+}
+
+//procedure to open About Window
+global proc FBimgplnInfo(){
+	if (`window -exists FBinfoWin`)
+   {
+	deleteUI FBinfoWin;
+   }
+	window -rtf 1 -s 0 -tbm 0 -t "About the script" FBinfoWin;
+	  columnLayout -rs 5;	  
+	  	frameLayout -bs "in" -li 45 -h 75 -w 236 -l "" -mw 5;
+			string $infoform = `formLayout`;
+				text -l "  Written by Chris \"Funky Bunnies\" Whitaker \n";
+			string $FBemail = `button -l "Chris@FunkyBunnies3d.com" -w 150 -al "center" -c "showHelp -absolute \"mailto:Chris@FunkyBunnies3d.com\""`;
+			formLayout -e 
+				-af $FBemail "bottom" 10
+				-af $FBemail "left" 20
+				-af $FBemail "right" 20
+				$infoform;
+			setParent..;
+		setParent..;
+	rowLayout -w 250 -cat 1 "left" 70 -cal 1 "center";
+	button -l "Close" -w 100 -al "center" -ann "Close window" -c "deleteUI FBinfoWin;";
+
+	showWindow FBinfoWin;
+}
