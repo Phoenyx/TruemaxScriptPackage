@@ -44,5 +44,3 @@ clear $attrList;
     
 clear  $selectedObj;
 }
-
-lockNonKeyable__all();
