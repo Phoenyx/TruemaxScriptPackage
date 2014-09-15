@@ -43,7 +43,8 @@ class ModuleScene(manager.Module):
     def setProjectAsCurrDirectory(self):
         filePath = cmds.file(query =True, expandName=True)
         directory = os.path.dirname(filePath)
-        self.set_project(directory)
+        project = os.path.dirname(directory)
+        self.set_project(project)
 
     def importRefCube(self):
         location = "{0}{1}{2}".format(os.path.dirname(os.path.realpath(__file__)), os.path.sep, self.cleanScene)
