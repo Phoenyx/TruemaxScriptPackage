@@ -1,0 +1,48 @@
+        global proc lockNonKeyable_all()
+{
+string $selectedObj[] = `ls -sl`;
+for($obj in $selectedObj)
+{
+string $attrList[] = `listAttr -v -l`;                // Get attributes that are visibily locked
+for($attribute in $attrList)
+{
+setAttr -keyable false -lock true -channelBox true($obj + "." + $attribute);    // make non keyable and lock attribute
+}
+/*
+Set Default trans, rot, and scale attributes to non keyable and locked 
+*/
+setAttr -keyable false -channelBox true($obj + ".tx");
+setAttr -lock true ($obj + ".tx");
+setAttr -keyable false -channelBox true($obj + ".ty");
+setAttr -lock true ($obj + ".ty");
+setAttr -keyable false -channelBox true($obj + ".tz");
+setAttr -lock true ($obj + ".tz");
+
+setAttr -keyable false -channelBox true($obj + ".sx");
+setAttr -lock true ($obj + ".sx");
+setAttr -keyable false -channelBox true($obj + ".sy");
+setAttr -lock true ($obj + ".sy");
+setAttr -keyable false -channelBox true($obj + ".sz");
+setAttr -lock true ($obj + ".sz");
+
+setAttr -keyable false -channelBox true($obj + ".rx");
+setAttr -lock true ($obj + ".rx");
+setAttr -keyable false -channelBox true($obj + ".ry");
+setAttr -lock true ($obj + ".ry");
+setAttr -keyable false -channelBox true($obj + ".rz");
+setAttr -lock true ($obj + ".rz");
+        
+clear $attrList;
+    
+$attrList = `listAttr -ud`;                // Get attributes that are userdefined, hidden or not
+for($attribute in $attrList)
+{
+setAttr -keyable false -lock true -channelBox true ($obj + "." + $attribute);    
+}
+clear $attrList;
+}    
+    
+clear  $selectedObj;
+}
+
+lockNonKeyable__all();
