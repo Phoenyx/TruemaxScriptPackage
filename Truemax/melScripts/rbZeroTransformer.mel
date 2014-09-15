@@ -22,4 +22,4 @@ setAttr -keyable false -channelBox true ($newBone[0] + ".sz");
 setAttr -keyable false -channelBox true ($newBone[0] + ".v");
 }
 
-rbZeroTransformer("_zero")
+rbZeroTransformer("_zero");
