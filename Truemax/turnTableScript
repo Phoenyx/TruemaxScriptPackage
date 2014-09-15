@@ -28,7 +28,29 @@ setKeyframe("dummyLocator.ry")
 # Parent the top node under the dummy locator
 
 
-# Set up the render settings
+nodess=ls(type='mesh')
+# list all mesh objects
+select(nodess[0],
+	r=1)
+# replace existing items on active list with this
+i=1
+while i<30:
+	pickWalk(d='up')
+	# pick up the tree 30 times. BAD CODE
+	i+=1
+	
+
+rootNode=ls(sl=1)
+# list all selected objects
+select(cl=1)
+# clear selection
+myroot=rootNode[0]
+
+parent('myroot','dummyLocator')
+
+# Make a playblast to the folder turnTable
 
 
-# Render .mov to the turnTable folder
+
+
+
