@@ -23,6 +23,7 @@ class ModuleRig(manager.Module):
         cmds.button(command=lambda *args: mel.paintSkinWeights(), label="Vertex Paint Skin Weights")
         cmds.button(command=lambda *args: mel.cometSaveWeights(), label="-Comet- Save Skin Weights")
         cmds.button(command=lambda *args: mel.objectColorPalette(), label="Wireframe Colour")
+        cmds.button(command=lambda *args: mel.lockNonKeyable_all(), label="Lock and make Non-keyable (Selected)")
         cmds.button(command=lambda *args: mel.NodeEditorWindow(), label="Node Editor")
         cmds.setParent('..')
         cmds.setParent('..')
