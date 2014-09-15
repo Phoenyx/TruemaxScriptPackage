@@ -4,6 +4,20 @@ __author__ = 'sofiaelm'
 import manager
 import maya.cmds as cmds
 from pymel.all import mel
+import pymel.core as pm
+
+
+SCENE_FOLDER = "scenes"
+TURNTABLE_FOLDER = "turnTable"
+EXPORT_FOLDER = "export"
+SOURCEIMAGES_FOLDER = "sourceimages"
+startDir = "S:\3DDA_12\Student_shared\semester5\gameDevelopment\02_production\assets"
+
+
+    # Gets first and last letter of username
+def getAuthorInitials():
+    user = os.getenv('user', "na")
+    return str(user[0] + user[-1]).lower()
 
 
 class ModuleScene(manager.Module):
@@ -16,26 +30,69 @@ class ModuleScene(manager.Module):
     def new_scene(self):
         window = None
 
-        def new_scene_click(*args):
-            cmds.SaveSceneAs()
-            if cmds.window(window, exists=True):
-                cmds.deleteUI(window, window=True)
-
-            self.setProjectAsCurrDirectory()
-            cmds.currentUnit( linear='m' )
-
-
         cmds.file(newFile=True, force=True)
         location = "{0}{1}{2}".format(os.path.dirname(os.path.realpath(__file__)), os.path.sep, self.cleanScene)
         self.set_project(location)
         cmds.file("cleanScene.ma", open=True)
-        cmds.file(renameToSave=True)
-        window = cmds.window(title="Oi!", widthHeight=(250, 100))
-        cmds.columnLayout(adjustableColumn=True)
-        cmds.frameLayout(label='Please save your scene!')
-        cmds.button(label='Ofcourse!', command=new_scene_click)
-        cmds.setParent('..')
-        cmds.showWindow(window)
+
+
+        selectDir = pm.fileDialog2(fileMode=2,dialogStyle=3,startingDirectory=startDir)
+        print selectDir[0]
+        sDir = str(selectDir[0])
+
+        result = cmds.promptDialog(
+                        title='Asset Name',
+                        message='Enter Name:',
+                        button=['OK', 'Cancel'],
+                        defaultButton='OK',
+                        cancelButton='Cancel',
+                        dismissString='Cancel')
+
+        if result == 'OK':
+            assetName = cmds.promptDialog(query=True, text=True)
+        print assetName
+
+        # makes project folder
+        projectFolder = os.path.join(sDir, assetName)
+        if not os.path.exists(projectFolder):
+              print "Creating {0}".format(projectFolder)
+              os.makedirs(projectFolder)
+
+        # makes scenes folder
+        scenesFolder = os.path.join(projectFolder, SCENE_FOLDER)
+        if not os.path.exists(scenesFolder):
+              print "Creating {0}".format(scenesFolder)
+              os.makedirs(scenesFolder)
+
+         # makes turntable folder
+        turntableFolder = os.path.join(projectFolder, TURNTABLE_FOLDER)
+        if not os.path.exists(turntableFolder):
+              print "Creating {0}".format(turntableFolder)
+              os.makedirs(turntableFolder)
+
+         # makes export folder
+        exportFolder = os.path.join(projectFolder, EXPORT_FOLDER)
+        if not os.path.exists(exportFolder):
+              print "Creating {0}".format(exportFolder)
+              os.makedirs(exportFolder)
+
+        # makes sourceimages folder
+        sourceimagesFolder = os.path.join(projectFolder, SOURCEIMAGES_FOLDER)
+        if not os.path.exists(sourceimagesFolder):
+              print "Creating {0}".format(sourceimagesFolder)
+              os.makedirs(sourceimagesFolder)
+
+
+
+        fileName = assetName + "_v001_" + getAuthorInitials() + ".ma"
+        fileSavePath = os.path.join(scenesFolder, fileName)
+        print fileSavePath
+        cmds.file(rename=fileSavePath)
+        cmds.file(save=True)
+
+        self.setProjectAsCurrDirectory()
+        cmds.currentUnit( linear='m' )
+
 
     def set_project(self, location):
         mel.setProject(location)
