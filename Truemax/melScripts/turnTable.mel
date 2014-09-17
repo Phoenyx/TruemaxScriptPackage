@@ -1,0 +1,157 @@
+// Author: Sofia Elena Jakobsen Manioudakis
+// Version: v.1.0
+// Turntable script for creating turntables of game object via playblast
+// Creates a camera and an animated dummy locater. Parents the top group in maya under the dummy locater and creates a playblast.
+// Unparents and deletes camera and locater at the end.
+
+
+global proc playblast() 
+{
+    // Reset viewPort to avoid possible bug
+    setNamedPanelLayout "Single Perspective View";
+    
+    // Create folder according to sceneName if it does not exist
+    $currentFilePath = dirname(`file -q -sceneName`) ;
+    $turnTableFolder = (substring($currentFilePath,1,(size($currentFilePath) - 7)));
+    $turnTableFolder = ($turnTableFolder + "/turnTable/");
+    sysFile -makeDir $turnTableFolder ;
+	
+	
+	string $sceneFileRaw = `file -q -sceneName -shortName`;
+	string $sceneFile = `match "[a*-z]+[A-Z]" $sceneFileRaw`;
+	
+	
+    // Creates camera
+    camera -name "turnTableCam";
+    rename turnTableCam1 turnTableCam;
+    
+    // Get camShape
+    select ("turnTableCam");
+    setAttr "turnTableCam.scaleZ" 125;
+    setAttr "turnTableCam.scaleX" 125;
+    setAttr "turnTableCam.scaleY" 125;
+    setAttr "turnTableCam.translateY" 2.644;
+    setAttr "turnTableCam.translateZ" 13.168;
+    setAttr "turnTableCam.rotateX" -1.066;
+    setAttr "turnTableCam.rotateY" 0;
+    setAttr "turnTableCam.rotateZ" 0;
+    setAttr "turnTableCam.translateX" 0;
+    setAttr "turnTableCam.scaleZ" 125;
+    setAttr "turnTableCam.scaleX" 125;
+    setAttr "turnTableCam.scaleY" 125;
+    pickWalk -d down;
+    string $camShape[] = `ls -sl`;
+    
+    // Set Attr for camShape
+    for ($node in $camShape)
+    {
+        setAttr ($camShape[0] + ".displayFilmGate") 0;
+        setAttr ($camShape[0] + ".displayResolution") 1;
+        setAttr ($camShape[0] + ".displayGateMask") 1;
+        setAttr ($camShape[0] + ".displayGateMaskOpacity") 1;
+        setAttr ($camShape[0] + ".displayGateMaskColor") -type double3 0 0 0 ;
+        setAttr ($camShape[0] + ".overscan") 1.3;
+    }
+	
+	// Look through camera
+	select ("turnTableCam");
+    $camera = `getCurrentCamera`;
+    string $panel = "modelPanel4";
+    string $sel[] = `ls -sl`;
+    
+    if(size($sel) == 1)
+    {
+        if( size( `listRelatives -children -type camera $sel[0]`) == 1 )
+            { eval( "lookThroughModelPanel "+$sel[0]+" "+$panel); }
+    }
+    
+    // Get the current camera's name and settings
+    int $cameraDisplayResolution = `camera -q -displayResolution $camera`;
+    int $cameraDisplayGateMask = `camera -q -displayGateMask $camera`;
+    float $cameraoverscan = `camera -q -overscan $camera`;
+
+    // Setup the viewport
+    $currentPanel = `getPanel -withFocus`;
+    modelEditor -e -allObjects 0 $currentPanel;
+    modelEditor -e -nurbsCurves false $currentPanel;
+    modelEditor -e -nurbsSurfaces true $currentPanel;
+    modelEditor -e -polymeshes true $currentPanel;
+    modelEditor -e -subdivSurfaces true $currentPanel;
+    modelEditor -e -planes true $currentPanel;
+    modelEditor -e -motionTrails false $currentPanel;
+    setRendererInModelPanel base_OpenGL_Renderer $currentPanel;
+	
+	// Prepare viewport and show textures
+	DisplayShadedAndTextured;
+	
+    // Disable the resolution and film gates
+    //camera -e -displayResolution 0 -displayGateMask 0 -overscan 1 $camera;
+    
+    // Get camShape
+    select ("turnTableCam");
+    pickWalk -d down;
+    string $camShape[] = `ls -sl`;
+    
+    // Set Attr for camShape
+    for ($node in $camShape)
+    {
+        setAttr ($camShape[0] + ".displayFilmGate") 0;
+        setAttr ($camShape[0] + ".displayResolution") 0;
+        setAttr ($camShape[0] + ".displayGateMask") 0;
+        setAttr ($camShape[0] + ".displayGateMaskOpacity") 0;
+        setAttr ($camShape[0] + ".displayGateMaskColor") -type double3 0 0 0 ;
+        setAttr ($camShape[0] + ".overscan") 1;
+    }
+    
+	// Offset framecount -1
+	playbackOptions -minTime 1;
+	playbackOptions -maxTime 150;
+	currentTime 1;
+	
+	spaceLocator -p 0 0 0 -name "dummyLocator";
+	currentTime 1;
+	setAttr "dummyLocator.rotateY" 0;
+	setKeyframe "dummyLocator.ry";
+    currentTime 150 ;
+    setAttr "dummyLocator.rotateY" 360;
+    setKeyframe "dummyLocator.ry";
+    currentTime 1;
+    selectKey -add -k -t 1 -t 150 dummyLocator_rotateY ;
+    keyTangent -itt linear -ott linear;
+
+    parent $sceneFile dummyLocator;
+	
+    // Playblast
+	select -cl;
+    playblast  -format qt -filename ($turnTableFolder + $sceneFile + ".mov\n") -forceOverwrite  -sequenceTime 0 -clearCache 1 -viewer 1 -showOrnaments 0 -offScreen  -fp 4 -percent 100 -compression "H.264" -quality 100 -widthHeight 1280 720;
+
+    // Offset framecount back
+	playbackOptions -ast 1;
+	currentTime 1;
+ 
+	
+    // Put back the former camera's attributes
+
+    // Get camShape
+    select ("turnTableCam");
+    pickWalk -d down;
+    string $camShape[] = `ls -sl`;
+    
+    // Set Attr for camShape
+    for ($node in $camShape)
+    {
+        setAttr ($camShape[0] + ".displayFilmGate") 0;
+        setAttr ($camShape[0] + ".displayResolution") 1;
+        setAttr ($camShape[0] + ".displayGateMask") 1;
+        setAttr ($camShape[0] + ".displayGateMaskOpacity") 1;
+        setAttr ($camShape[0] + ".displayGateMaskColor") -type double3 0 0 0 ;
+        setAttr ($camShape[0] + ".overscan") 1.3;
+    }
+
+    select -cl;
+    parent -w ($sceneFile);
+    select -r dummyLocator ;select -add turnTableCam ;
+    doDelete;
+    
+}
+
