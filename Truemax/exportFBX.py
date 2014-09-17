@@ -4,18 +4,20 @@
 import maya.cmds as cmds
 import maya.mel as mel
 import os
+from pymel.all import *
 
 
 def export_asset():
-    scene_file_raw = str(cmds.file(q=1, sceneName=1))
-    file_dir = os.path.dirname(scene_file_raw)
-    file_name = os.path.basename(os.path.splitext(scene_file_raw)[0])
-    export_dir = os.path.join(file_dir, "export")
+
+    scene_file_raw=str(cmds.file(q=1,sceneName=1,shortName=1))
+    scene_file=str(mel.match("[a*-z]+[A-Z]", scene_file_raw))
+    file_dir = os.path.dirname(cmds.file(q=1,sceneName=1))
+    export_dir = os.path.join(os.path.dirname(file_dir), "export")
 
     if not os.path.exists(export_dir):
         os.mkdir(export_dir)
 
-    scene_fbx = os.path.join(export_dir, file_name + ".fbx")
+    scene_fbx = os.path.join(export_dir, scene_file + ".fbx")
     assets = cmds.ls(sl=1)
     len(assets)
     if len(assets) == 0:
