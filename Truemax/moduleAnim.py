@@ -33,7 +33,7 @@ class ModuleAnim(manager.Module):
         cmds.columnLayout()
         cmds.button(command=lambda *args: mel.autoTangent(), label="autoTangent")
         cmds.button(command=lambda *args: self.hierarchy_selection(), label="HierarchySelection")
-        cmds.button(command=lambda *args: pose.poseLib(), label="PoseLib")
+        cmds.button(command=lambda *args: mel.poseLib(), label="PoseLib")
         cmds.button(command=lambda *args: mel.tweenMachine(), label="TweenMachine")
         cmds.button(command=lambda *args: mel.zoomerator(), label="Zoomerator")
         cmds.setParent('..')
