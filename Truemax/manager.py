@@ -33,6 +33,7 @@ class TruemaxModuleManager():
                {"name": "Joint-At-Pivot", "version": "1.0", "author": "Unknown"},
                {"name": "Mel-O-Matic", "version": "1.6", "author": "Andrew Osiow"},
                {"name": "NewScene", "version": "1.0", "author": "Sofia M."},
+               {"name": "TurnTablePlayblast", "version": "1.0", "author": "Sofia M."},
                {"name": "PolyPlanarize", "version": "1.0", "author": "Chris Whitaker"},
                {"name": "PoseLib", "version": "6.2.3", "author": "Lionel Gallat"},
                {"name": "rbShapesWindow", "version": "1.0", "author": "Rasmus B"},
@@ -179,7 +180,7 @@ class TruemaxModuleManager():
                 cmds.deleteUI(dWindow)
 
             formLayout = str(cmds.formLayout(parent=window))
-            cmds.dockControl(dWindow, allowedArea="all", content=formLayout, area="left", label=self.title)
+            cmds.dockControl(dWindow, allowedArea="all", content=formLayout, area="right", label=self.title)
             cmds.control(window, p=formLayout, e=1, w=310)
             cmds.setParent('..')
 
