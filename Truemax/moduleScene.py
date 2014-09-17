@@ -1,6 +1,7 @@
-import os
-
 __author__ = 'sofiaelm'
+import os
+import Truemax.exportFBX as exportFBX
+reload(exportFBX)
 import manager
 import maya.cmds as cmds
 from pymel.all import mel
@@ -120,6 +121,7 @@ class ModuleScene(manager.Module):
         cmds.button(command=lambda *args: self.importRefCube(), label="Import Reference Cube")
         cmds.button(command=lambda *args: mel.playblast(), label="Create Playblast Turntable")
         cmds.button(command=lambda *args: mel.deleteUnusedNodes(), label="Delete Unused Nodes")
+        cmds.button(command=lambda *args: exportFBX.export_asset(), label="Export in FBX")
         cmds.setParent('..')
         cmds.setParent('..')
         cmds.setParent('..')
