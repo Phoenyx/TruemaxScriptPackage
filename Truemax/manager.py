@@ -12,7 +12,7 @@ import shutil
 
 class TruemaxModuleManager():
     title = "TruemaxPackage"
-    version = "0.0.1"
+    version = "0.0.2"
     author = "Peter T, Sofia M, Daniel H"
     prefixName = "module"
     melScriptsDir = "melScripts"
