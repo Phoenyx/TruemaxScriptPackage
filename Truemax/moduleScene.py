@@ -118,6 +118,7 @@ class ModuleScene(manager.Module):
         cmds.button(command=lambda *args: self.new_scene(), label="New Work Scene")
         cmds.button(command=lambda *args: self.setProjectAsCurrDirectory(), label="Set Project")
         cmds.button(command=lambda *args: self.importRefCube(), label="Import Reference Cube")
+        cmds.button(command=lambda *args: mel.playblast(), label="Create Playblast Turntable")
         cmds.button(command=lambda *args: mel.deleteUnusedNodes(), label="Delete Unused Nodes")
         cmds.setParent('..')
         cmds.setParent('..')
