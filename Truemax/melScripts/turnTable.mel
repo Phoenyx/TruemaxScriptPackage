@@ -30,12 +30,12 @@ global proc playblast()
     setAttr "turnTableCam.scaleZ" 125;
     setAttr "turnTableCam.scaleX" 125;
     setAttr "turnTableCam.scaleY" 125;
-    setAttr "turnTableCam.translateY" 2.644;
-    setAttr "turnTableCam.translateZ" 13.168;
+    setAttr "turnTableCam.translateX" 0;
+    setAttr "turnTableCam.translateY" 1.267;
+    setAttr "turnTableCam.translateZ" 5.746;
     setAttr "turnTableCam.rotateX" -1.066;
     setAttr "turnTableCam.rotateY" 0;
     setAttr "turnTableCam.rotateZ" 0;
-    setAttr "turnTableCam.translateX" 0;
     setAttr "turnTableCam.scaleZ" 125;
     setAttr "turnTableCam.scaleX" 125;
     setAttr "turnTableCam.scaleY" 125;
@@ -71,15 +71,15 @@ global proc playblast()
     float $cameraoverscan = `camera -q -overscan $camera`;
 
     // Setup the viewport
-    $currentPanel = `getPanel -withFocus`;
-    modelEditor -e -allObjects 0 $currentPanel;
-    modelEditor -e -nurbsCurves false $currentPanel;
-    modelEditor -e -nurbsSurfaces true $currentPanel;
-    modelEditor -e -polymeshes true $currentPanel;
-    modelEditor -e -subdivSurfaces true $currentPanel;
-    modelEditor -e -planes true $currentPanel;
-    modelEditor -e -motionTrails false $currentPanel;
-    setRendererInModelPanel base_OpenGL_Renderer $currentPanel;
+   // $currentPanel = `getPanel -withFocus`;
+   // modelEditor -e -allObjects 0 $currentPanel;
+   // modelEditor -e -nurbsCurves false $currentPanel;
+   // modelEditor -e -nurbsSurfaces true $currentPanel;
+   // modelEditor -e -polymeshes true $currentPanel;
+   // modelEditor -e -subdivSurfaces true $currentPanel;
+   // modelEditor -e -planes true $currentPanel;
+   // modelEditor -e -motionTrails false $currentPanel;
+  //  setRendererInModelPanel base_OpenGL_Renderer $currentPanel;
 	
 	// Prepare viewport and show textures
 	DisplayShadedAndTextured;
@@ -120,7 +120,8 @@ global proc playblast()
     keyTangent -itt linear -ott linear;
 
     parent $sceneFile dummyLocator;
-	
+    modelEditor -e -locators false modelPanel4;
+
     // Playblast
 	select -cl;
     playblast  -format qt -filename ($turnTableFolder + $sceneFile + ".mov\n") -forceOverwrite  -sequenceTime 0 -clearCache 1 -viewer 1 -showOrnaments 0 -offScreen  -fp 4 -percent 100 -compression "H.264" -quality 100 -widthHeight 1280 720;
@@ -154,4 +155,3 @@ global proc playblast()
     doDelete;
     
 }
-
