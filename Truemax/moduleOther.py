@@ -11,7 +11,7 @@ class ModuleOther(manager.Module):
         cmds.separator(style="none")
         cmds.frameLayout(collapsable=True,label="Helpers")
         cmds.columnLayout()
-        cmds.button(command=lambda *args: hfFixBadShading(),label="Fix Face Assignments on Scene Objects") #TODO: Is this the right function?
+        cmds.button(command=lambda *args: hfFixBadShading(),label="Fix Face Assignments on Scene Objects")
         cmds.button(command=lambda *args: mel.jh_findDuplicateNames(),label="Find Duplicate Names")
         cmds.button(command=lambda *args: mel.cometRename(),label="Rename Multiple Objects")
         cmds.button(command=lambda *args: mel.fixRenderLayerOutAdjustmentErrors(),label="Fix Render Layer Errors")
