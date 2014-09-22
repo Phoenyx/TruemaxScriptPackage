@@ -1,12 +1,15 @@
 __author__ = 'sofiaelm'
 import os
 import Truemax.exportFBX as exportFBX
-reload(exportFBX)
+from Truemax import checkList
 import manager
 import maya.cmds as cmds
 from pymel.all import mel
 import pymel.core as pm
 
+# Reloads script when update is ran
+reload(exportFBX)
+reload(checkList)
 
 SCENE_FOLDER = "scenes"
 TURNTABLE_FOLDER = "turnTable"
@@ -122,6 +125,7 @@ class ModuleScene(manager.Module):
         cmds.button(command=lambda *args: mel.reset(), label="Create Playblast Turntable")
         cmds.button(command=lambda *args: mel.deleteUnusedNodes(), label="Delete Unused Nodes")
         cmds.button(command=lambda *args: exportFBX.export_asset(), label="Export in FBX")
+        cmds.button(command=lambda *args: checkList.checkList(), label="Check List")
         cmds.setParent('..')
         cmds.setParent('..')
         cmds.setParent('..')

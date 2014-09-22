@@ -160,6 +160,8 @@ def hfCheckShading():
         print('badEngines: '+str(badEngines))
         print('badMeshes: '+str(badMeshes))
         cmds.warning('Found '+str(len(badMeshes))+' objects with component shading.')
+        return True
     else:
         cmds.warning('No component shading detected.')
+        return False
 
