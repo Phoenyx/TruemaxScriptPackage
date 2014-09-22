@@ -2,6 +2,7 @@ __author__ = 'sofiaelm'
 import manager
 import maya.cmds as cmds
 from pymel.all import mel
+from reverseNormals import reverseNormals
 
 class ModuleModel(manager.Module):
 
@@ -15,6 +16,11 @@ class ModuleModel(manager.Module):
         cmds.columnLayout()
         cmds.button(command=lambda *args: mel.FBImgpln(), label="Create Image Plane")
         cmds.button(command=lambda *args: mel.FBpolyPlanarize(), label="Poly Planarize")
+        cmds.button(command=lambda *args: mel.FreezeTransformations(), label="Freeze Transformations")
+        cmds.button(command=lambda *args: mel.DeleteHistory(), label="Delete History")
+        cmds.button(command=lambda *args: mel.CenterPivot(), label="Center Pivot")
+        cmds.button(command=lambda *args: mel.ToggleFaceNormalDisplay(), label="Show Face Normals on Selected")
+        cmds.button(command=lambda *args: reverseNormals(), label="Reverse Normals on Selected")
         cmds.setParent('..')
         cmds.setParent('..')
         cmds.setParent('..')
