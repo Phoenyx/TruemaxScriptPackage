@@ -97,6 +97,9 @@ class ModuleScene(manager.Module):
         self.setProjectAsCurrDirectory()
         cmds.currentUnit( linear='m' )
 
+        if cmds.pluginInfo('fbxmaya', query = True, loaded = True) == False:
+            cmds.loadPlugin('fbxmaya', quiet = True)
+            cmds.pluginInfo( 'fbxmaya', edit=True, autoload=True )
 
     def set_project(self, location):
         mel.setProject(location)
