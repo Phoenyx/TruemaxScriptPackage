@@ -1,2 +1,3 @@
 [TruemaxManager]
-downloadLocation=C:\Test\ScriptUpdater\
+downloadLocation=C:\location\to\TrueMaxScriptPackage
+assetsLocation=C:\location\to\assetsFolder

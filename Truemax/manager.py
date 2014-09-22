@@ -49,6 +49,8 @@ class TruemaxModuleManager():
                {"name": "ZeroJoint", "version": "1.0", "author": "Rasmus B"},
                {"name": "Zoomerator", "version": "1.0", "author": "Jeremie Talbot"}]
 
+    copyAssets = ["Truemax","userSetup.py", "config.ini"]
+
     def __init__(self, reloaded):
         self.read_config()
         self.load_modules()
@@ -272,7 +274,7 @@ class TruemaxModuleManager():
                 files = os.listdir(location)
                 for f in files:
                     try:
-                        if f != "Truemax" and f != "userSetup.py":
+                        if f not in self.copyAssets:
                             continue
 
                         full_path = location + os.path.sep + f
