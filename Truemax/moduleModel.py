@@ -9,6 +9,10 @@ class ModuleModel(manager.Module):
     def __init__(self, mngr):
         manager.Module.__init__(self, mngr)
 
+
+    def select_hierachy(self):
+        cmds.select(hi=1)
+
     def create_ui(self):
         tab = str(cmds.columnLayout())
         cmds.separator(style="none")
@@ -16,6 +20,7 @@ class ModuleModel(manager.Module):
         cmds.columnLayout()
         cmds.button(command=lambda *args: mel.FBImgpln(), label="Create Image Plane")
         cmds.button(command=lambda *args: mel.FBpolyPlanarize(), label="Poly Planarize")
+        cmds.button(command=lambda *args: self.select_hierachy(),  label="Select Hierachy")
         cmds.button(command=lambda *args: mel.FreezeTransformations(), label="Freeze Transformations")
         cmds.button(command=lambda *args: mel.DeleteHistory(), label="Delete History")
         cmds.button(command=lambda *args: mel.CenterPivot(), label="Center Pivot")
