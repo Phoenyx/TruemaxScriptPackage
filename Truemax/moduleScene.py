@@ -119,7 +119,7 @@ class ModuleScene(manager.Module):
         self.setProjectAsCurrDirectory()
 
     def update_check_list(self):
-        if checkList.checkList():
+        if checkList.check_list():
             cmds.text(self.statusText, edit=True, backgroundColor=[0, 1, 0])
         else:
             cmds.text(self.statusText, edit=True, backgroundColor=[1, 0, 0])

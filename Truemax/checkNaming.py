@@ -2,40 +2,48 @@
 from pymel.all import *
 import maya.cmds as cmds
 
+SCENE_FILE_NAME_REGEX = r'[a-z]{2}[A-Z]{1}[a-zA-Z]+[A-Z]{1}_v[0-9]{3}_[a-z]{2}'
+SCENE_FILE_TOP_NODE_REGEX = r'([a-z]{2}[A-Z]{1}[a-zA-Z]+[A-Z]{1})(_)'
 
 def name_compare():
-    # First selection (incorrect naming)
-    cmds.select(cl=1)
-    cmds.select(allDagObjects=1)
-    # Select everything under the dagObject.
-    cmds.select(hi=1)
-    # Deselect the shapes
-    cmds.select("*Shape*", deselect=1)
-    #The selection now equals the objects in the scene
-    select_all = cmds.ls(sl=1)
-
-    # Second selection(correct naming)
-    # TRY EXCEPT !!?!?! DAN DAN DAN. FAILS IF TOP NODE NAME ISNT CORRECT: CANT MATCH THE TWO...
+    # Is there scene name correct?
     scene_file_raw = str(cmds.file(q=1, sceneName=1, shortName=1))
-    topNode = str(mel.match("[a*-z]+[A-Z]", scene_file_raw))
 
-    select_geo = []
-
-    cmds.select(cl=1)
-    if cmds.objExists(topNode):
-        cmds.select(topNode)
-
-        if cmds.objExists("*_geo"):
-            cmds.select("*_geo", add=1)
-            select_geo = cmds.ls(sl=1)
-        else:
-            select_geo = cmds.ls(sl=1)
-
-    else:
-        select_geo = []
-
-
-    if (len(select_geo) == len(select_all)):
-        return True
-    else:
+    if not re.match(SCENE_FILE_NAME_REGEX, scene_file_raw):
+        print "Your scene file is named incorrectly"
         return False
+
+    matches = re.search(SCENE_FILE_TOP_NODE_REGEX, scene_file_raw)
+    if matches is None:
+        print "Something went wrong.."
+        return False
+
+    groups = matches.groups()
+
+    if len(groups) != 2:
+        print "Something went wrong.."
+        return False
+
+    if groups[0] not in cmds.ls():
+        print "Your top node is not named correctly"
+        return False
+
+    top_node = groups[0]
+
+    if cmds.listRelatives(top_node, allParents=True) is not None:
+        print "Top node has a parent"
+        return False
+
+
+    children = cmds.listRelatives(top_node, children=True)
+
+    named_correctly = True
+    for c in children:
+        if cmds.ls(c, showType=True)[1] == "mesh":
+            continue
+
+        if not(c.endswith("_geo") or c.endswith("_grp")):
+            print "%s is named incorrectly" % c
+            named_correctly = False
+
+    return named_correctly
