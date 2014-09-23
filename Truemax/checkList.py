@@ -1,4 +1,5 @@
 
+from Truemax.checkTransforms import check_transforms
 from Truemax.detectHistory import detect_history
 from hfFixShading import hfCheckShading
 import hfFixShading as hfFS
