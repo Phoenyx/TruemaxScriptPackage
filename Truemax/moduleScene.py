@@ -32,6 +32,9 @@ class ModuleScene(manager.Module):
         if "assetslocation" in mngr.config:
             self.statusDir = mngr.config["assetslocation"]
 
+        # Reset check status on selection
+        cmds.scriptJob(event=["DagObjectCreated", lambda *args: self.reset_check_list()], protected=True)
+
     def new_scene(self):
 
         cmds.file(newFile=True, force=True)
@@ -115,6 +118,15 @@ class ModuleScene(manager.Module):
         cmds.file("refCube.ma", i=True)
         self.setProjectAsCurrDirectory()
 
+    def update_check_list(self):
+        if checkList.checkList():
+            cmds.text(self.statusText, edit=True, backgroundColor=[0, 1, 0])
+        else:
+            cmds.text(self.statusText, edit=True, backgroundColor=[1, 0, 0])
+
+    def reset_check_list(self):
+        cmds.text(self.statusText, edit=True, backgroundColor=[1, 1, 0])
+
     def create_ui(self):
 
         tab = str(cmds.columnLayout())
@@ -127,8 +139,12 @@ class ModuleScene(manager.Module):
         cmds.button(command=lambda *args: mel.reset(), label="Create Playblast Turntable")
         cmds.button(command=lambda *args: mel.deleteUnusedNodes(), label="Delete Unused Nodes")
         cmds.button(command=lambda *args: exportFBX.export_asset(), label="Export in FBX")
-        cmds.button(command=lambda *args: checkList.checkList(), label="Check List")
+        cmds.button(command=lambda *args: self.update_check_list(), label="Update Status")
         cmds.setParent('..')
+        cmds.setParent('..')
+        cmds.columnLayout()
+        self.statusText = cmds.text("Status", backgroundColor=[1, 1, 0])
+        self.statusText = cmds.text(self.statusText, query=True, fullPathName=True)
         cmds.setParent('..')
         cmds.setParent('..')
 
