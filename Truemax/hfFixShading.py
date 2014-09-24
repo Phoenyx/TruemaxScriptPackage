@@ -14,6 +14,7 @@
 import maya.cmds as cmds
 import maya.mel as mel
 
+
 def hfHighlightBadShaded():
     meshes = cmds.ls(type='mesh')
     badMeshes = []
@@ -22,7 +23,7 @@ def hfHighlightBadShaded():
     # any meshes that are instanced should be left out, since these will return false positives.
     instances = []
     for i in meshes:
-        parent = cmds.listRelatives(i,ap=1)
+        parent = cmds.listRelatives(i, ap=1)
         if len(parent) > 1:
             # this shape has multiple parents, so it's instanced
             instances.append(i)
@@ -44,10 +45,11 @@ def hfHighlightBadShaded():
     badEngines = list(set(badEngines))
     return badEngines, badMeshes
 
+
 def hfSplitBadShaded(engines):
     modifiedShapes = []
     for sg in engines:
-        print('checking shading group: '+sg)
+        print('checking shading group: ' + sg)
         cmds.hyperShade(objects=sg)
         components = cmds.ls(sl=1)
         uniqueShapes = []
@@ -68,7 +70,7 @@ def hfSplitBadShaded(engines):
                 # get the total num of faces for the shape for later use.
                 totalFaces = cmds.polyEvaluate(shape, f=1)
                 for comp in components:
-                    testStr = shape+'.f['
+                    testStr = shape + '.f['
                     if testStr in comp:
                         # the current component is a member of the current mesh we're splitting and it has the shader we want.
                         cmds.select(comp, add=1)
@@ -78,7 +80,7 @@ def hfSplitBadShaded(engines):
                 # extract the selected faces if we aren't selecting every face of the current mesh.
                 if len(selFaces) < int(totalFaces) and len(selFaces) > 0:
                     cmds.polyChipOff(selFaces, kft=1, dup=0)
-                    cmds.delete(shape,ch=1)
+                    cmds.delete(shape, ch=1)
                 # now the mesh is broken into shells. separate it if possible.
                 if cmds.polyEvaluate(shape, s=1) > 1:
                     newObjects = cmds.polySeparate(shape, ch=0)
@@ -99,12 +101,10 @@ def hfSplitBadShaded(engines):
         else:
             meshNodes = cmds.listRelatives(shape, s=1)
             if meshNodes != None:
-            # if we are not testing an xform, meshNodes will be a 'NoneType' object so we should include an exception.
+                # if we are not testing an xform, meshNodes will be a 'NoneType' object so we should include an exception.
                 returnShapes.extend(meshNodes)
 
     return returnShapes
-
-
 
 
 def hfRepairShadingConnections(meshes):
@@ -125,10 +125,10 @@ def hfRepairShadingConnections(meshes):
         cmds.select(mesh)
         cmds.hyperShade(assign=shaders[0])
     cmds.select(cl=1)
-    cmds.warning('\nRemoved component shading on '+str(len(meshes))+' objects.')
+    cmds.warning('\nRemoved component shading on ' + str(len(meshes)) + ' objects.')
 
 
-# and now, the user-friendly functions...
+    # and now, the user-friendly functions...
 
 def hfSplitByShader():
     badEngines, badMeshes = hfHighlightBadShaded()
@@ -136,11 +136,10 @@ def hfSplitByShader():
         splitObjects = hfSplitBadShaded(badEngines)
         hfRepairShadingConnections(splitObjects)
         cmds.select(splitObjects)
-        cmds.warning('Cleanup complete! '+str(len(splitObjects))+' objects split and cleaned.')
+        cmds.warning('Cleanup complete! ' + str(len(splitObjects)) + ' objects split and cleaned.')
         # return splitObjects
     else:
-        cmds.warning('No component shading detected.')
-        # return('No component shading detected.')
+        return False
 
 
 def hfFixBadShading():
@@ -148,20 +147,19 @@ def hfFixBadShading():
     if badEngines != None and len(badEngines) > 0:
         hfRepairShadingConnections(badMeshes)
         cmds.select(badMeshes)
-        cmds.warning('Cleanup complete! '+str(len(badMeshes))+' objects cleaned.')
+        cmds.warning('Cleanup complete! ' + str(len(badMeshes)) + ' objects cleaned.')
         return badMeshes
     else:
-        cmds.warning('No component shading detected.')
         return 0
+
 
 def hfCheckShading():
     badEngines, badMeshes = hfHighlightBadShaded()
     if badEngines != None and len(badEngines) > 0:
-        print('badEngines: '+str(badEngines))
-        print('badMeshes: '+str(badMeshes))
-        cmds.warning('Found '+str(len(badMeshes))+' objects with component shading.')
+        print('badEngines: ' + str(badEngines))
+        print('badMeshes: ' + str(badMeshes))
+        cmds.warning('Found ' + str(len(badMeshes)) + ' objects with component shading.')
         return True
     else:
-        cmds.warning('No component shading detected.')
         return False
 
