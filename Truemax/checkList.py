@@ -1,11 +1,7 @@
 from Truemax import checkTransforms
 import Truemax.checkNaming as checkNaming
 import Truemax.detectHistory as detectHistory
-from Truemax.checkTransforms import check_transforms
-import Truemax.checkTransforms as check_transforms
-from Truemax.detectHistory import detect_history
 from hfFixShading import hfCheckShading
-import maya.cmds as cmds
 import sys
 
 
@@ -15,9 +11,21 @@ reload(detectHistory)
 
 
 def check_list():
-    if not checkTransforms.check_transforms() or hfCheckShading() or not detectHistory.detect_history() or not checkNaming.name_compare():
-        cmds.warning("Found problems! See Script Editor for more details")
-        return False
+    checklist = [
+        {"status": checkNaming.name_compare(), "error": "Objects have incorrect naming"},
+        {"status": checkTransforms.check_transforms(), "error": "Objects have non zero transforms!"},
+        {"status": hfCheckShading() is False, "error": "Face assignment detected!"},
+        {"status": detectHistory.detect_history(), "error": "Objects have construction history"},
+    ]
+
+    errors = []
+    for c in checklist:
+        if c["status"] is False:
+            errors.append(c["error"])
+
+
+    if len(errors):
+        return False, errors
     else:
         sys.stdout.write("Object(s) checked. All is well, yay!\n")
-        return True
+        return True, ["All Perfect"]

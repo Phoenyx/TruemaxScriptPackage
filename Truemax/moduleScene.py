@@ -29,6 +29,8 @@ class ModuleScene(manager.Module):
     def __init__(self, mngr):
         manager.Module.__init__(self, mngr)
 
+        self.statusDir = None
+
         if "assetslocation" in mngr.config:
             self.statusDir = mngr.config["assetslocation"]
 
@@ -119,32 +121,46 @@ class ModuleScene(manager.Module):
         self.setProjectAsCurrDirectory()
 
     def update_check_list(self):
-        if checkList.check_list():
-            cmds.text(self.statusText, edit=True, backgroundColor=[0, 1, 0])
+        check_output = checkList.check_list()
+        output_errors = "\n".join(check_output[1])
+
+        if check_output[0]:
+            cmds.text(self.statusText, label=output_errors, edit=True, backgroundColor=[0, 1, 0])
         else:
-            cmds.text(self.statusText, edit=True, backgroundColor=[1, 0, 0])
+            cmds.text(self.statusText, label=output_errors, edit=True, backgroundColor=[1, 0, 0])
 
     def reset_check_list(self):
         cmds.text(self.statusText, edit=True, backgroundColor=[1, 1, 0])
 
     def create_ui(self):
+        if get_author_initials() == 'mj':
+            bg_colour = [0.9, 0.3, 0.6]
+        else:
+            bg_colour = [0.4, 0.4, 0.4]
 
         tab = str(cmds.columnLayout())
         cmds.separator(style="none")
         cmds.frameLayout(collapsable=True, label="Common")
         cmds.columnLayout()
-        cmds.button(command=lambda *args: self.new_scene(), label="New Work Scene")
-        cmds.button(command=lambda *args: self.setProjectAsCurrDirectory(), label="Set Project")
-        cmds.button(command=lambda *args: self.importRefCube(), label="Import Reference Cube")
-        cmds.button(command=lambda *args: mel.reset(), label="Create Playblast Turntable")
-        cmds.button(command=lambda *args: mel.deleteUnusedNodes(), label="Delete Unused Nodes")
-        cmds.button(command=lambda *args: exportFBX.export_asset(), label="Export in FBX")
-        cmds.button(command=lambda *args: self.update_check_list(), label="Update Status")
+        cmds.button(command=lambda *args: self.new_scene(), label="New Work Scene", backgroundColor=bg_colour)
+        cmds.button(command=lambda *args: self.setProjectAsCurrDirectory(), label="Set Project",
+                    backgroundColor=bg_colour)
+        cmds.button(command=lambda *args: self.importRefCube(), label="Import Reference Cube",
+                    backgroundColor=bg_colour)
+        cmds.button(command=lambda *args: mel.reset(), label="Create Playblast Turntable", backgroundColor=bg_colour)
+        cmds.button(command=lambda *args: mel.deleteUnusedNodes(), label="Delete Unused Nodes",
+                    backgroundColor=bg_colour)
+        cmds.button(command=lambda *args: exportFBX.export_asset(), label="Export in FBX", backgroundColor=bg_colour)
         cmds.setParent('..')
         cmds.setParent('..')
-        cmds.columnLayout()
+
+        cmds.frameLayout(collapsable=True, label="Status")
+        cmds.columnLayout(rowSpacing=2)
+        cmds.button(command=lambda *args: self.update_check_list(), label="Update Status", backgroundColor=bg_colour)
+        cmds.text(label="Status errors:", align="left", backgroundColor=[0.2, 0.2, 0.2], height=15)
         self.statusText = cmds.text("Status", backgroundColor=[1, 1, 0])
         self.statusText = cmds.text(self.statusText, query=True, fullPathName=True)
+        cmds.setParent('..')
         cmds.setParent('..')
         cmds.setParent('..')
 
