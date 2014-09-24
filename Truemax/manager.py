@@ -23,6 +23,7 @@ class TruemaxModuleManager():
     scripts = [{"name": "autoTangent", "version": "1.3m", "author": "Michael B. Comet"},
                {"name": "cometRename", "version": "1.2", "author": "Michael B. Comet"},
                {"name": "cometSaveSkinWeights", "version": "1.03", "author": "Michael B. Comet"},
+               {"name": "Check List", "version": "1.0", "author": "Sofia M. + Daniel H."},
                {"name": "DeleteUnusedNodes", "version": "1.0", "author": "Sofia M."},
                {"name": "dkAnim", "version": "0.98", "author": "Daniel Kramer"},
                {"name": "ExportFBX", "version": "1.0", "author": "Sofia M."},
@@ -37,7 +38,7 @@ class TruemaxModuleManager():
                {"name": "TurnTablePlayblast", "version": "1.0", "author": "Sofia M."},
                {"name": "PolyPlanarize", "version": "1.0", "author": "Chris Whitaker"},
                {"name": "PoseLib", "version": "6.2.3", "author": "Lionel Gallat"},
-               {"name": "rbShapesWindow", "version": "1.0", "author": "Rasmus B"},
+               {"name": "rbShapesWindow", "version": "1.0", "author": "Rasmus B."},
                {"name": "ReverseNormals", "version": "1.0", "author": "Sofia M."},
                {"name": "SetLocalPivot", "version": "1.0", "author": "Unknown"},
                {"name": "SetProject", "version": "1.0", "author": "Sofia M."},
@@ -46,10 +47,10 @@ class TruemaxModuleManager():
                {"name": "TweenMachine", "version": "2.04", "author": "Justin Barrett"},
                {"name": "wp_shapeParent", "version": "1.0", "author": "William Petruccelli"},
                {"name": "Vertex Paint SkinWeights", "version": "1.0", "author": "Unknown"},
-               {"name": "ZeroJoint", "version": "1.0", "author": "Rasmus B"},
+               {"name": "ZeroJoint", "version": "1.0", "author": "Rasmus B."},
                {"name": "Zoomerator", "version": "1.0", "author": "Jeremie Talbot"}]
 
-    copyAssets = ["Truemax","userSetup.py", "config.ini"]
+    copyAssets = ["Truemax", "userSetup.py", "config.ini"]
 
     def __init__(self, reloaded):
         self.read_config()
