@@ -1,7 +1,14 @@
+from Truemax.moduleScene import get_author_initials
+
 __author__ = 'sofiaelm'
 import manager
 import maya.cmds as cmds
 from pymel.all import mel
+
+if get_author_initials()=='mj':
+    bg_colour=[0.9, 0.3, 0.5]
+else:
+    bg_colour=[0.4,0.4,0.4]
 
 class ModuleRig(manager.Module):
 
@@ -10,21 +17,21 @@ class ModuleRig(manager.Module):
         cmds.separator(style="none")
         cmds.frameLayout(collapsable=True, label="Common")
         cmds.columnLayout()
-        cmds.button(command=lambda *args: mel.rbSetLocalPivot(), label="Set Geo Pivot To Sel")
-        cmds.button(command=lambda *args: mel.joint_at_pivot(), label="Joint at Pivot")
-        cmds.button(command=lambda *args: mel.JointTool(), label="Joint Tool")
-        cmds.button(command=lambda *args: mel.rbZeroTransformer("_zero"), label="Zero Out Joint")
-        cmds.button(command=lambda *args: mel.IKHandleTool(), label="IK Handle Tool")
-        cmds.button(command=lambda *args: mel.scMoveJntsModeOnOff(1), label="Move Joints On")
-        cmds.button(command=lambda *args: mel.scMoveJntsModeOnOff(0), label="Move Joints Off")
-        cmds.button(command=lambda *args: mel.rb_ShapesWindow(), label="Controller Shapes")
-        cmds.button(command=lambda *args: mel.wp_shapeParent(), label="Parent Shape")
-        cmds.button(command=lambda *args: mel.ArtPaintSkinWeightsTool(), label="Maya Paint Skin Weights")
-        cmds.button(command=lambda *args: mel.paintSkinWeights(), label="Vertex Paint Skin Weights")
-        cmds.button(command=lambda *args: mel.cometSaveWeights(), label="-Comet- Save Skin Weights")
-        cmds.button(command=lambda *args: mel.objectColorPalette(), label="Wireframe Colour")
-        cmds.button(command=lambda *args: mel.lockNonKeyable_all(), label="Lock and make Non-keyable (Selected)")
-        cmds.button(command=lambda *args: mel.NodeEditorWindow(), label="Node Editor")
+        cmds.button(command=lambda *args: mel.rbSetLocalPivot(), label="Set Geo Pivot To Sel", backgroundColor=bg_colour)
+        cmds.button(command=lambda *args: mel.joint_at_pivot(), label="Joint at Pivot", backgroundColor=bg_colour)
+        cmds.button(command=lambda *args: mel.JointTool(), label="Joint Tool", backgroundColor=bg_colour)
+        cmds.button(command=lambda *args: mel.rbZeroTransformer("_zero"), label="Zero Out Joint", backgroundColor=bg_colour)
+        cmds.button(command=lambda *args: mel.IKHandleTool(), label="IK Handle Tool", backgroundColor=bg_colour)
+        cmds.button(command=lambda *args: mel.scMoveJntsModeOnOff(1), label="Move Joints On", backgroundColor=bg_colour)
+        cmds.button(command=lambda *args: mel.scMoveJntsModeOnOff(0), label="Move Joints Off", backgroundColor=bg_colour)
+        cmds.button(command=lambda *args: mel.rb_ShapesWindow(), label="Controller Shapes", backgroundColor=bg_colour)
+        cmds.button(command=lambda *args: mel.wp_shapeParent(), label="Parent Shape", backgroundColor=bg_colour)
+        cmds.button(command=lambda *args: mel.ArtPaintSkinWeightsTool(), label="Maya Paint Skin Weights", backgroundColor=bg_colour)
+        cmds.button(command=lambda *args: mel.paintSkinWeights(), label="Vertex Paint Skin Weights", backgroundColor=bg_colour)
+        cmds.button(command=lambda *args: mel.cometSaveWeights(), label="-Comet- Save Skin Weights", backgroundColor=bg_colour)
+        cmds.button(command=lambda *args: mel.objectColorPalette(), label="Wireframe Colour", backgroundColor=bg_colour)
+        cmds.button(command=lambda *args: mel.lockNonKeyable_all(), label="Lock and make Non-keyable (Selected)", backgroundColor=bg_colour)
+        cmds.button(command=lambda *args: mel.NodeEditorWindow(), label="Node Editor", backgroundColor=bg_colour)
         cmds.setParent('..')
         cmds.setParent('..')
         cmds.setParent('..')

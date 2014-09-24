@@ -1,12 +1,20 @@
+from Truemax.moduleScene import get_author_initials
+
 __author__ = 'sofiaelm'
 import manager
 import maya.cmds as cmds
 from pymel.all import mel
 import external.poseLibModule as pose
 
+if get_author_initials()=='mj':
+    bg_colour=[0.9, 0.3, 0.5]
+else:
+    bg_colour=[0.4,0.4,0.4]
+
 class ModuleAnim(manager.Module):
 
     def hierarchy_selection(self):
+
         cmds.select(hi=True)
 
         sel = cmds.ls(sl=True)
@@ -31,15 +39,15 @@ class ModuleAnim(manager.Module):
         cmds.separator(style="none")
         cmds.frameLayout(collapsable=True, label="Common")
         cmds.columnLayout()
-        cmds.button(command=lambda *args: mel.autoTangent(), label="autoTangent")
-        cmds.button(command=lambda *args: self.hierarchy_selection(), label="HierarchySelection")
-        cmds.button(command=lambda *args: mel.tweenMachine(), label="TweenMachine")
-        cmds.button(command=lambda *args: mel.zoomerator(), label="Zoomerator")
+        cmds.button(command=lambda *args: mel.autoTangent(), label="autoTangent", backgroundColor=bg_colour)
+        cmds.button(command=lambda *args: self.hierarchy_selection(), label="HierarchySelection", backgroundColor=bg_colour)
+        cmds.button(command=lambda *args: mel.tweenMachine(), label="TweenMachine", backgroundColor=bg_colour)
+        cmds.button(command=lambda *args: mel.zoomerator(), label="Zoomerator", backgroundColor=bg_colour)
         cmds.setParent('..')
         cmds.setParent('..')
         cmds.frameLayout(collapsable=True, label="Import/Export")
         cmds.columnLayout()
-        cmds.button(command=lambda *args: mel.dkAnim(), label="dkAnim")
+        cmds.button(command=lambda *args: mel.dkAnim(), label="dkAnim", backgroundColor=bg_colour)
         cmds.setParent('..')
         cmds.setParent('..')
         cmds.setParent('..')
