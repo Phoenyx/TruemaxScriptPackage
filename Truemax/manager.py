@@ -212,12 +212,6 @@ class TruemaxModuleManager():
             cmds.text(label=author)
             cmds.setParent('..')
 
-
-        # Create rows for modules
-        for m in self.modules:
-            for s in m.scripts:
-                createRow(s["name"], s["version"], s["author"])
-
         # Create rows for manager scripts
         for s in self.scripts:
             createRow(s["name"], s["version"], s["author"])
@@ -320,7 +314,6 @@ class TruemaxModuleManager():
 
 
 class Module():
-    scripts = []
 
     def __init__(self, moduleManager):
         return
