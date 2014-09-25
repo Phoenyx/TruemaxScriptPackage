@@ -1,3 +1,6 @@
+from Truemax.checkNaming import get_top_node
+from Truemax.hfFixShading import hfFixBadShading
+
 __author__ = 'sofiaelm'
 import os
 import Truemax.exportFBX as exportFBX
@@ -6,6 +9,7 @@ import manager
 import maya.cmds as cmds
 from pymel.all import mel
 import pymel.core as pm
+from pymel.all import *
 
 # Reloads script when update is ran
 reload(exportFBX)
@@ -132,6 +136,16 @@ class ModuleScene(manager.Module):
     def reset_check_list(self):
         cmds.text(self.statusText, edit=True, backgroundColor=[1, 1, 0])
 
+    def select_hierachy(self):
+        cmds.select(hi=1)
+
+    def select_top_node(self):
+        cmds.select(get_top_node())
+
+    def pivot_at_origin(self):
+        self.select_top_node()
+        xform(zeroTransformPivots=1)
+
     def create_ui(self):
         if get_author_initials() == 'mj':
             bg_colour = [0.9, 0.3, 0.6]
@@ -160,6 +174,17 @@ class ModuleScene(manager.Module):
         cmds.text(label="Status errors:", align="left", backgroundColor=[0.2, 0.2, 0.2], height=15)
         self.statusText = cmds.text("Status", backgroundColor=[1, 1, 0])
         self.statusText = cmds.text(self.statusText, query=True, fullPathName=True)
+
+        cmds.setParent('..')
+        cmds.setParent('..')
+        cmds.frameLayout(collapsable=True, label="Check List")
+        cmds.columnLayout(rowSpacing=2)
+        cmds.button(command=lambda *args: hfFixBadShading(),label="Fix Face Assignments on Scene Objects", backgroundColor=bg_colour)
+        cmds.button(command=lambda *args: self.select_top_node(),  label="Select Top Node", backgroundColor=bg_colour)
+        cmds.button(command=lambda *args: self.select_hierachy(),  label="Select Hierachy", backgroundColor=bg_colour)
+        cmds.button(command=lambda *args: mel.FreezeTransformations(), label="Freeze Transformations", backgroundColor=bg_colour)
+        cmds.button(command=lambda *args: mel.DeleteHistory(), label="Delete History", backgroundColor=bg_colour)
+        cmds.button(command=lambda *args: self.pivot_at_origin(), label="Pivot at Origin", backgroundColor=bg_colour)
         cmds.setParent('..')
         cmds.setParent('..')
         cmds.setParent('..')
