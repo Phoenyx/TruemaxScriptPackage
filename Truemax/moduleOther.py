@@ -20,7 +20,6 @@ class ModuleOther(manager.Module):
         cmds.separator(style="none")
         cmds.frameLayout(collapsable=True,label="Helpers")
         cmds.columnLayout()
-        cmds.button(command=lambda *args: hfFixBadShading(),label="Fix Face Assignments on Scene Objects", backgroundColor=bg_colour)
         cmds.button(command=lambda *args: mel.jh_findDuplicateNames(),label="Find Duplicate Names", backgroundColor=bg_colour)
         cmds.button(command=lambda *args: mel.cometRename(),label="Rename Multiple Objects", backgroundColor=bg_colour)
         cmds.button(command=lambda *args: mel.fixRenderLayerOutAdjustmentErrors(),label="Fix Render Layer Errors", backgroundColor=bg_colour)
