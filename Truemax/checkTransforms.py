@@ -3,6 +3,7 @@ from Truemax.checkNaming import get_top_node
 
 
 def check_transforms():
+
     top_node = get_top_node()
 
     # Our top node is not correct and we can't check the transforms
