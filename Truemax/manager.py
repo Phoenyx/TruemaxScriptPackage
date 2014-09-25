@@ -43,7 +43,7 @@ class TruemaxModuleManager():
                {"name": "SetLocalPivot", "version": "1.0", "author": "Unknown"},
                {"name": "SetProject", "version": "1.0", "author": "Sofia M."},
                {"name": "thmbnailUpdTgl", "version": "1.0", "author": "Peter L. Thomasen"},
-               {"name": "turnTablePlayblast", "version": "1.0", "author": "Sofia M."},
+               {"name": "turnTablePlayblast", "version": "1.0", "author": "Sofia M. + Filip S."},
                {"name": "TweenMachine", "version": "2.04", "author": "Justin Barrett"},
                {"name": "wp_shapeParent", "version": "1.0", "author": "William Petruccelli"},
                {"name": "Vertex Paint SkinWeights", "version": "1.0", "author": "Unknown"},
