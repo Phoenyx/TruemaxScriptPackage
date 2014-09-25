@@ -6,12 +6,12 @@ SCENE_FILE_TOP_NODE_REGEX = r'([a-z]{2}[A-Z]{1}[a-zA-Z]+[A-Z]{1})(_)'
 
 
 def get_top_node(show_warnings=False):
-    scene_file_raw = str(cmds.file(q=1, sceneName=1, shortName=1))
-
     def warning(str):
         if show_warnings:
             cmds.warning(str)
         return None
+
+    scene_file_raw = str(cmds.file(q=1, sceneName=1, shortName=1))
 
     if not re.match(SCENE_FILE_NAME_REGEX, scene_file_raw):
         return warning(">> Your scene file is named incorrectly <<")
@@ -21,11 +21,6 @@ def get_top_node(show_warnings=False):
         return warning(">> Something went wrong... <<")
 
     groups = matches.groups()
-
-    select(allDagObjects=1)
-    all_top_nodes = cmds.ls(sl=1)
-    if len(all_top_nodes) > 1:
-        return warning(">> You have more than one top node! <<")
 
     if len(groups) != 2:
         return warning(">> Something went wrong... <<")
