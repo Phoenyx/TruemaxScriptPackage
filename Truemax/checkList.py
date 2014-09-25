@@ -15,7 +15,7 @@ def check_list():
         {"status": checkNaming.name_compare(), "error": "Objects have incorrect naming"},
         {"status": checkTransforms.check_transforms(), "error": "Objects have non zero transforms!"},
         {"status": hfCheckShading() is False, "error": "Face assignment detected!"},
-        {"status": detectHistory.detect_history(), "error": "Objects have construction history"},
+        {"status": detectHistory.detect_history(), "error": "Objects have construction history/face assignment"},
     ]
 
     errors = []
