@@ -14,9 +14,7 @@ def detect_history():
     if hfCheckShading() is False:
         unused_stuff = cmds.ls('*hyperLayout*', '*hyperView*', '*nodeEditorPanel*', '*nodeView*', '*groupId*')
 
-        if unused_stuff == []:
-            print "HAI"
-        else:
+        if unused_stuff != []:
             cmds.delete(unused_stuff)
 
 
