@@ -19,6 +19,7 @@ SCENE_FOLDER = "scenes"
 TURNTABLE_FOLDER = "turnTable"
 EXPORT_FOLDER = "export"
 SOURCEIMAGES_FOLDER = "sourceimages"
+RIG_FOLDER = "rig"
 
 
 # Gets first and last letter of username
@@ -95,6 +96,13 @@ class ModuleScene(manager.Module):
             if not os.path.exists(sourceimagesFolder):
                 print "Creating {0}".format(sourceimagesFolder)
                 os.makedirs(sourceimagesFolder)
+
+
+            # makes rig folder
+            rigFolder = os.path.join(projectFolder, RIG_FOLDER)
+            if not os.path.exists(rigFolder):
+                print "Creating {0}".format(rigFolder)
+                os.makedirs(rigFolder)
 
             fileName = assetName + "_v001_" + get_author_initials() + ".ma"
             fileSavePath = os.path.join(scenesFolder, fileName)
@@ -181,7 +189,7 @@ class ModuleScene(manager.Module):
         cmds.columnLayout(rowSpacing=2)
         cmds.button(command=lambda *args: hfFixBadShading(),label="Fix Face Assignments on Scene Objects", backgroundColor=bg_colour)
         cmds.button(command=lambda *args: self.select_top_node(),  label="Select Top Node", backgroundColor=bg_colour)
-        cmds.button(command=lambda *args: self.select_hierachy(),  label="Select Hierachy", backgroundColor=bg_colour)
+        cmds.button(command=lambda *args: self.select_hierachy(),  label="Select Hierarchy", backgroundColor=bg_colour)
         cmds.button(command=lambda *args: mel.FreezeTransformations(), label="Freeze Transformations", backgroundColor=bg_colour)
         cmds.button(command=lambda *args: mel.DeleteHistory(), label="Delete History", backgroundColor=bg_colour)
         cmds.button(command=lambda *args: self.pivot_at_origin(), label="Pivot at Origin", backgroundColor=bg_colour)
