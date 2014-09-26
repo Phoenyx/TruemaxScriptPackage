@@ -10,8 +10,6 @@ reload(checkNaming)
 reload(checkTransforms)
 reload(detectHistory)
 
-cmds.file(save=True, force=True)
-
 def top_node_count():
     cmds.select(allDagObjects=1)
     all_top_nodes = cmds.ls(sl=1)
@@ -21,9 +19,6 @@ def top_node_count():
         return False
 
 def check_list():
-    
-    # Saves the scene in case it crashes when running the check.
-    cmds.file(save=True, force=True)
 
     checklist = [
         {"status": top_node_count(), "error": "More than one top node!"},
