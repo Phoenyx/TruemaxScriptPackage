@@ -1,5 +1,8 @@
 from Truemax.checkNaming import get_top_node
 from Truemax.hfFixShading import hfFixBadShading
+import Truemax.makeReference as makeReference
+
+reload(makeReference)
 
 __author__ = 'sofiaelm'
 import os
@@ -19,8 +22,6 @@ SCENE_FOLDER = "scenes"
 TURNTABLE_FOLDER = "turnTable"
 EXPORT_FOLDER = "export"
 SOURCEIMAGES_FOLDER = "sourceimages"
-RIG_FOLDER = "rig"
-
 
 # Gets first and last letter of username
 def get_author_initials():
@@ -97,13 +98,6 @@ class ModuleScene(manager.Module):
                 print "Creating {0}".format(sourceimagesFolder)
                 os.makedirs(sourceimagesFolder)
 
-
-            # makes rig folder
-            rigFolder = os.path.join(projectFolder, RIG_FOLDER)
-            if not os.path.exists(rigFolder):
-                print "Creating {0}".format(rigFolder)
-                os.makedirs(rigFolder)
-
             fileName = assetName + "_v001_" + get_author_initials() + ".ma"
             fileSavePath = os.path.join(scenesFolder, fileName)
             print fileSavePath
@@ -156,7 +150,7 @@ class ModuleScene(manager.Module):
 
     def create_ui(self):
         if get_author_initials() == 'mj':
-            bg_colour = [0.9, 0.3, 0.6]
+            bg_colour = [0.9, 0.4, 1]
         else:
             bg_colour = [0.4, 0.4, 0.4]
 
@@ -169,10 +163,11 @@ class ModuleScene(manager.Module):
                     backgroundColor=bg_colour)
         cmds.button(command=lambda *args: self.importRefCube(), label="Import Reference Cube",
                     backgroundColor=bg_colour)
-        cmds.button(command=lambda *args: mel.reset(), label="Create Playblast Turntable", backgroundColor=bg_colour)
-        cmds.button(command=lambda *args: mel.deleteUnusedNodes(), label="Delete Unused Nodes",
+        cmds.button(command=lambda *args: mel.make_turntable(), label="Create Playblast Turntable",
                     backgroundColor=bg_colour)
-        cmds.button(command=lambda *args: exportFBX.export_asset(), label="Export in FBX", backgroundColor=bg_colour)
+        cmds.button(command=lambda *args: exportFBX.export_asset(), label="Export as FBX", backgroundColor=bg_colour)
+        cmds.button(command=lambda *args: makeReference.make_reference(), label="Make Reference File",
+                    backgroundColor=bg_colour)
         cmds.setParent('..')
         cmds.setParent('..')
 
@@ -187,10 +182,14 @@ class ModuleScene(manager.Module):
         cmds.setParent('..')
         cmds.frameLayout(collapsable=True, label="Check List")
         cmds.columnLayout(rowSpacing=2)
-        cmds.button(command=lambda *args: hfFixBadShading(),label="Fix Face Assignments on Scene Objects", backgroundColor=bg_colour)
-        cmds.button(command=lambda *args: self.select_top_node(),  label="Select Top Node", backgroundColor=bg_colour)
-        cmds.button(command=lambda *args: self.select_hierachy(),  label="Select Hierarchy", backgroundColor=bg_colour)
-        cmds.button(command=lambda *args: mel.FreezeTransformations(), label="Freeze Transformations", backgroundColor=bg_colour)
+        cmds.button(command=lambda *args: hfFixBadShading(), label="Fix Face Assignments on Scene Objects",
+                    backgroundColor=bg_colour)
+        cmds.button(command=lambda *args: mel.deleteUnusedNodes(), label="Delete Unused Nodes",
+                    backgroundColor=bg_colour)
+        cmds.button(command=lambda *args: self.select_top_node(), label="Select Top Node", backgroundColor=bg_colour)
+        cmds.button(command=lambda *args: self.select_hierachy(), label="Select Hierarchy", backgroundColor=bg_colour)
+        cmds.button(command=lambda *args: mel.FreezeTransformations(), label="Freeze Transformations",
+                    backgroundColor=bg_colour)
         cmds.button(command=lambda *args: mel.DeleteHistory(), label="Delete History", backgroundColor=bg_colour)
         cmds.button(command=lambda *args: self.pivot_at_origin(), label="Pivot at Origin", backgroundColor=bg_colour)
         cmds.setParent('..')
