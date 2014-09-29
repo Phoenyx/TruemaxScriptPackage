@@ -39,7 +39,7 @@ global proc makeTurnTable()
 	
 
 	string $sceneFileRaw = `file -q -sceneName -shortName`;
-	string $sceneFile = `match "[a*-z]+[A-Z]" $sceneFileRaw`;
+	string $sceneFile = `match "[a-z]+[a-zA-Z]+" $sceneFileRaw`;
 	// Creates camera
     camera -name "turnTableCam";
     rename turnTableCam1 turnTableCam;
@@ -203,3 +203,16 @@ global proc makeTurnTable()
 	print $toPrint;
 }	
 
+
+global proc make_turntable()
+{
+string $continueDialog = (`confirmDialog -title "Make Turntable" -message "Make turntable?"
+    -button "Yes" -button "No" -defaultButton "Yes"
+    -cancelButton "No" -dismissString "No"`);
+
+
+if ($continueDialog == "Yes")
+{
+    reset();
+}
+}
