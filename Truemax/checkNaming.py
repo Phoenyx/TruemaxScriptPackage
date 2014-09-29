@@ -55,4 +55,18 @@ def name_compare():
             cmds.warning(">> %s is named incorrectly <<" % c)
             named_correctly = False
 
+
+    # List all materials in scene
+    all_materials = cmds.ls(materials=True)
+
+    # See if any are named incorrectly. Allow initialshadinggroup (lambert1) and particle shader (particleCloud1).
+    # if a shader ends with "SHD" we assume its named correctly.
+
+    for mat in all_materials:
+        if not (mat.endswith(top_node+"SHD") or mat.endswith("lambert1") or mat.endswith("particleCloud1")):
+            cmds.warning(">> %s is named incorrectly <<" % mat)
+            named_correctly = False
+
     return named_correctly
+
+
