@@ -6,13 +6,13 @@ import maya.cmds as cmds
 from pymel.all import mel
 import external.poseLibModule as pose
 
-if get_author_initials()=='mj':
-    bg_colour=[0.9, 0.3, 0.5]
+if get_author_initials() == 'mj':
+    bg_colour = [0.9, 0.4, 1]
 else:
-    bg_colour=[0.4,0.4,0.4]
+    bg_colour = [0.4, 0.4, 0.4]
+
 
 class ModuleAnim(manager.Module):
-
     def hierarchy_selection(self):
 
         cmds.select(hi=True)
@@ -40,7 +40,8 @@ class ModuleAnim(manager.Module):
         cmds.frameLayout(collapsable=True, label="Common")
         cmds.columnLayout()
         cmds.button(command=lambda *args: mel.autoTangent(), label="autoTangent", backgroundColor=bg_colour)
-        cmds.button(command=lambda *args: self.hierarchy_selection(), label="HierarchySelection", backgroundColor=bg_colour)
+        cmds.button(command=lambda *args: self.hierarchy_selection(), label="HierarchySelection",
+                    backgroundColor=bg_colour)
         cmds.button(command=lambda *args: mel.tweenMachine(), label="TweenMachine", backgroundColor=bg_colour)
         cmds.button(command=lambda *args: mel.zoomerator(), label="Zoomerator", backgroundColor=bg_colour)
         cmds.setParent('..')
