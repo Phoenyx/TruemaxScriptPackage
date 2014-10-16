@@ -12,7 +12,7 @@ import shutil
 
 class TruemaxModuleManager():
     title = "TruemaxPackage"
-    version = "0.0.3"
+    version = "0.0.4"
     author = "Peter T, Sofia M, Daniel H"
     prefixName = "module"
     melScriptsDir = "melScripts"
@@ -20,7 +20,8 @@ class TruemaxModuleManager():
     modules = []
     config = {}
 
-    scripts = [{"name": "autoTangent", "version": "1.3m", "author": "Michael B. Comet"},
+    scripts = [{"name": "AB Rig", "version": "1.0", "author": "Alexander Bille"},
+               {"name": "autoTangent", "version": "1.3m", "author": "Michael B. Comet"},
                {"name": "cometRename", "version": "1.2", "author": "Michael B. Comet"},
                {"name": "cometSaveSkinWeights", "version": "1.03", "author": "Michael B. Comet"},
                {"name": "Check List", "version": "1.0", "author": "Sofia M. + Daniel H."},
@@ -29,10 +30,10 @@ class TruemaxModuleManager():
                {"name": "ExportFBX", "version": "1.0", "author": "Sofia M."},
                {"name": "jh_findDuplicateNames", "version": "1.0", "author": u"Jørn-Harald Paulsen"},
                {"name": "hfKillComponentShading", "version": "2.05", "author": "Henry Foster"},
-               {"name": "hierarchySelection", "version": "1.0", "author": "Unknown"},
                {"name": "Image Plane-O-Rizer", "version": "1.0", "author": "Chris Whitaker"},
                {"name": "incrementalSave", "version": "1.0", "author": "Peter L. Thomasen"},
                {"name": "Joint-At-Pivot", "version": "1.0", "author": "Unknown"},
+               {"name": "Make Ref", "version": "1.0", "author": "Sofia M."},
                {"name": "Mel-O-Matic", "version": "1.6", "author": "Andrew Osiow"},
                {"name": "NewScene", "version": "1.0", "author": "Sofia M."},
                {"name": "TurnTablePlayblast", "version": "1.0", "author": "Sofia M."},
@@ -40,7 +41,6 @@ class TruemaxModuleManager():
                {"name": "PoseLib", "version": "6.2.3", "author": "Lionel Gallat"},
                {"name": "rbShapesWindow", "version": "1.0", "author": "Rasmus B."},
                {"name": "ReverseNormals", "version": "1.0", "author": "Sofia M."},
-               {"name": "SetLocalPivot", "version": "1.0", "author": "Unknown"},
                {"name": "SetProject", "version": "1.0", "author": "Sofia M."},
                {"name": "thmbnailUpdTgl", "version": "1.0", "author": "Peter L. Thomasen"},
                {"name": "turnTablePlayblast", "version": "1.0", "author": "Sofia M. + Filip S."},
