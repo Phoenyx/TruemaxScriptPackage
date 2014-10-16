@@ -17,6 +17,7 @@ class ModuleRig(manager.Module):
         cmds.separator(style="none")
         cmds.frameLayout(collapsable=True, label="Common")
         cmds.columnLayout()
+        cmds.button(command=lambda *args: mel.create_UI(), label="AB Auto Rig", backgroundColor=bg_colour)
         cmds.button(command=lambda *args: mel.rbSetLocalPivot(), label="Set Geo Pivot To Sel",
                     backgroundColor=bg_colour)
         cmds.button(command=lambda *args: mel.joint_at_pivot(), label="Joint at Pivot", backgroundColor=bg_colour)
