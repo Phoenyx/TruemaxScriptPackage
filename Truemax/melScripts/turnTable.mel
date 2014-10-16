@@ -1,12 +1,10 @@
-// Author: Sofia Elena Jakobsen Manioudakis
-// Version: v.1.0
-// Turntable script for creating turntables of game object via playblast
-// Creates a camera and an animated dummy locater. Parents the top group in maya under the dummy locater and creates a playblast.
-// Unparents and deletes camera and locater at the end.
-
-global proc reset()
+global proc Reset()
 {
-    setNamedPanelLayout "Single Perspective View";
+	string $continueDialogue = (`confirmDialog -title "Make Turntable" -message "Choose Type"
+    -button "Perspective" -button "Character" -button "Cancel" -defaultButton "Perspective" 
+    -cancelButton "Cancel" -dismissString "Cancel"`);
+
+	setNamedPanelLayout "Single Perspective View";
     
     // Create folder according to sceneName if it does not exist
     $currentFilePath = dirname(`file -q -sceneName`) ;
@@ -16,21 +14,29 @@ global proc reset()
 	
 	
 	string $sceneFileRaw = `file -q -sceneName -shortName`;
-	string $sceneFile = `match "[a*-z]+[A-Z]" $sceneFileRaw`;
+	string $sceneFile = `match "[a-zA-Z0-9]+[A-Z]" $sceneFileRaw`;
+	global string $continueDialogue;
 	
 	
-	if( `objExists turnTableCam` ) {
+	if( `objExists turnTableCam` ) 
+	{
 		parent -w ($sceneFile);
 		select -r ("dummyLocator*") ;select -add ("turnTableCam*") ;
 		doDelete;
-		makeTurnTable();
 		}
 			
-    else { makeTurnTable();
+    else if ($continueDialogue == "Perspective")
+    { 
+        SetPerspectiveCamera();
 	}
+    else if ($continueDialogue == "Character")
+    { 
+        SetCharacterCamera(); 
+    }
+	
 }
 
-global proc makeTurnTable() 
+global proc SetPerspectiveCamera() 
 {	
     $currentFilePath = dirname(`file -q -sceneName`) ;
     $turnTableFolder = (substring($currentFilePath,1,(size($currentFilePath) - 7)));
@@ -39,7 +45,7 @@ global proc makeTurnTable()
 	
 
 	string $sceneFileRaw = `file -q -sceneName -shortName`;
-	string $sceneFile = `match "[a-z]+[a-zA-Z]+" $sceneFileRaw`;
+	string $sceneFile = `match "[a-zA-Z0-9]+[A-Z]" $sceneFileRaw`;
 	// Creates camera
     camera -name "turnTableCam";
     rename turnTableCam1 turnTableCam;
@@ -57,34 +63,25 @@ global proc makeTurnTable()
     //if largest in x axis
     if (($bbx[0] >= $bbx[1]) && ($bbx[0] >= $bbx[2]))
         {
-        //ugly math solution
-        if ($bbx[0] < 2)
-            $camDist = $maxVal[3] * 5;
-        else
-             $camDist = $maxVal[3] * 3;
-        setAttr "turnTableCam.translateZ" $camDist;
-        setAttr "turnTableCam.translateY" ($bbx[1]/2);     
+        setAttr "turnTableCam.translateZ" ($bbx[0]+$bbx[1]+$bbx[2]);      //adding the size of a bounding box
+        setAttr "turnTableCam.translateY" ($bbx[1]*6); 
+        setAttr "turnTableCam.rx" ((atand(($bbx[1]*6)/($bbx[0]+$bbx[1]+$bbx[2]))*-1));  //inverse tanget function in degrees
         }
     //if largest in y axis    
     else if (($bbx[1] > $bbx[0]) && ($bbx[1] > $bbx[2]))
         {
-        $camDist = $maxVal[4] * 3;
-        setAttr "turnTableCam.translateZ" $camDist;
-        setAttr "turnTableCam.translateY" ($bbx[1]/2);     
+        $camDist = $maxVal[4] * 4;
+        setAttr "turnTableCam.translateZ" $camDist;  
+        setAttr "turnTableCam.translateY" ($bbx[1]*3); 
+        setAttr "turnTableCam.rx" ((atand(($bbx[1]*3)/($camDist))*-1)); 
         } 
     // if largest in z axis     
     else
         {
-         //more ugly math
-        if ($bbx[2] < 2)
-            $camDist = $maxVal[5] * 5;
-        else
-             $camDist = $maxVal[5] * 3;    
-        setAttr "turnTableCam.translateZ" $camDist;    
-        setAttr "turnTableCam.translateY" ($bbx[1]/2);     
+        setAttr "turnTableCam.translateZ" ($bbx[0]+$bbx[1]+$bbx[2]); 
+        setAttr "turnTableCam.translateY" ($bbx[1]*6); 
+        setAttr "turnTableCam.rx" ((atand(($bbx[1]*6)/($bbx[0]+$bbx[1]+$bbx[2]))*-1));    
         }
-    select ("turnTableCam");
-    setAttr "turnTableCam.rotateX" -1.066;
     pickWalk -d down;
     string $camShape[] = `ls -sl`;
 		
@@ -115,17 +112,6 @@ global proc makeTurnTable()
 	int $cameraDisplayResolution = `camera -q -displayResolution $camera`;
 	int $cameraDisplayGateMask = `camera -q -displayGateMask $camera`;
 	float $cameraoverscan = `camera -q -overscan $camera`;
-
-	//Setup the viewport
-	   //$currentPanel = `getPanel -withFocus`;
-	   //modelEditor -e -allObjects 0 $currentPanel;
-	    //modelEditor -e -nurbsCurves false $currentPanel;
-	    //modelEditor -e -nurbsSurfaces true $currentPanel;
-	    //modelEditor -e -polymeshes true $currentPanel;
-	    //modelEditor -e -subdivSurfaces true $currentPanel;
-	    //modelEditor -e -planes true $currentPanel;
-	    //modelEditor -e -motionTrails false $currentPanel;
-	    //setRendererInModelPanel base_OpenGL_Renderer $currentPanel;
 		
 	// Prepare viewport and show textures
 	DisplayShadedAndTextured;
@@ -201,18 +187,159 @@ global proc makeTurnTable()
 	doDelete;
 	string $toPrint = "Turntable created! Find it at: "+$turnTableFolder+$sceneFile + ".mov\n";
 	print $toPrint;
-}	
-
-
-global proc make_turntable()
-{
-string $continueDialog = (`confirmDialog -title "Make Turntable" -message "Make turntable?"
-    -button "Yes" -button "No" -defaultButton "Yes"
-    -cancelButton "No" -dismissString "No"`);
-
-
-if ($continueDialog == "Yes")
-{
-    reset();
 }
+
+global proc SetCharacterCamera() 
+{	
+    $currentFilePath = dirname(`file -q -sceneName`) ;
+    $turnTableFolder = (substring($currentFilePath,1,(size($currentFilePath) - 7)));
+    $turnTableFolder = ($turnTableFolder + "/turnTable/");
+    sysFile -makeDir $turnTableFolder ;
+	
+
+	string $sceneFileRaw = `file -q -sceneName -shortName`;
+	string $sceneFile = `match "[a-zA-Z0-9]+[A-Z]" $sceneFileRaw`;
+	// Creates camera
+    camera -name "turnTableCam";
+    rename turnTableCam1 turnTableCam;
+
+    // set camera position
+    float $bbx[] = `xform -q -ws -bbi $sceneFile`;
+    float $maxVal[] = $bbx;
+    for ($i=0; $i < 3; ++$i)
+        {
+        $bbx[$i] = $bbx[$i] * (-1);
+        $bbx[$i] = $bbx[$i] + $bbx[$i+3];    
+        } 
+    float $camDist = 0;
+    setAttr "turnTableCam.rotateX" -1.066;
+    
+    //if largest in x axis
+    if (($bbx[0] >= $bbx[1]) && ($bbx[0] >= $bbx[2]))
+        {
+        setAttr "turnTableCam.translateZ" ($bbx[0]+$bbx[1]+$bbx[2]); 
+        setAttr "turnTableCam.translateY" ($bbx[1]/2);     
+        }
+    //if largest in y axis    
+    else if (($bbx[1] > $bbx[0]) && ($bbx[1] > $bbx[2]))
+        {
+        $camDist = $maxVal[4] * 3;
+        setAttr "turnTableCam.translateZ" $camDist;
+        setAttr "turnTableCam.translateY" ($bbx[1]/2);     
+        } 
+    // if largest in z axis     
+    else
+        {
+        setAttr "turnTableCam.translateZ" ($bbx[0]+$bbx[1]+$bbx[2]);    
+        setAttr "turnTableCam.translateY" ($bbx[1]/2);     
+        }
+    pickWalk -d down;
+    string $camShape[] = `ls -sl`;
+		
+	// Set Attr for camShape
+	for ($node in $camShape)
+	{
+		setAttr ($camShape[0] + ".displayFilmGate") 0;
+		setAttr ($camShape[0] + ".displayResolution") 1;
+		setAttr ($camShape[0] + ".displayGateMask") 1;
+		setAttr ($camShape[0] + ".displayGateMaskOpacity") 1;
+		setAttr ($camShape[0] + ".displayGateMaskColor") -type double3 0 0 0 ;
+		setAttr ($camShape[0] + ".overscan") 1.3;
+	}
+		
+	// Look through camera
+	select ("turnTableCam");
+	$camera = `getCurrentCamera`;
+	string $panel = "modelPanel4";
+	string $sel[] = `ls -sl`;
+	
+	if(size($sel) == 1)
+	{
+		if( size( `listRelatives -children -type camera $sel[0]`) == 1 )
+			{ eval( "lookThroughModelPanel "+$sel[0]+" "+$panel); }
+	}
+		
+	// Get the current camera's name and settings
+	int $cameraDisplayResolution = `camera -q -displayResolution $camera`;
+	int $cameraDisplayGateMask = `camera -q -displayGateMask $camera`;
+	float $cameraoverscan = `camera -q -overscan $camera`;
+		
+	// Prepare viewport and show textures
+	DisplayShadedAndTextured;
+		
+	// Disable the resolution and film gates
+	//camera -e -displayResolution 0 -displayGateMask 0 -overscan 1 $camera;
+		
+	// Get camShape
+	select ("turnTableCam");
+	pickWalk -d down;
+	string $camShape[] = `ls -sl`;
+		
+	// Set Attr for camShape
+	for ($node in $camShape)
+	{
+		setAttr ($camShape[0] + ".displayFilmGate") 0;
+		setAttr ($camShape[0] + ".displayResolution") 0;
+		setAttr ($camShape[0] + ".displayGateMask") 0;
+		setAttr ($camShape[0] + ".displayGateMaskOpacity") 0;
+		setAttr ($camShape[0] + ".displayGateMaskColor") -type double3 0 0 0 ;
+		setAttr ($camShape[0] + ".overscan") 1;
+	}
+		
+	// Offset framecount -1
+	playbackOptions -minTime 1;
+	playbackOptions -maxTime 150;
+	currentTime 1;
+		
+	group -em -n dummyLocator;
+	currentTime 1;
+	setAttr "dummyLocator.rotateY" 0;
+	setKeyframe "dummyLocator.ry";
+	currentTime 150 ;
+	setAttr "dummyLocator.rotateY" 360;
+	setKeyframe "dummyLocator.ry";
+	currentTime 1;
+	selectKey -add -k -t 1 -t 150 dummyLocator_rotateY ;
+	keyTangent -itt linear -ott linear;
+
+	parent $sceneFile dummyLocator;
+	modelEditor -e -locators false modelPanel4;
+
+	// Playblast
+	select -cl;
+	playblast  -format "qt" -filename ($turnTableFolder + $sceneFile + ".mov\n") -forceOverwrite  -sequenceTime 0 -clearCache 1 -viewer 0 -showOrnaments 0 -offScreen  -fp 4 -percent 100 -compression "H.264" -quality 100 -widthHeight 1280 720;
+
+	// Offset framecount back
+	playbackOptions -ast 1;
+	currentTime 1;
+	 
+		
+	// Put back the former camera's attributes
+
+	// Get camShape
+	select ("turnTableCam");
+	pickWalk -d down;
+	string $camShape[] = `ls -sl`;
+		
+	// Set Attr for camShape
+	for ($node in $camShape)
+	{
+		setAttr ($camShape[0] + ".displayFilmGate") 0;
+		setAttr ($camShape[0] + ".displayResolution") 1;
+		setAttr ($camShape[0] + ".displayGateMask") 1;
+		setAttr ($camShape[0] + ".displayGateMaskOpacity") 1;
+		setAttr ($camShape[0] + ".displayGateMaskColor") -type double3 0 0 0 ;
+		setAttr ($camShape[0] + ".overscan") 1.3;
+	}
+
+	select -cl;
+	parent -w ($sceneFile);
+	select -r dummyLocator ;select -add turnTableCam ;
+	doDelete;
+	string $toPrint = "Turntable created! Find it at: "+$turnTableFolder+$sceneFile + ".mov\n";
+	print $toPrint;
 }
+
+
+
+		
