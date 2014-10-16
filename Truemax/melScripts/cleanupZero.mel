@@ -1,0 +1,28 @@
+global proc cleanupZero(){
+if (`objExists "*_zero*"`)
+{
+    select -r "*_zero*";
+setAttr -lock true .tx;
+setAttr -lock true .ty;
+setAttr -lock true .tz;
+setAttr -lock true .rx;
+setAttr -lock true .ry;
+setAttr -lock true .rz;
+setAttr -lock true .sx;
+setAttr -lock true .sy;
+setAttr -lock true .sz;
+setAttr -lock true .v;
+setAttr -lock true .radi;
+setAttr -keyable false -channelBox true .tx;
+setAttr -keyable false -channelBox true .ty;
+setAttr -keyable false -channelBox true .tz;
+setAttr -keyable false -channelBox true .rx;
+setAttr -keyable false -channelBox true .ry;
+setAttr -keyable false -channelBox true .rz;
+setAttr -keyable false -channelBox true .sx;
+setAttr -keyable false -channelBox true .sy;
+setAttr -keyable false -channelBox true .sz;
+setAttr -keyable false -channelBox true .v;
+setAttr -keyable false -channelBox true .radi;
+}
+}

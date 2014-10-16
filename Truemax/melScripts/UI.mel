@@ -1,0 +1,36 @@
+
+global proc create_UI()
+{
+	if (`window -exists myWindow`) deleteUI myWindow;
+	window -title "Bille Auto Rig Alpha V0.01" -rtf true myWindow;
+	frameLayout -w 240 -h 240 rigLayout ;
+	rowColumnLayout -nc 1 -cw 1 200;
+
+	//all UI sits in here/////////////////////////////////////////
+	tabLayout -w 230 -h 210 tabList ;
+	//begin contents of first tab//////////////////////////////////////////
+	string $tab1 = `columnLayout firstTab`;
+	button -label "Proxy Skeleton" -c proxySkeleton ; // make a placeholder button //
+	button -label "Bind Skeleton" -c bindSkeleton ; // make a placeholder button //
+	setParent..;
+
+
+	//begin contents of second tab/////////////////////////////////////////
+	string $tab2 = `columnLayout secondTab`;
+	button -label "Rig Setup" -c rigSetup ; // make a placeholder button //
+
+	textField -w 5 -h 5;
+	setParent..;
+
+
+	//return to masterLayout////////////////////////////////
+	setParent..;
+
+
+	//label tabs and build////////////////////
+	tabLayout -edit 
+	-tabLabel $tab1 "Proxy" 
+	-tabLabel $tab2 "Setup" 
+	tabList;
+	showWindow myWindow;
+}

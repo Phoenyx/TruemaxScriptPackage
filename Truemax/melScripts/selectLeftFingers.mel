@@ -1,0 +1,26 @@
+global proc selectLeftFingers(){
+if (`objExists L_thumb_01_ctrl`)
+{ 
+select -r L_thumb_01_ctrl;
+}
+
+if (`objExists L_index_01_ctrl`)
+{ 
+select -add L_index_01_ctrl;
+}
+
+if (`objExists L_middle_01_ctrl`)
+{ 
+select -add L_middle_01_ctrl;
+}
+
+if (`objExists L_ring_01_ctrl`)
+{ 
+select -add L_ring_01_ctrl;
+}
+
+if (`objExists L_pinky_01_ctrl`)
+{ 
+select -add L_pinky_01_ctrl;
+}
+}

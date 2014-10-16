@@ -1,0 +1,54 @@
+global proc spineSetup(){
+
+select -r root_ctrl root_ctrl_curve;
+    parentShape();
+select -r root_ctrl;
+rbZeroTransformer("_zero");
+
+select -r hip_ctrl hip_ctrl_curve;
+    parentShape();
+
+select -r spine_01_ctrl spine_01_ctrl_curve;
+    parentShape();
+
+select -r torso_ctrl torso_ctrl_curve;
+    parentShape();
+
+setAttr -lock true -keyable false -channelBox false "root_ctrl.sx";
+setAttr -lock true -keyable false -channelBox false "root_ctrl.sy";
+setAttr -lock true -keyable false -channelBox false "root_ctrl.sz";
+setAttr -lock true -keyable false -channelBox false "root_ctrl.v";
+setAttr -lock true -keyable false -channelBox false "root_ctrl.radi";
+
+setAttr -lock true -keyable false -channelBox false "hip_ctrl.tx";
+setAttr -lock true -keyable false -channelBox false "hip_ctrl.ty";
+setAttr -lock true -keyable false -channelBox false "hip_ctrl.tz";
+setAttr -lock true -keyable false -channelBox false "hip_ctrl.sx";
+setAttr -lock true -keyable false -channelBox false "hip_ctrl.sy";
+setAttr -lock true -keyable false -channelBox false "hip_ctrl.sz";
+setAttr -lock true -keyable false -channelBox false "hip_ctrl.v";
+setAttr -lock true -keyable false -channelBox false "hip_ctrl.radi";
+
+setAttr -lock true -keyable false -channelBox false "spine_01_ctrl.tx";
+setAttr -lock true -keyable false -channelBox false "spine_01_ctrl.ty";
+setAttr -lock true -keyable false -channelBox false "spine_01_ctrl.tz";
+setAttr -lock true -keyable false -channelBox false "spine_01_ctrl.sx";
+setAttr -lock true -keyable false -channelBox false "spine_01_ctrl.sy";
+setAttr -lock true -keyable false -channelBox false "spine_01_ctrl.sz";
+setAttr -lock true -keyable false -channelBox false "spine_01_ctrl.v";
+setAttr -lock true -keyable false -channelBox false "spine_01_ctrl.radi";
+
+setAttr -lock true -keyable false -channelBox false "torso_ctrl.tx";
+setAttr -lock true -keyable false -channelBox false "torso_ctrl.ty";
+setAttr -lock true -keyable false -channelBox false "torso_ctrl.tz";
+setAttr -lock true -keyable false -channelBox false "torso_ctrl.sx";
+setAttr -lock true -keyable false -channelBox false "torso_ctrl.sy";
+setAttr -lock true -keyable false -channelBox false "torso_ctrl.sz";
+setAttr -lock true -keyable false -channelBox false "torso_ctrl.v";
+setAttr -lock true -keyable false -channelBox false "torso_ctrl.radi";
+
+select -cl;
+}
+
+    
+    
