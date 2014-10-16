@@ -24,9 +24,7 @@ def check_transforms():
                     obj + '.scaleX') == 1 and getAttr(obj + '.scaleX') == 1 and getAttr(obj + '.scaleX') == 1):
             cmds.warning("%s has a none zero transform" % obj)
             problems = True
-            select(cl=1)
             return False
 
     if problems is False:
-        select(cl=1)
         return True
