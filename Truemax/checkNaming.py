@@ -1,8 +1,8 @@
 from pymel.all import *
 import maya.cmds as cmds
 
-SCENE_FILE_NAME_REGEX = r'[a-z]{2}[A-Z]{1}[a-zA-Z]+[A-Z]{1}_v[0-9]{3}_[a-zA-Z]{2}'
-SCENE_FILE_TOP_NODE_REGEX = r'([a-z]{2}[A-Z]{1}[a-zA-Z]+[A-Z]{1})(_)'
+SCENE_FILE_NAME_REGEX = r'[a-z]{2}[A-Z]{1}[a-zA-Z0-9]+[A-Z]{1}_v[0-9]{3}_[a-zA-Z]{2}'
+SCENE_FILE_TOP_NODE_REGEX = r'([a-z]{2}[A-Z]{1}[a-zA-Z0-9]+[A-Z]{1})(_)'
 
 
 def get_top_node(show_warnings=False):
