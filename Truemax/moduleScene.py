@@ -104,13 +104,6 @@ class ModuleScene(manager.Module):
             cmds.file(rename=fileSavePath)
             cmds.file(save=True)
 
-            self.setProjectAsCurrDirectory()
-            cmds.currentUnit(linear='m')
-
-            if cmds.pluginInfo('fbxmaya', query=True, loaded=True) == False:
-                cmds.loadPlugin('fbxmaya', quiet=True)
-                cmds.pluginInfo('fbxmaya', edit=True, autoload=True)
-
     def set_project(self, location):
         mel.setProject(location)
 
@@ -163,7 +156,7 @@ class ModuleScene(manager.Module):
                     backgroundColor=bg_colour)
         cmds.button(command=lambda *args: self.importRefCube(), label="Import Reference Cube",
                     backgroundColor=bg_colour)
-        cmds.button(command=lambda *args: mel.make_turntable(), label="Create Playblast Turntable",
+        cmds.button(command=lambda *args: mel.Reset(), label="Create Playblast Turntable",
                     backgroundColor=bg_colour)
         cmds.button(command=lambda *args: exportFBX.export_asset(), label="Export as FBX", backgroundColor=bg_colour)
         cmds.button(command=lambda *args: makeReference.make_reference(), label="Make Reference File",
