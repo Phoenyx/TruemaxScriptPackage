@@ -86,7 +86,7 @@ class TruemaxModuleManager():
                         print "{0} is not a module".format(name)
 
                 except Exception as e:
-                    print "Error loading module:"
+                    print "Error loading module {0}:".format(name)
                     print e
 
     def load_mel_scripts(self):
