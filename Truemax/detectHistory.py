@@ -10,7 +10,7 @@ def detect_history():
 
     top_node = get_top_node()
 
-    #Delets groudIds created by hfFixShading script:
+    #Delets groupIds created by hfFixShading script:
     if hfCheckShading() is False:
         unused_stuff = cmds.ls('*hyperLayout*', '*hyperView*', '*nodeEditorPanel*', '*nodeView*', '*groupId*')
 
