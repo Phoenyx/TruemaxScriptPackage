@@ -12,7 +12,7 @@ import shutil
 
 class TruemaxModuleManager():
     title = "TruemaxPackage"
-    version = "0.0.4"
+    version = "0.0.5"
     author = "Peter T, Sofia M, Daniel H"
     prefixName = "module"
     melScriptsDir = "melScripts"
@@ -25,8 +25,11 @@ class TruemaxModuleManager():
                {"name": "cometRename", "version": "1.2", "author": "Michael B. Comet"},
                {"name": "cometSaveSkinWeights", "version": "1.03", "author": "Michael B. Comet"},
                {"name": "Check List", "version": "1.0", "author": "Sofia M. + Daniel H."},
+               {"name": "checkNamespaces", "version": "1.0", "author": "Sofia M."},
+               {"name": "deleteDPLayers", "version": "1.0", "author": "Sofia M."},
                {"name": "DeleteUnusedNodes", "version": "1.0", "author": "Sofia M."},
                {"name": "dkAnim", "version": "0.98", "author": "Daniel Kramer"},
+               {"name": "ExportAnimFBX", "version": "1.0", "author": "Sofia M."},
                {"name": "ExportFBX", "version": "1.0", "author": "Sofia M."},
                {"name": "jh_findDuplicateNames", "version": "1.0", "author": u"Jørn-Harald Paulsen"},
                {"name": "hfKillComponentShading", "version": "2.05", "author": "Henry Foster"},
