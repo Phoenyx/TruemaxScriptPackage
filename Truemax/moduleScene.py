@@ -1,12 +1,11 @@
+__author__ = 'sofiaelm'
+
+import os
 from Truemax.checkNaming import get_top_node
 from Truemax.hfFixShading import hfFixBadShading
 import Truemax.makeReference as makeReference
-
-reload(makeReference)
-
-__author__ = 'sofiaelm'
-import os
 import Truemax.exportFBX as exportFBX
+import Truemax.deleteDPLayers as deleteDPLayers
 from Truemax import checkList
 import manager
 import maya.cmds as cmds
@@ -17,6 +16,8 @@ from pymel.all import *
 # Reloads script when update is ran
 reload(exportFBX)
 reload(checkList)
+reload(deleteDPLayers)
+reload(makeReference)
 
 SCENE_FOLDER = "scenes"
 TURNTABLE_FOLDER = "turnTable"
@@ -139,7 +140,7 @@ class ModuleScene(manager.Module):
 
     def pivot_at_origin(self):
         self.select_top_node()
-        xform(zeroTransformPivots=1)
+        mel.xform(zeroTransformPivots=1)
 
     def create_ui(self):
         if get_author_initials() == 'mj':
@@ -185,6 +186,7 @@ class ModuleScene(manager.Module):
                     backgroundColor=bg_colour)
         cmds.button(command=lambda *args: mel.DeleteHistory(), label="Delete History", backgroundColor=bg_colour)
         cmds.button(command=lambda *args: self.pivot_at_origin(), label="Pivot at Origin", backgroundColor=bg_colour)
+        cmds.button(command=lambda *args: deleteDPLayers.deleteDPLayers(), label="Delete display layers", backgroundColor=bg_colour)
         cmds.setParent('..')
         cmds.setParent('..')
         cmds.setParent('..')
