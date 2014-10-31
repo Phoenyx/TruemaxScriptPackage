@@ -25,7 +25,6 @@ setAttr -lock true -keyable false -channelBox false "neck_ctrl.radi";
 
 select -cl;
 }
-headSetup();
 
     
     
