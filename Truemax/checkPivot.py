@@ -11,7 +11,7 @@ def check_pivot():
 
     top_node=get_top_node()
 
-    if xform(top_node,q=1,pivots=1) == origin:
+    if mel.xform(top_node,q=1,pivots=1) == origin:
         return True
     else:
         return False
