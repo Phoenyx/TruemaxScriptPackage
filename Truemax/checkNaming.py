@@ -48,10 +48,10 @@ def name_compare():
 
     named_correctly = True
     for c in children:
-        if cmds.ls(c, showType=True)[1] == "mesh":
+        if not cmds.ls(c, showType=True)[1] == "transform":
             continue
 
-        if not (c.endswith("_geo") or c.endswith("_grp")):
+        if not (c.endswith("_geo") or c.endswith("_grp") or c.endswith("_ctrl")):
             cmds.warning(">> %s is named incorrectly <<" % c)
             named_correctly = False
 
