@@ -31,6 +31,7 @@ class TruemaxModuleManager():
                {"name": "dkAnim", "version": "0.98", "author": "Daniel Kramer"},
                {"name": "ExportAnimFBX", "version": "1.0", "author": "Sofia M."},
                {"name": "ExportFBX", "version": "1.0", "author": "Sofia M."},
+               {"name": "fixAllBelow", "version": "1.0", "author": "Sofia M."},
                {"name": "jh_findDuplicateNames", "version": "1.0", "author": u"Jørn-Harald Paulsen"},
                {"name": "hfKillComponentShading", "version": "2.05", "author": "Henry Foster"},
                {"name": "Image Plane-O-Rizer", "version": "1.0", "author": "Chris Whitaker"},
