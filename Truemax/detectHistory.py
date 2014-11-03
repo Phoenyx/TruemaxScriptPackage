@@ -26,13 +26,17 @@ def detect_history():
     select(top_node)
     select(hi=1)
     select("*Shape*", deselect=1)
+
+    if cmds.objExists("*orientConstraint*") == 1:
+        select("*orientConstraint*", deselect=1)
+
     select(top_node, deselect=1)
     objects = cmds.ls(sl=1)
 
     for obj in objects:
         history = cmds.listHistory(obj)
         if len(history) > 1:
-            cmds.warning(">> %s has construction history or face assignment! <<" % obj)
+            cmds.warning(">> %s has construction history! <<" % obj)
             return False
 
     return True
