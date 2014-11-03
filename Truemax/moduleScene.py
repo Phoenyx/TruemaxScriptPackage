@@ -6,6 +6,7 @@ from Truemax.hfFixShading import hfFixBadShading
 import Truemax.makeReference as makeReference
 import Truemax.exportFBX as exportFBX
 import Truemax.deleteDPLayers as deleteDPLayers
+import Truemax.fixAllBelow as fixAllBelow
 from Truemax import checkList
 import manager
 import maya.cmds as cmds
@@ -14,6 +15,7 @@ import pymel.core as pm
 from pymel.all import *
 
 # Reloads script when update is ran
+reload(fixAllBelow)
 reload(exportFBX)
 reload(checkList)
 reload(deleteDPLayers)
@@ -140,7 +142,7 @@ class ModuleScene(manager.Module):
 
     def pivot_at_origin(self):
         self.select_top_node()
-        mel.xform(zeroTransformPivots=1)
+        xform(zeroTransformPivots=1)
 
     def create_ui(self):
         if get_author_initials() == 'mj':
@@ -176,6 +178,8 @@ class ModuleScene(manager.Module):
         cmds.setParent('..')
         cmds.frameLayout(collapsable=True, label="Check List")
         cmds.columnLayout(rowSpacing=2)
+        cmds.button(command=lambda *args: fixAllBelow.fixAllBelow(), label="Run All Fix Scripts Below",
+                    backgroundColor=bg_colour)
         cmds.button(command=lambda *args: hfFixBadShading(), label="Fix Face Assignments on Scene Objects",
                     backgroundColor=bg_colour)
         cmds.button(command=lambda *args: mel.deleteUnusedNodes(), label="Delete Unused Nodes",
@@ -186,7 +190,7 @@ class ModuleScene(manager.Module):
                     backgroundColor=bg_colour)
         cmds.button(command=lambda *args: mel.DeleteHistory(), label="Delete History", backgroundColor=bg_colour)
         cmds.button(command=lambda *args: self.pivot_at_origin(), label="Pivot at Origin", backgroundColor=bg_colour)
-        cmds.button(command=lambda *args: deleteDPLayers.deleteDPLayers(), label="Delete display layers", backgroundColor=bg_colour)
+        cmds.button(command=lambda *args: deleteDPLayers.deleteDPLayers(), label="Delete Display Layers", backgroundColor=bg_colour)
         cmds.setParent('..')
         cmds.setParent('..')
         cmds.setParent('..')
