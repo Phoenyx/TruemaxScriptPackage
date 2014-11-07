@@ -36,7 +36,7 @@ def export_asset():
             mel.eval('FBXExport -f "{0}" -s;'.format(scene_fbx.replace("\\", "/")))
             sys.stdout.write(">>>>> FBX Model Exported! <<<<<")
 
-    if continueDialog == "Animation":
+    if continueDialog == "Character Animation":
         exportAnimFBX.exportAnimFBX()
 
 

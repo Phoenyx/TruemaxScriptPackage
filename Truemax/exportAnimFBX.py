@@ -6,9 +6,10 @@ __author__ = 'sofiaelm'
 from pymel.all import *
 import maya.cmds as cmds
 
-SCENE_FILE_TOP_NODE_REGEX = r'([a-zA-Z]+[0-9]{2}[A-Z]{1})(_)'
+SCENE_FILE_TOP_NODE_REGEX = r'([a-zA-Z]+[0-9]+[A-Z]{1})(_)'
 
 def exportAnimFBX():
+
     if cmds.objExists("geo_grp") == 0:
         cmds.warning(">>>>> No group matches name 'geo_grp' <<<<<")
 
