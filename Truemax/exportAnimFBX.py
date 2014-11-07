@@ -1,7 +1,11 @@
 __author__ = 'sofiaelm'
+# version 1.0
 
-# Import ref
-# delete namespaces
+"""
+Before this script is run it is important to inform the animators that they must import the referenced character
+and delete namespaces. They should also double check that their top node is named correctly
+and that there is just one top node.
+"""
 
 from pymel.all import *
 import maya.cmds as cmds
