@@ -2,7 +2,7 @@
 
 __author__ = 'sofiaelm'
 # version 1.0
-# Tool that detects if the object has construction history
+# Tool that detects if the object(s) has construction history
 
 from pymel.all import *
 from Truemax.checkNaming import get_top_node
