@@ -190,7 +190,8 @@ class ModuleScene(manager.Module):
                     backgroundColor=bg_colour)
         cmds.button(command=lambda *args: mel.DeleteHistory(), label="Delete History", backgroundColor=bg_colour)
         cmds.button(command=lambda *args: self.pivot_at_origin(), label="Pivot at Origin", backgroundColor=bg_colour)
-        cmds.button(command=lambda *args: deleteDPLayers.deleteDPLayers(), label="Delete Display Layers", backgroundColor=bg_colour)
+        cmds.button(command=lambda *args: deleteDPLayers.deleteDPLayers(), label="Delete Display Layers",
+                    backgroundColor=bg_colour)
         cmds.setParent('..')
         cmds.setParent('..')
         cmds.setParent('..')
