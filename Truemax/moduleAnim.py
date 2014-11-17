@@ -1,3 +1,4 @@
+from Truemax import paie
 from Truemax.moduleScene import get_author_initials
 
 __author__ = 'sofiaelm'
@@ -49,6 +50,7 @@ class ModuleAnim(manager.Module):
         cmds.frameLayout(collapsable=True, label="Import/Export")
         cmds.columnLayout()
         cmds.button(command=lambda *args: mel.dkAnim(), label="dkAnim", backgroundColor=bg_colour)
+        cmds.button(command=lambda *args: paie.GUI(), label="paie", backgroundColor=bg_colour)
         cmds.setParent('..')
         cmds.setParent('..')
         cmds.setParent('..')
