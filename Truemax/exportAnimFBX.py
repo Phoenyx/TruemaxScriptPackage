@@ -19,7 +19,7 @@ SCENE_FILE_TOP_NODE_REGEX = r'([a-zA-Z]+[0-9]+[A-Z]{1})(_)'
 
 def exportAnimFBX():
     # Checks if the geometry group exists
-    if cmds.objExists("geo_grp") == 0:
+    if cmds.objExists("*:geo_grp*") == 0:
         cmds.warning(">>>>> No group matches name 'geo_grp' <<<<<")
 
     else:
@@ -65,32 +65,10 @@ def exportAnimFBX():
         print startTime
         print endTime
 
-        # parent root ctrl to world
-        cmds.parent('root_ctrl_zero', w=1)
-
         # select bind joints
         def selectBNDJNTS():
-            cmds.select('R_shoulder_bnd_jnt', add=True)
-            cmds.select('L_shoulder_bnd_jnt', add=True)
-            cmds.select('R_knee_bnd_jnt', add=True)
-            cmds.select('L_knee_bnd_jnt', add=True)
-            cmds.select('neck_ctrl', add=True)
-
-            cmds.select(hi=1, add=True)
-
-            cmds.select('L_femur_bnd_jnt', add=True)
-            cmds.select('R_femur_bnd_jnt', add=True)
-            cmds.select('L_clavicle_ctrl', add=True)
-            cmds.select('R_clavicle_ctrl', add=True)
-            cmds.select('torso_ctrl', add=True)
-            cmds.select('spine_01_ctrl', add=True)
-            cmds.select('hip_ctrl', add=True)
-            cmds.select('root_ctrl', add=True)
-
-            # Deselect Palm, End joints and Shapes.
-            cmds.select('*end_jnt*', d=1)
-            cmds.select('*palm*', d=1)
-            cmds.select('*Shape*', d=1)
+            select("*:geo_grp*", "*:main_bnd*", r=1)
+            select(hi=1)
 
         selectBNDJNTS()
 
@@ -101,19 +79,10 @@ def exportAnimFBX():
         # Bake anim to bind joints
         cmds.bakeResults(selectBND, t=(startTime, endTime))
 
-        # Delete FK and IK joints+ctrls
-        select(cl=1)
-        cmds.select('*IK*', add=True)
-        cmds.select('*FK*', add=True)
-        cmds.select('*effector*', add=True)
-
-        selectFKIK = cmds.ls(sl=1)
-        cmds.delete(selectFKIK)
 
         # Select bind joints and geometry and export as FBX
         select(cl=1)
         selectBNDJNTS()
-        cmds.select('*_geo', add=True)
 
         # Make a list of the selection to "Export selection" as FBX
         toExport = cmds.ls(sl=True)
