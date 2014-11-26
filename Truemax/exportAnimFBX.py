@@ -2,9 +2,7 @@ __author__ = 'sofiaelm'
 # version 1.0
 
 """
-Before this script is run it is important to inform the animators that they must import the referenced character
-and delete namespaces. They should also double check that their top node is named correctly
-and that there is just one top node.
+
 """
 
 from pymel.all import *
@@ -59,16 +57,15 @@ def exportAnimFBX():
         scene_fbx = os.path.join(export_dir, str(top_node) + ".fbx")
 
         # Get start time and end time of animation base on the timeline
-        startTime = int(cmds.playbackOptions(query=True, minTime=True))
-        endTime = int(cmds.playbackOptions(query=True, maxTime=True))
+        #startTime = int(cmds.playbackOptions(query=True, minTime=True))
+        #endTime = int(cmds.playbackOptions(query=True, maxTime=True))
 
-        print startTime
-        print endTime
+        #print startTime
+        #print endTime
 
         # select bind joints
         def selectBNDJNTS():
-            select("*:geo_grp*", "*:main_bnd*", r=1)
-            select(hi=1)
+            select("*:*_geo", "*:main_bnd*", "*:bindPose1", r=1)
 
         selectBNDJNTS()
 
@@ -77,7 +74,7 @@ def exportAnimFBX():
         print selectBND
 
         # Bake anim to bind joints
-        cmds.bakeResults(selectBND, t=(startTime, endTime))
+        #cmds.bakeResults(selectBND, t=(startTime, endTime))
 
 
         # Select bind joints and geometry and export as FBX
@@ -92,7 +89,7 @@ def exportAnimFBX():
         # Copied from another script. It is not pretty but exporting ia not allowed in Python
         # It exports the selection as FBX using a preset file. Writes message to command line when finished.
         preset_file = "{0}{1}{2}".format(os.path.dirname(os.path.realpath(__file__)), os.path.sep,
-                                         "UnityExport.fbxexportpreset").replace("\\", "/")
+                                         "UnityExportAnim.fbxexportpreset").replace("\\", "/")
         mel.eval('FBXLoadExportPresetFile -f "{0}";'.format(preset_file))
         mel.eval('FBXExport -f "{0}" -s;'.format(scene_fbx.replace("\\", "/")))
         sys.stdout.write(">>>>> FBX with Animation Exported! <<<<<")
