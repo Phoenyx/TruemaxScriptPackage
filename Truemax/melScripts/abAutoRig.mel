@@ -1,0 +1,2104 @@
+global proc abAutoRig(){
+if (`window -exists myWindow`) deleteUI myWindow;
+window -title "Bille Auto Rig Alpha V1.0" -rtf true myWindow;
+frameLayout -w 240 -h 240 rigLayout ;
+rowColumnLayout -nc 1 -cw 1 200;
+
+//all UI sits in here/////////////////////////////////////////
+tabLayout -w 230 -h 210 tabList ;
+//begin contents of first tab//////////////////////////////////////////
+string $tab1 = `columnLayout firstTab`;
+button -label "Proxy Skeleton" -c proxySkeleton ;
+button -label "Bind Skeleton" -c bindSkeleton ;
+setParent..;
+
+
+//begin contents of second tab/////////////////////////////////////////
+string $tab2 = `columnLayout secondTab`;
+button -label "Rig Setup" -c rigSetup ;
+
+textField -w 5 -h 5;
+setParent..;
+
+
+//return to masterLayout////////////////////////////////
+setParent..;
+
+
+//label tabs and build////////////////////
+tabLayout -edit 
+-tabLabel $tab1 "Proxy" 
+-tabLabel $tab2 "Setup" 
+tabList;
+showWindow myWindow;
+}
+//
+//proxySkeleton////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+
+global proc proxySkeleton(){
+//proxySkeleton
+joint -n root_bnd_proxy -p 0 87 0 ;
+select -cl;
+joint -n hip_bnd_proxy -p 0 87 0;
+setAttr "hip_bnd_proxy.visibility" 0;
+select -cl;
+
+joint -n L_femur_bnd_proxy -p 9 80 -5 ;
+select -cl;
+joint -n L_knee_bnd_proxy -p 9 44 -5 ;
+select -cl;
+joint -n L_foot_bnd_proxy -p 9 10 -5 ;
+select -cl;
+joint -n L_ball_bnd_proxy -p 9 3 1 ;
+select -cl;
+joint -n L_toe_end_proxy -p 9 0 11 ;
+select -cl;
+joint -n L_heel_pivot_loc_proxy -p 9 0 -10 ;
+select -cl;
+joint -n  L_IK_knee_ctrl_proxy -p 9 44 44.83 ;
+select -cl;
+
+joint -n spine_01_bnd_proxy -p 0 105 0 ;
+select -cl;
+joint -n torso_bnd_proxy -p 0 135 0 ;
+select -cl;
+
+joint -n L_clavicle_bnd_proxy -p 13 150 3 ;
+select -cl;
+joint -n L_shoulder_bnd_proxy -p 36 149 -13 ;
+select -cl;
+joint -n L_elbow_bnd_proxy -p 82 149 -13 ;
+select -cl;
+joint -n  L_IK_elbow_ctrl_proxy -p 82 149 -62.83 ;
+select -cl;
+joint -n L_wrist_bnd_proxy -p 130 149 -13 ;
+select -cl;
+
+    joint -n L_thumb_01_ctrl_proxy -p 145 150 -2 ;
+    select -cl;
+    joint -n L_thumb_02_ctrl_proxy -p 153 150 3 ;
+    select -cl;
+    joint -n L_thumb_03_end_proxy -p 162 150 6 ;
+    select -cl;
+    
+    joint -n L_index_01_ctrl_proxy -p 155 150 -8 ;
+    select -cl;
+    joint -n L_index_02_ctrl_proxy -p 164 150 -8 ;
+    select -cl;
+        //joint -n L_index_03_ctrl_proxy -p 171 150 -8 ;
+        //select -cl;
+    joint -n L_index_04_end_proxy -p 180 150 -8 ;
+    select -cl;
+    
+    joint -n L_middle_01_ctrl_proxy -p 155 150 -15 ;
+    select -cl;
+    joint -n L_middle_02_ctrl_proxy -p 164 150 -15 ;
+    select -cl;
+        //joint -n L_middle_03_ctrl_proxy -p 171 150 -15 ;
+        //select -cl;
+    joint -n L_middle_04_end_proxy -p 180 150 -15 ;
+    select -cl;
+    
+joint -n neck_bnd_proxy -p 0 154 -3 ;
+select -cl;
+joint -n head_bnd_proxy -p 0 165 0 ;
+select -cl;
+joint -n head_end_proxy -p 0 183 0 ;
+select -cl;
+
+//Left leg//
+curve -d 1 -n root_L_femur_cv -p 0 87 0 -p 7.421613 81.228289 -5 -p 7.421613 81.228289 -7 -p 9 80 -5 -p 7.421613 81.228289 -3 -p 7.421613 81.228289 -5 -p 8.649901 82.806676 -5 -p 9 80 -5 -p 6.193324 79.649901 -5 -p 7.421613 81.228289 -5 ;
+curve -d 1 -n L_femur_knee_cv -p 9 80 -5 -p 9 46 -5 -p 9 46 -7 -p 9 44 -5 -p 9 46 -3 -p 9 46 -5 -p 11 46 -5 -p 9 44 -5 -p 7 46 -5 -p 9 46 -5 ; 
+curve -d 1 -n L_knee_foot_cv -p 9 44 -5 -p 9 12 -5 -p 9 12 -7 -p 9 10 -5 -p 9 12 -3 -p 9 12 -5 -p 11 12 -5 -p 9 10 -5 -p 7 12 -5 -p 9 12 -5 -k 0 -k 1 -k 2 -k 3 -k 4 -k 5 -k 6 -k 7 -k 8 -k 9 ;
+curve -d 1 -n L_foot_ball_cv -p 9 10 -5 -p 9 4.520814 -0.298894 -p 9 3.221921 -1.819708 -p 9 3 1 -p 9 5.819708 1.221921 -p 9 4.520814 -0.298894 -p 11 4.520814 -0.298894 -p 9 3 1 -p 7 4.520814 -0.298894 -p 9 4.520814 -0.298894 ;
+curve -d 1 -n L_ball_toeEnd_cv -p 9 3 1 -p 9 0.578594 9.085521 -p 9 -1.335884 8.506927 -p 9 0 11 -p 9 2.493073 9.664116 -p 9 0.578594 9.085521 -p 11 0.578594 9.085521 -p 9 0 11 -p 7 0.578594 9.085521 -p 9 0.578594 9.085521 ;
+curve -d 1 -n L_foot_heel_cv -p 9 10 -5 -p 9 1.786704 -9.101285 -p 9 2.685419 -10.887989 -p 9 0 -10 -p 9 0.887989 -7.314581 -p 9 1.786704 -9.101285 -p 11 1.786704 -9.101285 -p 9 0 -10 -p 7 1.786704 -9.101285 -p 9 1.786704 -9.101285 ;
+
+//spine//
+curve -d 1 -n root_spine_01_cv -p 0 87 0 -p 0 103 0 -p 0 103 -2 -p 0 105 0 -p 0 103 2 -p 0 103 0 -p -2 103 0 -p 0 105 0 -p 2 103 0 -p 0 103 0;
+curve -d 1 -n spine_01_torso_cv -p 0 105 0 -p 0 132.996423 0 -p 0 132.996423 -2 -p 0 134.996423 0 -p 0 132.996423 2 -p 0 132.996423 0 -p -2 132.996423 0 -p 0 134.996423 0 -p 2 132.996423 0 -p 0 132.996423 0;
+
+//neck / head//
+curve -d 1 -n torso_neck_cv -p 0 135 0 -p 0 152.044654 -2.579737 -p 0 151.611225 -4.535084 -p 0 154 -3 -p 0 152.464916 -0.624391 -p 0 152.044654 -2.579737 -p -2 152.044654 -2.579737 -p 0 154 -3 -p 2 152.044654 -2.579737 -p 0 152.044654 -2.579737;
+curve -d 1 -n neck_head_cv -p 0 154 -3 -p 0 163.072539 -0.533754 -p 0 163.606292 -2.461215 -p 0 165 0 -p 0 162.538785 1.393708 -p 0 163.072539 -0.533754 -p -2 163.072539 -0.533754 -p 0 165 0 -p 2 163.072539 -0.533754 -p 0 163.072539 -0.533754 ;
+curve -d 1 -n head_head_end_cv -p 0 165 0 -p 0 181 0 -p 0 181 -2 -p 0 183 0 -p 0 181 2 -p 0 181 0 -p -2 181 0 -p 0 183 0 -p 2 181 0 -p 0 181 0 ;
+
+//Left Arm//
+curve -d 1 -n torso_L_clavicle_cv -p 0 135 0 -p 11.431884 148.812526 2.638174 -p 11.927992 148.747416 0.701776 -p 13 150 3 -p 10.935776 148.877637 4.574573 -p 11.431884 148.812526 2.638174 -p 10.293952 150.420527 2.292567 -p 13 150 3 -p 12.569815 147.19785 2.983782 -p 11.431884 148.812526 2.638174;
+curve -d 1 -n L_clavicle_shoulder_cv -p 13 150 3 -p 34.358992 149.072257 -11.859005 -p 33.217251 149.072257 -13.501085 -p 36 149 -13 -p 35.500733 149.072257 -10.216924 -p 34.358992 149.072257 -11.859005 -p 34.418318 151.070951 -11.900254 -p 36 149 -13 -p 34.299666 147.073563 -11.817755 -p 34.358992 149.072257 -11.859005 ;
+curve -d 1 -n L_shoulder_elbow_cv -p 36 149 -13 -p 80 149 -13 -p 80 149 -15 -p 82 149 -13 -p 80 149 -11 -p 80 149 -13 -p 80 151 -13 -p 82 149 -13 -p 80 147 -13 -p 80 149 -13 ;
+curve -d 1 -n L_elbow_wrist_cv -p 82 149 -13 -p 128 149 -13 -p 128 149 -15 -p 130 149 -13 -p 128 149 -11 -p 128 149 -13 -p 128 151 -13 -p 130 149 -13 -p 128 147 -13 -p 128 149 -13 ;
+
+//Left Hand//
+
+//thumb//
+curve -d 1 -n L_wrist_thumb_01_cv -p 130 149 -13 -p 143.388421 149.936092 -3.182679 -p 144.570171 149.982955 -4.795524 -p 145 150 -2 -p 142.206671 149.889229 -1.569833 -p 143.388421 149.936092 -3.182679 -p 143.309172 151.934521 -3.182679 -p 145 150 -2 -p 143.46767 147.937663 -3.182679 -p 143.388421 149.936092 -3.182679 ;
+curve -d 1 -n L_thumb_01_thumbg_02_cv -p 145 150 -2 -p 151.307432 149.93288 1.936652 -p 152.369946 149.975015 0.242754 -p 153 150 3 -p 150.244919 149.890746 3.63055 -p 151.307432 149.93288 1.936652 -p 151.228184 151.93131 1.936652 -p 153 150 3 -p 151.386681 147.934451 1.936652 -p 151.307432 149.93288 1.936652 ;
+curve -d 1 -n L_thumb_02_thumb_03_cv -p 153 150 3 -p 160.105238 149.924862 5.364209 -p 160.740529 149.950055 3.467957 -p 162 150 6 -p 159.469946 149.89967 7.26046 -p 160.105238 149.924862 5.364209 -p 160.025989 151.923292 5.364209 -p 162 150 6 -p 160.184486 147.926433 5.364209 -p 160.105238 149.924862 5.364209 ;
+
+//index//
+curve -d 1 -n L_wrist_index_01_cv -p 130 149 -13 -p 153.040352 149.922289 -8.392097 -p 153.432141 149.937826 -10.353286 -p 155 150 -8 -p 152.648563 149.906753 -6.430909 -p 153.040352 149.922289 -8.392097 -p 152.961103 151.920719 -8.392097 -p 155 150 -8 -p 153.119601 147.92386 -8.392097 -p 153.040352 149.922289 -8.392097 ;
+curve -d 1 -n L_index_01_index_02_cv -p 155 150 -8 -p 162 150 -8 -p 162 150 -10 -p 164 150 -8 -p 162 150 -6 -p 162 150 -8 -p 162 152 -8 -p 164 150 -8 -p 162 148 -8 -p 162 150 -8 ;
+curve -d 1 -n L_index_02_index_04_cv -p 164 150 -8 -p 178 150 -8 -p 178 150 -10 -p 180 150 -8 -p 178 150 -6 -p 178 150 -8 -p 178 152 -8 -p 180 150 -8 -p 178 148 -8 -p 178 150 -8 ;
+    //curve -d 1 -n L_index_02_index_03_cv -p 164 150 -8 -p 169 150 -8 -p 169 150 -10 -p 171 150 -8 -p 169 150 -6 -p 169 150 -8 -p 169 152 -8 -p 171 150 -8 -p 169 148 -8 -p 169 150 -8 ;
+    //curve -d 1 -n L_index_03_index_04_cv -p 171 150 -8 -p 178 150 -8 -p 178 150 -10 -p 180 150 -8 -p 178 150 -6 -p 178 150 -8 -p 178 152 -8 -p 180 150 -8 -p 178 148 -8 -p 178 150 -8 ; 
+
+//middle//
+curve -d 1 -n L_wrist_middle_01_cv -p 130 149 -13 -p 153.003231 149.920817 -15.08152 -p 153.084687 149.924047 -17.079858 -p 155 150 -15 -p 152.921776 149.917587 -13.083182 -p 153.003231 149.920817 -15.08152 -p 152.923983 151.919246 -15.08152 -p 155 150 -15 -p 153.08248 147.922388 -15.08152 -p 153.003231 149.920817 -15.08152 ;
+curve -d 1 -n L_middle_01_middle_02_cv -p 155 150 -15 -p 162 150 -15 -p 162 150 -17 -p 164 150 -15 -p 162 150 -13 -p 162 150 -15 -p 162 152 -15 -p 164 150 -15 -p 162 148 -15 -p 162 150 -15 ;
+curve -d 1 -n L_middle_02_middle_04_cv -p 164 150 -15 -p 178 150 -15 -p 178 150 -17 -p 180 150 -15 -p 178 150 -13 -p 178 150 -15 -p 178 152 -15 -p 180 150 -15 -p 178 148 -15 -p 178 150 -15 ;
+    //curve -d 1 -n L_middle_02_middle_03_cv -p 164 150 -12 -p 169 150 -12 -p 169 150 -14 -p 171 150 -12 -p 169 150 -10 -p 169 150 -12 -p 169 152 -12 -p 171 150 -12 -p 169 148 -12 -p 169 150 -12 ;
+    //curve -d 1 -n L_middle_03_middle_04_cv -p 171 150 -12 -p 178 150 -12 -p 178 150 -14 -p 180 150 -12 -p 178 150 -10 -p 178 150 -12 -p 178 152 -12 -p 180 150 -12 -p 178 148 -12 -p 178 150 -12 ;
+
+//skinBind//
+select -r "*_cv";
+group -n curve_grp;
+
+select -r "*_proxy*";
+group -n proxy_grp;
+
+select -r "*_cv" "*_proxy*";
+newSkinCluster "-toSelectedBones -bindMethod 0 -normalizeWeights 1 -weightDistribution 0 -mi 2 -dr 4 -rui false,multipleBindPose,1";
+//leg//
+
+select -r "*_cv";
+string $cvName[] = `ls -sl`;
+    for ($i = 0; $i < size($cvName); $i++)
+    {
+    setAttr ($cvName[$i] + ".template") 1;
+}
+select -r "*_proxy*";
+string $jntName[] = `ls -sl`;
+    for ($node in $jntName)
+    {
+        group -n $node $node;   
+        searchReplaceNames "_ctrl_proxy1" "_ctrl_grp" "all";
+        searchReplaceNames "_bnd_proxy1" "_bnd_grp" "all";
+        searchReplaceNames "_end_proxy1" "_end_grp" "all";
+        searchReplaceNames "_loc_proxy1" "_loc_grp" "all";
+    }
+    
+    
+//spineSetup
+select -r root_bnd_proxy hip_bnd_proxy;
+doCreateParentConstraintArgList 1 { "1","0","0","0","0","0","0","1","","1" };
+parentConstraint -mo -weight 1;
+group -em -n spine_grp;
+select -r root_bnd_proxy spine_grp;
+doCreateParentConstraintArgList 1 { "0","0","0","0","0","0","0","1","","1" };
+parentConstraint -mo -weight 1;
+parent spine_01_bnd_grp torso_bnd_grp spine_grp;
+parent spine_grp proxy_grp;
+
+//armSetup
+
+group -em -n L_hand_grp;
+select -r L_wrist_bnd_grp L_hand_grp;
+doCreateParentConstraintArgList 1 { "0","0","0","0","0","0","0","1","","1" };
+parentConstraint -weight 1;
+delete "L_hand_grp_parent*";
+parent L_thumb_01_ctrl_grp L_thumb_02_ctrl_grp L_thumb_03_end_grp L_index_01_ctrl_grp L_index_02_ctrl_grp L_index_04_end_grp L_middle_01_ctrl_grp L_middle_02_ctrl_grp L_middle_04_end_grp L_hand_grp;
+
+group -em -n L_arm_grp;
+select -r L_shoulder_bnd_grp L_arm_grp;
+doCreateParentConstraintArgList 1 { "0","0","0","0","0","0","0","1","","1" };
+parentConstraint -weight 1;
+delete "L_arm_grp_parent*";
+parent L_hand_grp L_elbow_bnd_grp L_wrist_bnd_grp L_arm_grp;
+
+group -em -n L_elbow_hand_grp; 
+select -r L_shoulder_bnd_grp L_elbow_hand_grp;
+doCreateParentConstraintArgList 1 { "0","0","0","0","0","0","0","1","","1" };
+parentConstraint -weight 1;
+delete "L_elbow_hand_grp_parent*";
+
+parent L_hand_grp L_elbow_bnd_grp L_wrist_bnd_grp L_elbow_hand_grp;
+parent L_elbow_hand_grp L_arm_grp;
+parent L_arm_grp L_shoulder_bnd_grp;
+
+select -r root_bnd_proxy L_clavicle_bnd_grp;
+doCreateParentConstraintArgList 1 { "1","0","0","0","0","0","0","1","","1" };
+parentConstraint -mo -weight 1; 
+
+select -r L_clavicle_bnd_proxy L_shoulder_bnd_grp ;
+doCreateParentConstraintArgList 1 { "1","0","0","0","0","0","0","1","","1" };
+parentConstraint -mo -weight 1;
+
+select -r L_shoulder_bnd_proxy L_arm_grp ;
+doCreateParentConstraintArgList 1 { "1","0","0","0","0","0","0","1","","1" };
+parentConstraint -mo -weight 1;
+
+parent L_IK_elbow_ctrl_grp L_elbow_bnd_proxy;
+    setAttr -lock true "L_IK_elbow_ctrl_proxy.tx";
+    setAttr -lock true "L_IK_elbow_ctrl_proxy.ty";
+    setAttr -lock true "L_IK_elbow_ctrl_proxy.rx";
+    setAttr -lock true "L_IK_elbow_ctrl_proxy.ry";
+    setAttr -lock true "L_IK_elbow_ctrl_proxy.rz";
+    setAttr -lock true "L_IK_elbow_ctrl_proxy.sx";
+    setAttr -lock true "L_IK_elbow_ctrl_proxy.sy";
+    setAttr -lock true "L_IK_elbow_ctrl_proxy.sz";
+    setAttr -lock true "L_IK_elbow_ctrl_proxy.v";
+    setAttr -lock true "L_IK_elbow_ctrl_proxy.radi";
+
+select -r L_wrist_bnd_proxy L_hand_grp;
+doCreateParentConstraintArgList 1 { "1","0","0","0","0","0","0","1","","1" };
+parentConstraint -mo -weight 1;
+
+select -r L_thumb_01_ctrl_proxy L_thumb_02_ctrl_grp ;
+doCreateParentConstraintArgList 1 { "1","0","0","0","0","0","0","1","","1" };
+parentConstraint -mo -weight 1;
+
+select -r L_thumb_02_ctrl_proxy L_thumb_03_end_grp ;
+doCreateParentConstraintArgList 1 { "1","0","0","0","0","0","0","1","","1" };
+parentConstraint -mo -weight 1;
+
+select -r L_index_01_ctrl_proxy L_index_02_ctrl_grp ;
+doCreateParentConstraintArgList 1 { "1","0","0","0","0","0","0","1","","1" };
+parentConstraint -mo -weight 1;
+
+select -r L_index_02_ctrl_proxy L_index_04_end_grp ;
+doCreateParentConstraintArgList 1 { "1","0","0","0","0","0","0","1","","1" };
+parentConstraint -mo -weight 1;
+
+select -r L_middle_01_ctrl_proxy L_middle_02_ctrl_grp ;
+doCreateParentConstraintArgList 1 { "1","0","0","0","0","0","0","1","","1" };
+parentConstraint -mo -weight 1;
+
+select -r L_middle_02_ctrl_proxy L_middle_04_end_grp ;
+doCreateParentConstraintArgList 1 { "1","0","0","0","0","0","0","1","","1" };
+parentConstraint -mo -weight 1;
+
+//headSetup
+group -n neck_head_bnd_grp neck_bnd_grp head_bnd_grp head_end_grp;
+select -r root_bnd_proxy neck_head_bnd_grp;
+doCreateParentConstraintArgList 1 { "1","0","0","0","0","0","0","1","","1" };
+parentConstraint -mo -weight 1;
+group -n head_all_grp head_bnd_grp head_end_grp;
+
+select -r neck_bnd_proxy head_all_grp;
+doCreateParentConstraintArgList 1 { "1","0","0","0","0","0","0","1","","1" };
+parentConstraint -mo -weight 1;
+
+select -r head_bnd_proxy head_end_grp ;
+doCreateParentConstraintArgList 1 { "1","0","0","0","0","0","0","1","","1" };
+parentConstraint -mo -weight 1;
+
+//legSetup
+group -em -n L_leg_grp;
+select L_femur_bnd_grp L_leg_grp;
+doCreateParentConstraintArgList 1 { "1","0","0","0","0","0","0","1","","1" };
+parentConstraint -weight 1;
+delete "L_leg_grp_parent*";
+
+parent L_IK_knee_ctrl_grp L_knee_bnd_proxy;
+
+parent L_femur_bnd_grp L_foot_bnd_grp L_heel_pivot_loc_grp L_knee_bnd_grp L_toe_end_grp L_ball_bnd_grp L_leg_grp;
+parent L_leg_grp proxy_grp ;
+
+group -em -n L_knee_foot_grp;
+select L_knee_bnd_grp L_knee_foot_grp;
+doCreateParentConstraintArgList 1 { "1","0","0","0","0","0","0","1","","1" };
+parentConstraint -weight 1;
+delete "L_knee_foot_grp_parent*";
+parent L_knee_bnd_grp L_foot_bnd_grp L_heel_pivot_loc_grp L_ball_bnd_grp L_toe_end_grp L_knee_foot_grp;
+parent L_knee_foot_grp L_leg_grp;
+
+select -r L_femur_bnd_proxy L_knee_foot_grp ;
+doCreateParentConstraintArgList 1 { "1","0","0","0","0","0","0","1","","1" };
+parentConstraint -mo -weight 1;
+
+select -r L_foot_bnd_proxy L_heel_pivot_loc_grp;
+doCreateParentConstraintArgList 1 { "1","0","0","0","0","0","0","1","","1" };
+parentConstraint -mo -weight 1;
+
+select -r L_foot_bnd_proxy L_ball_bnd_grp;
+doCreateParentConstraintArgList 1 { "1","0","0","0","0","0","0","1","","1" };
+parentConstraint -mo -weight 1;
+
+select -r L_ball_bnd_proxy L_toe_end_grp ;
+doCreateParentConstraintArgList 1 { "1","0","0","0","0","0","0","1","","1" };
+parentConstraint -mo -weight 1;
+
+spaceLocator -n main_loc;
+setAttr "main_locShape.localScaleZ" 30;
+setAttr "main_locShape.localScaleX" 30;
+setAttr "main_locShape.localScaleY" 30;
+group -em -n main_grp;
+parent main_loc main_grp;
+parent curve_grp main_grp;
+parent proxy_grp main_loc;
+
+select -cl;
+
+    //controllers
+    
+//Master and main
+circle -n master_ctrl -c 0 0 0 -nr 0 1 0 -sw 360 -r 50 -d 3 -ut 0 -tol 0.01 -s 8 -ch 1; 
+curve -d 1 -n main_bnd -p 0 0 -44.002384 -p -15.778624 0 -31.287864 -p -8.09088 0 -31.287864 -p -8.09088 0 -24.90392 -p -24.90376 0 -8.05152 -p -31.18504 0 -8.05152 -p -31.18504 0 -15.730152 -p -43.945904 0 0 -p -31.18504 0 15.731128 -p -31.18504 0 8.052016 -p -24.90376 0 8.052016 -p -8.09088 0 24.905456 -p -8.09088 0 31.289792 -p -15.778624 0 31.289792 -p 0 0 44.005096 -p 15.778624 0 31.289792 -p 8.09088 0 31.289792 -p 8.09088 0 24.905456 -p 24.90376 0 8.052016 -p 31.18504 0 8.052016 -p 31.18504 0 15.731128 -p 44.005096 0 0 -p 31.18504 0 -15.730152 -p 31.18504 0 -8.05152 -p 24.90376 0 -8.05152 -p 8.09088 0 -24.90392 -p 8.09088 0 -31.287864 -p 15.778624 0 -31.287864 -p 0 0 -44.002384 -p 0 2.827712 -31.287864 -p 0 1.449976 -31.287864 -p 0 1.449976 -24.90392 -p 0 4.46304 -8.05152 -p 0 5.58872 -8.05152 -p 0 5.58872 -15.730152 -p 0 7.875608 0 -p 0 5.58872 15.731128 -p 0 5.58872 8.052016 -p 0 4.46304 8.052016 -p 0 1.449976 24.905456 -p 0 1.449976 31.289792 -p 0 2.827712 31.289792 -p 0 0 44.005096 -p 0 -2.827712 31.289792 -p 0 -1.449976 31.289792 -p 0 -1.449976 24.905456 -p 0 -4.46304 8.052016 -p 0 -5.58872 8.052016 -p 0 -5.58872 15.731128 -p 0 -7.875608 0 -p 0 -5.58872 -15.730152 -p 0 -5.58872 -8.05152 -p 0 -4.411952 -8.05152 -p 0 -1.449976 -24.90392 -p 0 -1.449976 -31.287864 -p 0 -2.827712 -31.287864 -p 0 0 -44.002384 -p 0 2.827712 -31.287864 -p 0 1.449976 -31.287864 -p 0 1.449976 -24.90392 -p 0 4.46304 -8.05152 -p 0 5.58872 -8.05152 -p 0 5.58872 -15.730152 -p 0 7.875608 0 -p -15.730152 5.58872 0 -p -8.05152 5.58872 0 -p -8.05152 4.46304 0 -p -24.90392 1.449976 0 -p -31.287864 1.449976 0 -p -31.287864 2.827712 0 -p -43.945904 0 0 -p -31.287864 -2.827712 0 -p -31.287864 -1.449976 0 -p -24.90392 -1.449976 0 -p -8.05152 -4.411952 0 -p -8.05152 -5.58872 0 -p -15.730152 -5.58872 0 -p 0 -7.875608 0 -p 15.731128 -5.58872 0 -p 8.052016 -5.58872 0 -p 8.052016 -4.411952 0 -p 24.905456 -1.449976 0 -p 31.289792 -1.449976 0 -p 31.289792 -2.827712 0 -p 43.945904 0 0 -p 31.289792 2.827712 0 -p 31.289792 1.449976 0 -p 24.905456 1.449976 0 -p 8.052016 4.46304 0 -p 8.052016 5.58872 0 -p 15.731128 5.58872 0 -p 0 7.875608 0;
+select -r main_bnd ;
+pickWalk -d down;
+string $main_bndSelect[] = `ls -sl`;
+rename $main_bndSelect "main_bndShape";
+
+
+//Arm
+group -em -n controller_grp;
+parent controller_grp main_loc;
+curve -d 1 -n L_clavicle_bnd_curve -p 13 150 3 -p 21.131157 162.901226 3 -p 21.131157 166.466758 3 -p 24.69669 166.466758 3 -p 24.69669 162.901226 3 -p 21.131157 162.901226 3;
+xform -ws -a -rp 13 150 3 -sp 13 150 3;
+
+circle -n L_FK_shoulder_bnd_curve -c 36 149 -13 -nr 0 1 0 -sw 360 -r 7.5 -d 3 -ut 0 -tol 0.0001 -s 8 -ch 1; objectMoveCommand;
+CenterPivot;
+rotate 0 0 90;
+
+circle -n L_FK_elbow_bnd_curve -c 82 149 -13 -nr 0 1 0 -sw 360 -r 7.5 -d 3 -ut 0 -tol 0.0001 -s 8 -ch 1; objectMoveCommand;
+CenterPivot;
+rotate 0 0 90;
+
+circle -n L_FK_wrist_bnd_curve -c 130 149 -13 -nr 0 1 0 -sw 360 -r 7 -d 3 -ut 0 -tol 0.0001 -s 8 -ch 1; objectMoveCommand;
+CenterPivot;
+rotate 0 0 90;
+
+curve -d 1 -n L_IK_wrist_ctrl_curve -p 130 149 -20 -p 123 149 -13 -p 130 149 -6 -p 137 149 -13 -p 130 156 -13 -p 123 149 -13 -p 130 142 -13 -p 137 149 -13 -p 130 149 -20 -p 130 156 -13 -p 130 149 -6 -p 130 142 -13 -p 130 149 -20;
+CenterPivot;
+
+curve -d 1 -n L_IK_elbow_ctrl_curve -p 82 159 -62.817233 -p 82 139 -62.817233 -p 82 149 -62.817233 -p 72 149 -62.817233 -p 92 149 -62.817233 -p 82 149 -62.817233 -p 82 149 -52.817233 -p 82 149 -72.817233;
+CenterPivot;
+select L_elbow_bnd_proxy L_IK_elbow_ctrl_curve;
+doCreatePointConstraintArgList 1 { "1","0","0","0","0","0","0","1","","1" };
+pointConstraint -mo -weight 1;
+
+circle -n L_thumb_01_ctrl_curve -c 145 150 -2 -nr 0 1 0 -sw 360 -r 3 -d 3 -ut 0 -tol 0.0001 -s 8 -ch 1; objectMoveCommand;
+CenterPivot;
+rotate -os -32 0 90;
+
+circle -n L_thumb_02_ctrl_curve -c 153 150 3 -nr 0 1 0 -sw 360 -r 3 -d 3 -ut 0 -tol 0.0001 -s 8 -ch 1; objectMoveCommand;
+CenterPivot;
+rotate -os -18.5 0 90;
+
+circle -n L_index_01_ctrl_curve -c 155 150 -8 -nr 0 1 0 -sw 360 -r 3 -d 3 -ut 0 -tol 0.0001 -s 8 -ch 1; objectMoveCommand;
+CenterPivot;
+rotate -os 0 0 90;
+
+circle -n L_index_02_ctrl_curve -c 164 150 -8 -nr 0 1 0 -sw 360 -r 3 -d 3 -ut 0 -tol 0.0001 -s 8 -ch 1; objectMoveCommand;
+CenterPivot;
+rotate -os 0 0 90;
+
+/*circle -n L_index_03_ctrl_curve -c 171 150 -8 -nr 0 1 0 -sw 360 -r 3 -d 3 -ut 0 -tol 0.0001 -s 8 -ch 1; objectMoveCommand;
+CenterPivot;
+rotate -os 0 0 90;
+*/
+circle -n L_middle_01_ctrl_curve -c 155 150 -15 -nr 0 1 0 -sw 360 -r 3 -d 3 -ut 0 -tol 0.0001 -s 8 -ch 1; objectMoveCommand;
+CenterPivot;
+rotate -os 0 0 90;
+
+circle -n L_middle_02_ctrl_curve -c 164 150 -15 -nr 0 1 0 -sw 360 -r 3 -d 3 -ut 0 -tol 0.0001 -s 8 -ch 1; objectMoveCommand;
+CenterPivot;
+rotate -os 0 0 90;
+/*
+circle -n L_middle_03_ctrl_curve -c 171 150 -15 -nr 0 1 0 -sw 360 -r 3 -d 3 -ut 0 -tol 0.0001 -s 8 -ch 1; objectMoveCommand;
+CenterPivot;
+rotate -os 0 0 90;
+*/
+//Leg
+
+circle -n L_FK_femur_bnd_curve -c 9 80 -5 -nr 0 1 0 -sw 360 -r 12 -d 3 -ut 0 -tol 0.0001 -s 8 -ch 1; objectMoveCommand;
+CenterPivot;
+
+circle -n L_FK_knee_bnd_curve -c 9 44 -5 -nr 0 1 0 -sw 360 -r 7.5 -d 3 -ut 0 -tol 0.0001 -s 8 -ch 1; objectMoveCommand;
+CenterPivot;
+
+curve -d 1 -n L_FK_foot_bnd_curve -p 4.746404 10.921478 -1.240944 -p 13.253596 10.921478 -1.240944 -p 13.253596 10.921478 -10.563095 -p 4.746404 10.921478 -10.563095 -p 4.746404 10.921478 -1.240944 -p 4.746404 0 -1.240944 -p 4.746404 0 -10.563095 -p 13.253596 0 -10.563095 -p 13.253596 0 -1.240944 -p 4.746404 0 -1.240944 -p 13.253596 0 -1.240944 -p 13.253596 10.921478 -1.240944 -p 13.253596 10.921478 -10.563095 -p 13.253596 0 -10.563095 -p 4.746404 0 -10.563095 -p 4.746404 10.921478 -10.563095;
+CenterPivot;
+
+curve -d 1 -n L_IK_foot_bnd_curve -p 9 10 -9.36953 -p 4.63047 10 -5 -p 9 10 -0.63047 -p 13.36953 10 -5 -p 9 14.36953 -5 -p 4.63047 10 -5 -p 9 5.63047 -5 -p 13.36953 10 -5 -p 9 10 -9.36953 -p 9 14.36953 -5 -p 9 10 -0.63047 -p 9 5.63047 -5 -p 9 10 -9.36953;
+xform -ws -a -rp 9 10 -5 -sp 9 10 -5;
+
+curve -d 1 -n L_FK_ball_bnd_curve -p 4.71896 6.943836 9.488388 -p 13.28104 6.943836 9.488388 -p 13.28104 10.943831 -0.264486 -p 4.71896 10.943831 -0.264486 -p 4.71896 6.943836 9.488388 -p 4.71896 0 9.488388 -p 4.71896 0 -0.264486 -p 13.28104 0 -0.264486 -p 13.28104 0 9.488388 -p 4.71896 0 9.488388 -p 13.28104 0 9.488388 -p 13.28104 6.943836 9.488388 -p 13.28104 10.943831 -0.264486 -p 13.28104 0 -0.264486 -p 4.71896 0 -0.264486 -p 4.71896 10.943831 -0.264486;
+xform -ws -a -rp 9 3 1;
+
+curve -d 1 -n L_IK_knee_ctrl_curve -p 9 54 44.83 -p 9 34 44.83 -p 9 44 44.83 -p -1 44 44.83 -p 19 44 44.83 -p 9 44 44.83 -p 9 44 54.83 -p 9 44 34.83;
+CenterPivot;
+select L_knee_bnd_proxy L_IK_knee_ctrl_curve;
+doCreatePointConstraintArgList 1 { "1","0","0","0","0","0","0","1","","1" };
+pointConstraint -mo -weight 1;
+select -cl;
+
+//root
+circle -n hip_bnd_curve -c 0 87 0 -nr 0 1 0 -sw 360 -r 22 -d 3 -ut 0 -tol 0.0001 -s 8 -ch 1; objectMoveCommand;
+CenterPivot;
+
+curve -d 1 -n root_bnd_curve -p 16.750705 87 -16.750705 -p 33.50141 87 -16.750705 -p 33.50141 87 16.750705 -p 16.750705 87 16.750705 -p 16.750705 87 33.50141 -p -16.750705 87 33.50141 -p -16.750705 87 16.750705 -p -33.50141 87 16.750705 -p -33.50141 87 -16.750705 -p -16.750705 87 -16.750705 -p -16.750705 87 -33.50141 -p 16.750705 87 -33.50141 -p 16.750705 87 -16.750705;
+CenterPivot;
+
+//spine
+circle -n spine_01_bnd_curve -c 0 105 0 -nr 0 1 0 -sw 360 -r 20 -d 3 -ut 0 -tol 0.0001 -s 8 -ch 1; objectMoveCommand;
+CenterPivot;
+
+circle -n torso_bnd_curve -c 0 135 0 -nr 0 1 0 -sw 360 -r 18 -d 3 -ut 0 -tol 0.0001 -s 8 -ch 1; objectMoveCommand;
+CenterPivot;
+
+//head
+curve -d 1 -n neck_bnd_curve -p 0 158.60293 -26.568102 -p 0 158.60293 -18.896554 -p 0 161.671548 -18.896554 -p 0 154 -14.293625 -p 0 146.328452 -18.896554 -p 0 149.39707 -18.896554 -p 0 149.39707 -26.568102 -p 0 158.60293 -26.568102;
+xform -ws -a -rp 0 154 -3 -sp 0 154 -3;
+
+curve -d 3 -n head_bnd_curve -p 1.667908 187.866341 -25.293489 -p 8.702121 186.594065 -24.021213 -p 13.05319 184.473601 -21.900749 -p 13.05319 184.473601 -21.900749 -p 13.05319 181.550764 -24.823586 -p 13.05319 181.550764 -24.823586 -p 17.404259 181.658304 -16.658304 -p 17.404259 181.658304 -16.658304 -p 13.05319 189.823586 -16.550764 -p 13.05319 189.823586 -16.550764 -p 13.05319 186.900749 -19.473601 -p 13.05319 186.900749 -19.473601 -p 8.702121 189.021213 -21.594065 -p 1.667908 190.293489 -22.866341 -p 1.667908 190.293489 -22.866341 -p 1.667908 193.960967 -16.65431 -p 1.667908 194.917174 -11.457176 -p 1.667908 194.917174 -11.457176 -p 5.849768 194.917174 -11.457176 -p 5.849768 194.917174 -11.457176 -p 0 193.964973 -4.351634 -p 0 193.964973 -4.351634 -p -5.849768 194.917174 -11.457176 -p -5.849768 194.917174 -11.457176 -p -1.667908 194.917174 -11.457176 -p -1.667908 194.917174 -11.457176 -p -1.667908 193.960967 -16.65431 -p -1.667908 190.293489 -22.866341 -p -1.667908 190.293489 -22.866341 -p -8.702121 189.021213 -21.594065 -p -13.05319 186.900749 -19.473601 -p -13.05319 186.900749 -19.473601 -p -13.05319 189.823586 -16.550764 -p -13.05319 189.823586 -16.550764 -p -17.404259 181.658304 -16.658304 -p -17.404259 181.658304 -16.658304 -p -13.05319 181.550764 -24.823586 -p -13.05319 181.550764 -24.823586 -p -13.05319 184.473601 -21.900749 -p -13.05319 184.473601 -21.900749 -p -8.702121 186.594065 -24.021213 -p -1.667908 187.866341 -25.293489 -p -1.667908 187.866341 -25.293489 -p -1.667908 181.65431 -28.960967 -p -1.667908 176.457176 -29.917174 -p -1.667908 176.457176 -29.917174 -p -5.849768 176.457176 -29.917174 -p -5.849768 176.457176 -29.917174 -p 0 169.351634 -28.964973 -p 0 169.351634 -28.964973 -p 5.849768 176.457176 -29.917174 -p 5.849768 176.457176 -29.917174 -p 1.667908 176.457176 -29.917174 -p 1.667908 176.457176 -29.917174 -p 1.667908 181.65431 -28.960967 -p 1.667908 187.866341 -25.293489; 
+xform -ws -a -rp 0 165 0 -sp 0 165 0;
+
+delete "makeNurb*";
+select -r "*_bnd_curve*" "*_ctrl_curve*";
+select -d L_IK_elbow_ctrl_curve L_IK_knee_ctrl_curve;
+makeIdentity -apply true -t 1 -r 1 -s 1 -n 0 -pn 1;
+
+
+//add to hierachy
+select -r "*_curve";
+string $curveName[] = `ls -sl`;
+    for ($group in $curveName)
+    {
+        group -n $group $group;   
+        searchReplaceNames "_curve1" "_curve_grp" "all";
+        searchReplaceNames "_endLoc1" "_loc_grp" "all";
+        select -r "*_FK_*";
+        select -d "*_curve";
+        searchReplaceNames "_FK_*" "_" "selected";
+    }
+    
+parent L_IK_foot_bnd_curve L_foot_bnd_curve_grp ;
+parent L_IK_wrist_ctrl_curve L_wrist_bnd_curve_grp ;    
+//parent hip_ctrl_curve root_ctrl_curve_grp ;
+delete L_IK_wrist_ctrl_curve_grp L_IK_foot_bnd_curve_grp ;
+
+select -r "*_curve_grp" controller_grp; 
+parent;
+
+parent master_ctrl main_bnd controller_grp;
+
+//constrain controller hierachy
+select -r "*_proxy";
+select -d "L_heel_pivot*" "*_end*";
+
+string $proxySelect[] = `ls -sl`;
+
+for ( $node in $proxySelect )
+{
+    string $getName = `match ".*[_]" $node`;
+    string $finalName = ($getName + "curve_grp");
+    select -r $node $finalName;
+    doCreateParentConstraintArgList 1 { "1","0","0","0","0","0","0","1","","1" };
+    parentConstraint -mo -weight 1;
+}
+delete L_IK_elbow_ctrl_curve_grp_parentConstraint1 L_IK_knee_ctrl_curve_grp_parentConstraint1;
+
+setAttr "L_knee_bnd_proxy.translateZ" -4;
+setAttr "L_elbow_bnd_proxy.translateZ" -14;
+
+select -cl;
+
+print "Proxy Skeleton Complete";
+}
+
+//
+//rigSetup////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+
+global proc bindSkeleton(){
+//bindSkeleton
+parent main_bnd master_ctrl ;
+group -empty -name rig_grp ;
+group -empty -name no_transform_grp ;
+group -empty -name IK_grp ;
+group -name ctrl_grp IK_grp ;
+parent ctrl_grp rig_grp ;
+parent master_ctrl no_transform_grp rig_grp ;
+setAttr "no_transform_grp.visibility" 0;
+
+//L_armIkFkSwitch//
+addAttr -ln "L_armIkFkSwitch"  -at double  -min 0 -max 1 -dv 0 |rig_grp|master_ctrl|main_bnd;
+setAttr -e-keyable true |rig_grp|master_ctrl|main_bnd.L_armIkFkSwitch;
+
+//R_armIkFkSwitch//
+addAttr -ln "R_armIkFkSwitch"  -at double  -min 0 -max 1 -dv 0 |rig_grp|master_ctrl|main_bnd;
+setAttr -e-keyable true |rig_grp|master_ctrl|main_bnd.R_armIkFkSwitch;
+
+//L_legIkFkSwitch//
+addAttr -ln "L_legIkFkSwitch"  -at double  -min 0 -max 1 -dv 0 |rig_grp|master_ctrl|main_bnd;
+setAttr -e-keyable true |rig_grp|master_ctrl|main_bnd.L_legIkFkSwitch;
+
+//R_legIkFkSwitch//
+addAttr -ln "R_legIkFkSwitch"  -at double  -min 0 -max 1 -dv 0 |rig_grp|master_ctrl|main_bnd;
+setAttr -e-keyable true |rig_grp|master_ctrl|main_bnd.R_legIkFkSwitch;
+
+//lock attributes for hierachy// 
+
+setAttr -lock true -keyable false -channelBox false "master_ctrl.sx";
+setAttr -lock true -keyable false -channelBox false "master_ctrl.sy";
+setAttr -lock true -keyable false -channelBox false "master_ctrl.sz";
+setAttr -lock true -keyable false -channelBox false "master_ctrl.v";
+
+setAttr -lock true -keyable false -channelBox false "main_bnd.sx";
+setAttr -lock true -keyable false -channelBox false "main_bnd.sy";
+setAttr -lock true -keyable false -channelBox false "main_bnd.sz";
+setAttr -lock true -keyable false -channelBox false "main_bnd.v";
+
+setAttr -lock true -keyable false -channelBox false "no_transform_grp.tx";
+setAttr -lock true -keyable false -channelBox false "no_transform_grp.ty";
+setAttr -lock true -keyable false -channelBox false "no_transform_grp.tz";
+setAttr -lock true -keyable false -channelBox false "no_transform_grp.rx";
+setAttr -lock true -keyable false -channelBox false "no_transform_grp.ry";
+setAttr -lock true -keyable false -channelBox false "no_transform_grp.rz";
+setAttr -lock true -keyable false -channelBox false "no_transform_grp.sx";
+setAttr -lock true -keyable false -channelBox false "no_transform_grp.sy";
+setAttr -lock true -keyable false -channelBox false "no_transform_grp.sz";
+
+setAttr -lock true -keyable false -channelBox false "rig_grp.tx";
+setAttr -lock true -keyable false -channelBox false "rig_grp.ty";
+setAttr -lock true -keyable false -channelBox false "rig_grp.tz";
+setAttr -lock true -keyable false -channelBox false "rig_grp.rx";
+setAttr -lock true -keyable false -channelBox false "rig_grp.ry";
+setAttr -lock true -keyable false -channelBox false "rig_grp.rz";
+setAttr -lock true -keyable false -channelBox false "rig_grp.sx";
+setAttr -lock true -keyable false -channelBox false "rig_grp.sy";
+setAttr -lock true -keyable false -channelBox false "rig_grp.sz";
+setAttr -lock true -keyable false -channelBox false "rig_grp.v";
+
+//bnd joints
+parent -w controller_grp;
+select -cl;
+joint -n root_bnd_jnt -p 0 87 0 ;
+select -cl;
+joint -n hip_bnd_jnt -p 0 87 0 ;
+select -cl;
+
+joint -n L_femur_bnd_jnt -p 9 80 -5 ;
+select -cl;
+joint -n L_knee_bnd_jnt -p 9 44 -5 ;
+select -cl;
+joint -n L_foot_bnd_jnt -p 9 10 -5 ;
+select -cl;
+joint -n L_ball_bnd_jnt -p 9 3 1 ;
+select -cl;
+joint -n L_toe_end_jnt -p 9 0 11 ;
+select -cl;
+joint -n L_IK_knee_ctrl_jnt -p 9 44 44.83;
+select -cl;
+
+joint -n spine_01_bnd_jnt -p 0 105 0 ;
+select -cl;
+joint -n torso_bnd_jnt -p 0 135 0 ;
+select -cl;
+
+joint -n L_clavicle_bnd_jnt -p 13 150 3 ;
+select -cl;
+joint -n L_shoulder_bnd_jnt -p 36 149 -13 ;
+select -cl;
+joint -n L_IK_elbow_ctrl_jnt;
+select -cl;
+joint -n L_elbow_bnd_jnt -p 82 149 -13 ;
+select -cl;
+joint -n L_wrist_bnd_jnt -p 130 149 -13 ;
+select -cl;
+
+    joint -n L_thumb_01_ctrl_jnt -p 145 150 -2 ;
+    select -cl;
+    joint -n L_thumb_02_ctrl_jnt -p 153 150 3 ;
+    select -cl;
+    joint -n L_thumb_03_end_jnt -p 162 150 6 ;
+    select -cl;
+    
+    joint -n L_index_01_ctrl_jnt -p 155 150 -8 ;
+    select -cl;
+    joint -n L_index_02_ctrl_jnt -p 164 150 -8 ;
+    select -cl;
+    //joint -n L_index_03_ctrl_jnt -p 171 150 -8 ;
+    //select -cl;
+    joint -n L_index_04_end_jnt -p 180 150 -8 ;
+    select -cl;
+    
+    joint -n L_middle_01_ctrl_jnt -p 155 150 -12 ;
+    select -cl;
+    joint -n L_middle_02_ctrl_jnt -p 164 150 -12 ;
+    select -cl;
+    //joint -n L_middle_03_ctrl_jnt -p 171 150 -12 ;
+    //select -cl;
+    joint -n L_middle_04_end_jnt -p 180 150 -12 ;
+    select -cl;
+    
+joint -n neck_bnd_jnt -p 0 154 -3 ;
+select -cl;
+joint -n head_bnd_jnt -p 0 165 0 ;
+select -cl;
+joint -n head_end_jnt -p 0 183 0 ;
+select -cl;
+spaceLocator -n L_heel_pivot_loc ;
+
+select L_heel_pivot_loc_proxy L_heel_pivot_loc;
+doCreateParentConstraintArgList 1 { "0","0","0","0","0","0","0","1","","1" };
+parentConstraint -weight 1;
+delete "L_heel_pivot_loc_parent*";
+
+select -r "*bnd_proxy";
+string $proxySelect[] = `ls -sl`;
+
+for ( $node in $proxySelect )
+{
+    string $getName = `match ".*[_]" $node`;
+        string $finalName = ($getName + "jnt");
+        select -r $node $finalName;
+        doCreatePointConstraintArgList 1 { "0","0","0","0","0","0","0","1","","1" };
+}
+
+select -r "*ctrl_proxy";
+string $proxySelect[] = `ls -sl`;
+
+for ( $node in $proxySelect )
+{
+    string $getName = `match ".*_" $node`;
+        string $finalName = ($getName + "jnt");
+        select -r $node $finalName;
+        doCreatePointConstraintArgList 1 { "0","0","0","0","0","0","0","1","","1" };
+}
+
+select -r "*end_proxy";
+
+string $proxySelect[] = `ls -sl`;
+
+for ( $node in $proxySelect )
+{
+    string $getName = `match ".*_" $node`;
+        string $finalName = ($getName + "jnt");
+        select -r $node $finalName;
+        doCreatePointConstraintArgList 1 { "0","0","0","0","0","0","0","1","","1" };
+}
+
+select -cl;
+delete "*pointConstraint*";
+delete "*parentConstraint*";
+
+//Left leg
+parent hip_bnd_jnt root_bnd_jnt ;
+parent L_femur_bnd_jnt hip_bnd_jnt ;
+parent L_knee_bnd_jnt L_femur_bnd_jnt ;
+parent L_foot_bnd_jnt L_knee_bnd_jnt ;
+parent L_ball_bnd_jnt L_foot_bnd_jnt ;
+parent L_toe_end_jnt L_ball_bnd_jnt ;
+
+//spine
+parent spine_01_bnd_jnt root_bnd_jnt ;
+parent torso_bnd_jnt spine_01_bnd_jnt ;
+
+//Left arm
+parent L_clavicle_bnd_jnt torso_bnd_jnt ;
+parent L_shoulder_bnd_jnt L_clavicle_bnd_jnt ;
+parent L_elbow_bnd_jnt L_shoulder_bnd_jnt ;
+parent L_wrist_bnd_jnt L_elbow_bnd_jnt ;
+
+//hand
+parent L_thumb_02_ctrl_jnt L_thumb_01_ctrl_jnt ;
+parent L_thumb_03_end_jnt L_thumb_02_ctrl_jnt ;
+
+parent L_index_02_ctrl_jnt L_index_01_ctrl_jnt ;
+parent L_index_04_end_jnt L_index_02_ctrl_jnt ;
+
+parent L_middle_02_ctrl_jnt L_middle_01_ctrl_jnt ;
+parent L_middle_04_end_jnt L_middle_02_ctrl_jnt ;
+
+parent L_thumb_01_ctrl_jnt L_index_01_ctrl_jnt L_middle_01_ctrl_jnt L_wrist_bnd_jnt ;
+
+//head
+parent head_bnd_jnt neck_bnd_jnt ;
+parent head_end_jnt head_bnd_jnt ;
+parent neck_bnd_jnt torso_bnd_jnt ;
+
+
+select -r L_shoulder_bnd_jnt L_elbow_bnd_jnt L_thumb_01_ctrl_jnt L_thumb_02_ctrl_jnt L_index_01_ctrl_jnt L_index_02_ctrl_jnt L_middle_01_ctrl_jnt L_middle_02_ctrl_jnt neck_bnd_jnt head_bnd_jnt L_femur_bnd_jnt L_knee_bnd_jnt L_ball_bnd_jnt;
+joint -e -oj xzy -secondaryAxisOrient xdown;
+
+parent -w L_clavicle_bnd_jnt ;
+select -r spine_01_bnd_jnt ;
+joint -e -oj xyz -secondaryAxisOrient zdown;
+parent L_clavicle_bnd_jnt torso_bnd_jnt ;
+
+select -r L_femur_bnd_jnt ;
+mirrorJoint -mirrorYZ -mirrorBehavior -searchReplace "L_" "R_";
+
+select -r L_clavicle_bnd_jnt ;
+mirrorJoint -mirrorYZ -mirrorBehavior -searchReplace "L_" "R_";
+
+select -r "L_*" ;
+select -d "*_grp" "*_proxy" "*_cv" "*_jnt"; 
+group -n L_ctrl_grp;
+xform -ws -a -rp 0 0 0 -sp 0 0 0;
+duplicate -rr -renameChildren; scale -r -1 1 1;
+
+select -r L_elbow_bnd_jnt L_IK_elbow_ctrl_jnt;
+doCreateOrientConstraintArgList 1 { "0","0","0","0","0","0","0","1","","1" };
+delete "*orient*";
+select -r L_IK_elbow_ctrl_jnt;
+mirrorJoint -mirrorYZ -mirrorBehavior -searchReplace "L_" "R_";
+
+select -r L_knee_bnd_jnt L_IK_knee_ctrl_jnt;
+doCreateOrientConstraintArgList 1 { "0","0","0","0","0","0","0","1","","1" };
+delete "*orient*";
+select -r L_IK_knee_ctrl_jnt;
+mirrorJoint -mirrorYZ -mirrorBehavior -searchReplace "L_" "R_";
+
+delete main_grp;
+select -r L_ctrl_grp1 L_IK_knee_ctrl_curve1 L_FK_ball_bnd_curve1 L_FK_elbow_bnd_curve1 L_FK_femur_bnd_curve1 L_FK_foot_bnd_curve1 L_FK_knee_bnd_curve1 L_FK_shoulder_bnd_curve1 L_FK_wrist_bnd_curve1 L_IK_elbow_ctrl_curve1 L_IK_foot_bnd_curve1 L_IK_wrist_ctrl_curve1 L_clavicle_bnd_curve1 L_heel_pivot_loc1 L_index_01_ctrl_curve1 L_index_02_ctrl_curve1 L_middle_01_ctrl_curve1 L_middle_02_ctrl_curve1 L_thumb_01_ctrl_curve1 L_thumb_02_ctrl_curve1 ;
+searchReplaceNames "L" "R" "selected";
+searchReplaceNames "curve1" "curve" "selected";
+searchReplaceNames "grp1" "grp" "selected";
+searchReplaceNames "loc1" "loc" "selected";
+searchReplaceNames "_bnd_curve" "_ctrl_curve" "all";
+
+parent R_ctrl_grp L_ctrl_grp controller_grp master_ctrl no_transform_grp; 
+parent root_bnd_jnt rig_grp;
+parent L_IK_elbow_ctrl_jnt R_IK_elbow_ctrl_jnt L_IK_knee_ctrl_jnt R_IK_knee_ctrl_jnt IK_grp;
+select -cl;
+
+searchReplaceNames "_ctrl_jnt" "_ctrl" "all";
+
+select -r rig_grp;
+group -n charName ;
+xform -ws -a -rp 0 0 0 -sp 0 0 0;
+
+print "Bind skeleton complete";
+}
+//
+//rigSetup////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+
+global proc rigSetup(){
+//setup Rig
+duplicate -rr main_bnd;
+duplicate -rr root_bnd_jnt; 
+select -r root_bnd_jnt1;
+select -hi;
+searchReplaceNames "_bnd_" "_ctrl_" "selected";
+searchReplaceNames "_end_jnt" "_ctrl_end_jnt" "hierarchy";
+rename "root_ctrl_jnt1" "root_ctrl_jnt";
+
+delete L_wrist_ctrl_jnt|L_thumb_01_ctrl L_wrist_ctrl_jnt|L_index_01_ctrl L_wrist_ctrl_jnt|L_middle_01_ctrl R_wrist_ctrl_jnt|R_thumb_01_ctrl R_wrist_ctrl_jnt|R_index_01_ctrl R_wrist_ctrl_jnt|R_middle_01_ctrl ;
+
+select -r L_femur_ctrl_jnt R_femur_ctrl_jnt L_shoulder_ctrl_jnt R_shoulder_ctrl_jnt;
+searchReplaceNames "_ctrl_jnt" "_FK_ctrl" "hierarchy";
+searchReplaceNames "_end_jnt" "_FK_end_jnt" "hierarchy";
+
+duplicate -rr R_shoulder_FK_ctrl L_shoulder_FK_ctrl R_femur_FK_ctrl L_femur_FK_ctrl;
+searchReplaceNames "_FK_ctrl" "_IK_jnt" "hierarchy";
+searchReplaceNames "_jnt1" "_jnt" "hierarchy";
+searchReplaceNames "L_toe_ctrl_FK_end_jnt" "L_toe_IK_end_jnt" "hierarchy";
+searchReplaceNames "R_toe_ctrl_FK_end_jnt" "R_toe_IK_end_jnt" "hierarchy";
+
+select -r hip_ctrl_jnt spine_01_ctrl_jnt torso_ctrl_jnt neck_ctrl_jnt head_ctrl_jnt;
+searchReplaceNames "_jnt" "" "selected";
+
+rename "root_ctrl_curve" "root_ctrl";
+parent root_ctrl ctrl_grp;
+select -r root_ctrl root_ctrl_jnt;
+doCreateParentConstraintArgList 1 { "0","0","0","0","0","0","0","1","","1" };
+parentConstraint -weight 1;
+
+//Controllers
+select -r hip_ctrl hip_ctrl_curve;
+    parentShape();
+
+select -r spine_01_ctrl spine_01_ctrl_curve;
+    parentShape();
+
+select -r torso_ctrl torso_ctrl_curve;
+    parentShape();
+
+select -r neck_ctrl neck_ctrl_curve;
+    parentShape();
+
+select head_ctrl head_ctrl_curve;
+    parentShape();
+    
+select -cl;
+joint -n L_palm_IK_jnt;
+select -r L_wrist_IK_jnt L_index_01_ctrl L_palm_IK_jnt;
+doCreateParentConstraintArgList 1 { "0","0","0","0","0","0","0","1","","1" };
+parentConstraint -weight 1;
+delete L_palm_IK_jnt_parentConstraint1;
+parent L_palm_IK_jnt L_wrist_IK_jnt;
+
+select -cl;
+joint -n R_palm_IK_jnt;
+select -r R_wrist_IK_jnt R_index_01_ctrl R_palm_IK_jnt;
+doCreateParentConstraintArgList 1 { "0","0","0","0","0","0","0","1","","1" };
+parentConstraint -weight 1;
+delete R_palm_IK_jnt_parentConstraint1;
+parent R_palm_IK_jnt R_wrist_IK_jnt;
+   
+//connections
+
+//root
+connectAttr -f root_ctrl_jnt.translateX root_bnd_jnt.translateX;
+connectAttr -f root_ctrl_jnt.translateY root_bnd_jnt.translateY;
+connectAttr -f root_ctrl_jnt.translateZ root_bnd_jnt.translateZ;
+
+connectAttr -f root_ctrl_jnt.rotateX root_bnd_jnt.rotateX;
+connectAttr -f root_ctrl_jnt.rotateY root_bnd_jnt.rotateY;
+connectAttr -f root_ctrl_jnt.rotateZ root_bnd_jnt.rotateZ;
+
+//hip
+connectAttr -f hip_ctrl.rotateX hip_bnd_jnt.rotateX;
+connectAttr -f hip_ctrl.rotateY hip_bnd_jnt.rotateY;
+connectAttr -f hip_ctrl.rotateZ hip_bnd_jnt.rotateZ;
+
+//spine_01
+connectAttr -f spine_01_ctrl.rotateX spine_01_bnd_jnt.rotateX;
+connectAttr -f spine_01_ctrl.rotateY spine_01_bnd_jnt.rotateY;
+connectAttr -f spine_01_ctrl.rotateZ spine_01_bnd_jnt.rotateZ;
+
+//torso
+connectAttr -f torso_ctrl.rotateX torso_bnd_jnt.rotateX;
+connectAttr -f torso_ctrl.rotateY torso_bnd_jnt.rotateY;
+connectAttr -f torso_ctrl.rotateZ torso_bnd_jnt.rotateZ;
+
+//neck
+connectAttr -f neck_ctrl.rotateX neck_bnd_jnt.rotateX;
+connectAttr -f neck_ctrl.rotateY neck_bnd_jnt.rotateY;
+connectAttr -f neck_ctrl.rotateZ neck_bnd_jnt.rotateZ;
+
+//head
+connectAttr -f head_ctrl.rotateX head_bnd_jnt.rotateX;
+connectAttr -f head_ctrl.rotateY head_bnd_jnt.rotateY;
+connectAttr -f head_ctrl.rotateZ head_bnd_jnt.rotateZ;
+
+//L_clavicle
+connectAttr -f L_clavicle_ctrl_jnt.translateX L_clavicle_bnd_jnt.translateX;
+connectAttr -f L_clavicle_ctrl_jnt.translateY L_clavicle_bnd_jnt.translateY;
+connectAttr -f L_clavicle_ctrl_jnt.translateZ L_clavicle_bnd_jnt.translateZ;
+connectAttr -f L_clavicle_ctrl_jnt.rotateX L_clavicle_bnd_jnt.rotateX;
+connectAttr -f L_clavicle_ctrl_jnt.rotateY L_clavicle_bnd_jnt.rotateY;
+connectAttr -f L_clavicle_ctrl_jnt.rotateZ L_clavicle_bnd_jnt.rotateZ;
+
+//R_clavicle
+connectAttr -f R_clavicle_ctrl_jnt.translateX R_clavicle_bnd_jnt.translateX;
+connectAttr -f R_clavicle_ctrl_jnt.translateY R_clavicle_bnd_jnt.translateY;
+connectAttr -f R_clavicle_ctrl_jnt.translateZ R_clavicle_bnd_jnt.translateZ;
+connectAttr -f R_clavicle_ctrl_jnt.rotateX R_clavicle_bnd_jnt.rotateX;
+connectAttr -f R_clavicle_ctrl_jnt.rotateY R_clavicle_bnd_jnt.rotateY;
+connectAttr -f R_clavicle_ctrl_jnt.rotateZ R_clavicle_bnd_jnt.rotateZ;
+
+//Main controllers
+rename "main_bnd1" "main_ctrl";
+parent master_ctrl rig_grp;
+parent root_bnd_jnt main_bnd;
+parent root_ctrl_jnt main_ctrl;
+parent ctrl_grp main_ctrl ;
+
+//connections
+connectAttr -f main_ctrl.translateX main_bnd.translateX;
+connectAttr -f main_ctrl.translateY main_bnd.translateY;
+connectAttr -f main_ctrl.translateZ main_bnd.translateZ;
+connectAttr -f main_ctrl.rotateX main_bnd.rotateX;
+connectAttr -f main_ctrl.rotateY main_bnd.rotateY;
+connectAttr -f main_ctrl.rotateZ main_bnd.rotateZ;
+connectAttr -f main_ctrl.L_armIkFkSwitch main_bnd.L_armIkFkSwitch;
+connectAttr -f main_ctrl.L_legIkFkSwitch main_bnd.L_legIkFkSwitch;
+connectAttr -f main_ctrl.R_armIkFkSwitch main_bnd.R_armIkFkSwitch;
+connectAttr -f main_ctrl.R_legIkFkSwitch main_bnd.R_legIkFkSwitch;
+setAttr "main_bndShape.visibility" 0;
+
+//         
+//         
+//Arm Setup//////////////////////////////////////////////////////////////////////////////////////////////////////
+//         
+//         
+
+select -cl;
+joint -n L_wrist_IK_ctrl;
+select -r L_wrist_bnd_jnt L_wrist_IK_ctrl;
+doCreateParentConstraintArgList 1 { "0","0","0","0","0","0","0","1","","1" };
+parentConstraint -weight 1;
+delete "L_wrist_IK_ctrl_parent*";
+select -r L_wrist_IK_ctrl ;
+rbZeroTransformer("_zero");
+
+shadingNode -asUtility blendColors -n L_shoulder_BC;
+shadingNode -asUtility blendColors -n L_elbow_BC;
+shadingNode -asUtility blendColors -n L_wrist_BC;
+
+///blend node setup///
+
+//shoulder blend attribute connections//
+
+    connectAttr -f L_shoulder_FK_ctrl.rotateX L_shoulder_BC.color1R;
+    connectAttr -f L_shoulder_FK_ctrl.rotateY L_shoulder_BC.color1G;
+    connectAttr -f L_shoulder_FK_ctrl.rotateZ L_shoulder_BC.color1B;
+
+    connectAttr -f L_shoulder_IK_jnt.rotateX L_shoulder_BC.color2R;
+    connectAttr -f L_shoulder_IK_jnt.rotateY L_shoulder_BC.color2G;
+    connectAttr -f L_shoulder_IK_jnt.rotateZ L_shoulder_BC.color2B;
+    
+    connectAttr -f L_shoulder_BC.outputR L_shoulder_bnd_jnt.rotateX;
+    connectAttr -f L_shoulder_BC.outputG L_shoulder_bnd_jnt.rotateY;
+    connectAttr -f L_shoulder_BC.outputB L_shoulder_bnd_jnt.rotateZ;
+
+//elbow blend attribute connections//
+
+    connectAttr -f L_elbow_FK_ctrl.rotateX L_elbow_BC.color1R;
+    connectAttr -f L_elbow_FK_ctrl.rotateY L_elbow_BC.color1G;
+    connectAttr -f L_elbow_FK_ctrl.rotateZ L_elbow_BC.color1B;
+    
+    connectAttr -f L_elbow_IK_jnt.rotateX L_elbow_BC.color2R;
+    connectAttr -f L_elbow_IK_jnt.rotateY L_elbow_BC.color2G;
+    connectAttr -f L_elbow_IK_jnt.rotateZ L_elbow_BC.color2B;
+    
+    connectAttr -f L_elbow_BC.outputB L_elbow_bnd_jnt.rotateZ;
+    connectAttr -f L_elbow_BC.outputG L_elbow_bnd_jnt.rotateY;
+    connectAttr -f L_elbow_BC.outputR L_elbow_bnd_jnt.rotateX;
+
+//wrist blend attribute connections//
+
+    connectAttr -f L_wrist_FK_ctrl.rotateX L_wrist_BC.color1R;
+    connectAttr -f L_wrist_FK_ctrl.rotateY L_wrist_BC.color1G;
+    connectAttr -f L_wrist_FK_ctrl.rotateZ L_wrist_BC.color1B;
+    
+    connectAttr -f L_wrist_IK_jnt.rotateX L_wrist_BC.color2R;
+    connectAttr -f L_wrist_IK_jnt.rotateY L_wrist_BC.color2G;
+    connectAttr -f L_wrist_IK_jnt.rotateZ L_wrist_BC.color2B;
+    
+    connectAttr -f L_wrist_BC.outputR L_wrist_bnd_jnt.rotateX;
+    connectAttr -f L_wrist_BC.outputG L_wrist_bnd_jnt.rotateY;
+    connectAttr -f L_wrist_BC.outputB L_wrist_bnd_jnt.rotateZ;
+
+/// IK setup///
+select -d L_shoulder_IK_jnt ;
+select -r L_shoulder_IK_jnt.rotatePivot ;
+select -add L_wrist_IK_jnt.rotatePivot ;
+ikHandle -sol ikRPsolver -n L_arm_IK_handle;
+
+select -r L_wrist_IK_jnt.rotatePivot ;
+select -add L_wrist_IK_jnt|L_palm_IK_jnt.rotatePivot ;
+ikHandle -n L_wrist_IK_handle;
+
+rename "L_IK_elbow_ctrl" "L_IK_elbow_ctrl_zero";
+select -cl;
+joint -n L_IK_elbow_ctrl;
+select L_IK_elbow_ctrl_zero L_IK_elbow_ctrl;
+doCreatePointConstraintArgList 1 { "0","0","0","0","0","0","0","1","","1" };
+pointConstraint -offset 0 0 0 -weight 1;
+delete "L_IK_elbow_ctrl_pointConstraint*";
+parent L_IK_elbow_ctrl L_IK_elbow_ctrl_zero;
+select -r L_IK_elbow_ctrl L_IK_elbow_ctrl_curve;
+    parentShape();
+
+select -r L_IK_elbow_ctrl L_arm_IK_handle ;
+poleVectorConstraint -weight 1;
+
+select -r L_wrist_IK_ctrl L_IK_wrist_ctrl_curve;
+    parentShape();
+parent L_wrist_IK_ctrl_zero IK_grp ;
+    
+parent L_arm_IK_handle L_wrist_IK_handle L_wrist_IK_ctrl ;
+
+///FK setup///
+
+//Shoulder//
+
+select L_shoulder_FK_ctrl L_FK_shoulder_ctrl_curve;
+    parentShape();
+
+//Elbow//
+
+select -r L_elbow_FK_ctrl L_FK_elbow_ctrl_curve ;
+    parentShape();
+
+//wrist//
+
+select -r L_wrist_FK_ctrl L_FK_wrist_ctrl_curve ;
+    parentShape();
+
+//thumb//
+
+    //thumb_01//
+if (`objExists L_thumb_01_ctrl`)
+{
+select -r L_thumb_01_ctrl L_thumb_01_ctrl_curve ;
+    parentShape();
+}
+    
+    //thumb_02//
+if (`objExists L_thumb_02_ctrl`)
+{
+select -r L_thumb_02_ctrl L_thumb_02_ctrl_curve ;
+    parentShape();
+}    
+
+//index//
+
+    //index_01//
+if (`objExists L_index_01_ctrl`)
+{
+select -r L_index_01_ctrl L_index_01_ctrl_curve ;
+    parentShape();
+}    
+    //index_02//
+if (`objExists L_index_02_ctrl`)
+{
+select -r L_index_02_ctrl L_index_02_ctrl_curve ;
+    parentShape();
+}
+
+
+//middle//
+
+    //middle_01//
+if (`objExists L_middle_01_ctrl`)
+{
+select -r L_middle_01_ctrl L_middle_01_ctrl_curve ;
+    parentShape();
+}
+    
+    //middle_02//
+if (`objExists L_middle_02_ctrl`)
+{
+select -r L_middle_02_ctrl L_middle_02_ctrl_curve ;
+    parentShape();
+}
+    
+
+rename "L_clavicle_ctrl_curve" "L_clavicle_ctrl";
+parent L_clavicle_ctrl torso_ctrl;
+select -r L_clavicle_ctrl;
+makeIdentity -apply true -t 1 -r 1 -s 1 -n 0 -pn 1;
+select -r L_clavicle_ctrl L_clavicle_ctrl_jnt;
+doCreateParentConstraintArgList 1 { "1","0","0","0","0","0","0","1","","1" };
+parentConstraint -mo -weight 1;
+
+cleanupZero();
+  
+//Right arm
+select -cl;
+parent R_clavicle_ctrl_curve torso_ctrl;
+select -r L_clavicle_ctrl;
+makeIdentity -apply true -t 1 -r 1 -s 1 -n 0 -pn 1;
+
+select -cl;
+joint -n R_wrist_IK_ctrl;
+select -r R_wrist_bnd_jnt R_wrist_IK_ctrl;
+doCreateParentConstraintArgList 1 { "0","0","0","0","0","0","0","1","","1" };
+parentConstraint -weight 1;
+delete "R_wrist_IK_ctrl_parent*";
+select -r R_wrist_IK_ctrl ;
+rbZeroTransformer("_zero");
+
+shadingNode -asUtility blendColors -n R_shoulder_BC;
+shadingNode -asUtility blendColors -n R_elbow_BC;
+shadingNode -asUtility blendColors -n R_wrist_BC;
+
+///blend node setup///
+
+//shoulder blend attribute connections//
+
+    connectAttr -f R_shoulder_FK_ctrl.rotateX R_shoulder_BC.color1R;
+    connectAttr -f R_shoulder_FK_ctrl.rotateY R_shoulder_BC.color1G;
+    connectAttr -f R_shoulder_FK_ctrl.rotateZ R_shoulder_BC.color1B;
+
+    connectAttr -f R_shoulder_IK_jnt.rotateX R_shoulder_BC.color2R;
+    connectAttr -f R_shoulder_IK_jnt.rotateY R_shoulder_BC.color2G;
+    connectAttr -f R_shoulder_IK_jnt.rotateZ R_shoulder_BC.color2B;
+    
+    connectAttr -f R_shoulder_BC.outputR R_shoulder_bnd_jnt.rotateX;
+    connectAttr -f R_shoulder_BC.outputG R_shoulder_bnd_jnt.rotateY;
+    connectAttr -f R_shoulder_BC.outputB R_shoulder_bnd_jnt.rotateZ;
+
+//elbow blend attribute connections//
+
+    connectAttr -f R_elbow_FK_ctrl.rotateX R_elbow_BC.color1R;
+    connectAttr -f R_elbow_FK_ctrl.rotateY R_elbow_BC.color1G;
+    connectAttr -f R_elbow_FK_ctrl.rotateZ R_elbow_BC.color1B;
+    
+    connectAttr -f R_elbow_IK_jnt.rotateX R_elbow_BC.color2R;
+    connectAttr -f R_elbow_IK_jnt.rotateY R_elbow_BC.color2G;
+    connectAttr -f R_elbow_IK_jnt.rotateZ R_elbow_BC.color2B;
+    
+    connectAttr -f R_elbow_BC.outputB R_elbow_bnd_jnt.rotateZ;
+    connectAttr -f R_elbow_BC.outputG R_elbow_bnd_jnt.rotateY;
+    connectAttr -f R_elbow_BC.outputR R_elbow_bnd_jnt.rotateX;
+
+//wrist blend attribute connections//
+
+    connectAttr -f R_wrist_FK_ctrl.rotateX R_wrist_BC.color1R;
+    connectAttr -f R_wrist_FK_ctrl.rotateY R_wrist_BC.color1G;
+    connectAttr -f R_wrist_FK_ctrl.rotateZ R_wrist_BC.color1B;
+    
+    connectAttr -f R_wrist_IK_jnt.rotateX R_wrist_BC.color2R;
+    connectAttr -f R_wrist_IK_jnt.rotateY R_wrist_BC.color2G;
+    connectAttr -f R_wrist_IK_jnt.rotateZ R_wrist_BC.color2B;
+    
+    connectAttr -f R_wrist_BC.outputR R_wrist_bnd_jnt.rotateX;
+    connectAttr -f R_wrist_BC.outputG R_wrist_bnd_jnt.rotateY;
+    connectAttr -f R_wrist_BC.outputB R_wrist_bnd_jnt.rotateZ;
+
+/// IK setup///
+select -d R_shoulder_IK_jnt ;
+select -r R_shoulder_IK_jnt.rotatePivot ;
+select -add R_wrist_IK_jnt.rotatePivot ;
+ikHandle -sol ikRPsolver -n R_arm_IK_handle;
+
+select -r R_wrist_IK_jnt.rotatePivot ;
+select -add R_wrist_IK_jnt|R_palm_IK_jnt.rotatePivot ;
+ikHandle -n R_wrist_IK_handle;
+
+rename "R_IK_elbow_ctrl" "R_IK_elbow_ctrl_zero";
+select -cl;
+joint -n R_IK_elbow_ctrl;
+select R_IK_elbow_ctrl_zero R_IK_elbow_ctrl;
+doCreatePointConstraintArgList 1 { "0","0","0","0","0","0","0","1","","1" };
+pointConstraint -offset 0 0 0 -weight 1;
+delete "R_IK_elbow_ctrl_pointConstraint*";
+parent R_IK_elbow_ctrl R_IK_elbow_ctrl_zero;
+select -r R_IK_elbow_ctrl R_IK_elbow_ctrl_curve;
+    parentShape();
+
+select -r R_IK_elbow_ctrl R_arm_IK_handle ;
+poleVectorConstraint -weight 1;
+
+select -r R_wrist_IK_ctrl R_IK_wrist_ctrl_curve;
+    parentShape();
+parent R_wrist_IK_ctrl_zero IK_grp ;
+    
+parent R_arm_IK_handle R_wrist_IK_handle R_wrist_IK_ctrl ;
+
+///FK setup///
+
+//Shoulder//
+
+select R_shoulder_FK_ctrl R_FK_shoulder_ctrl_curve;
+    parentShape();
+
+//Elbow//
+
+select -r R_elbow_FK_ctrl R_FK_elbow_ctrl_curve ;
+    parentShape();
+
+//wrist//
+
+select -r R_wrist_FK_ctrl R_FK_wrist_ctrl_curve ;
+    parentShape();
+
+//thumb//
+
+    //thumb_01//
+if (`objExists R_thumb_01_ctrl`)
+{
+select -r R_thumb_01_ctrl R_thumb_01_ctrl_curve ;
+    parentShape();
+}
+    
+    //thumb_02//
+if (`objExists R_thumb_02_ctrl`)
+{
+select -r R_thumb_02_ctrl R_thumb_02_ctrl_curve ;
+    parentShape();
+}    
+
+//index//
+
+    //index_01//
+if (`objExists R_index_01_ctrl`)
+{
+select -r R_index_01_ctrl R_index_01_ctrl_curve ;
+    parentShape();
+}    
+    //index_02//
+if (`objExists R_index_02_ctrl`)
+{
+select -r R_index_02_ctrl R_index_02_ctrl_curve ;
+    parentShape();
+}
+
+//middle//
+
+    //middle_01//
+if (`objExists R_middle_01_ctrl`)
+{
+select -r R_middle_01_ctrl R_middle_01_ctrl_curve ;
+    parentShape();
+}
+    
+    //middle_02//
+if (`objExists R_middle_02_ctrl`)
+{
+select -r R_middle_02_ctrl R_middle_02_ctrl_curve ;
+    parentShape();
+}
+
+rename "R_clavicle_ctrl_curve" "R_clavicle_ctrl";
+select -r R_clavicle_ctrl;
+makeIdentity -apply true -t 1 -r 1 -s 1 -n 0 -pn 1;
+select -r R_clavicle_ctrl R_clavicle_ctrl_jnt;
+doCreateParentConstraintArgList 1 { "1","0","0","0","0","0","0","1","","1" };
+parentConstraint -mo -weight 1;
+
+//switch setup//
+
+connectAttr -f main_bnd.L_armIkFkSwitch L_shoulder_BC.blender;
+connectAttr -f main_bnd.L_armIkFkSwitch L_elbow_BC.blender;
+connectAttr -f main_bnd.L_armIkFkSwitch L_wrist_BC.blender;
+
+connectAttr -f main_bnd.R_armIkFkSwitch R_shoulder_BC.blender;
+connectAttr -f main_bnd.R_armIkFkSwitch R_elbow_BC.blender;
+connectAttr -f main_bnd.R_armIkFkSwitch R_wrist_BC.blender;
+
+shadingNode -asUtility reverse -n IK_arm_REV;
+
+connectAttr -f main_bnd.L_armIkFkSwitch IK_arm_REV.inputX;
+connectAttr -f IK_arm_REV.outputX L_IK_elbow_ctrl.visibility;
+connectAttr -f IK_arm_REV.outputX L_wrist_IK_ctrl.visibility;
+
+connectAttr -f main_bnd.R_armIkFkSwitch IK_arm_REV.inputY;
+connectAttr -f IK_arm_REV.outputY R_IK_elbow_ctrl.visibility;
+connectAttr -f IK_arm_REV.outputY R_wrist_IK_ctrl.visibility;
+
+connectAttr -f main_bnd.L_armIkFkSwitch L_shoulder_FK_ctrl.visibility;
+connectAttr -f main_bnd.R_armIkFkSwitch R_shoulder_FK_ctrl.visibility;
+
+select -r L_wrist_IK_ctrl R_wrist_IK_ctrl;
+makeIdentity -apply true -t 0 -r 1 -s 0 -n 0 -pn 1;
+
+//hands parent order
+addAttr -ln "constrain"  -at "enum" -en "To:"  |charName|rig_grp|master_ctrl|main_ctrl|ctrl_grp|IK_grp|L_wrist_IK_ctrl_zero|L_wrist_IK_ctrl;
+setAttr -e-channelBox true |charName|rig_grp|master_ctrl|main_ctrl|ctrl_grp|IK_grp|L_wrist_IK_ctrl_zero|L_wrist_IK_ctrl.constrain;
+
+addAttr -ln "constrain"  -at "enum" -en "To:"  |charName|rig_grp|master_ctrl|main_ctrl|ctrl_grp|IK_grp|R_wrist_IK_ctrl_zero|R_wrist_IK_ctrl;
+setAttr -e-channelBox true |charName|rig_grp|master_ctrl|main_ctrl|ctrl_grp|IK_grp|R_wrist_IK_ctrl_zero|R_wrist_IK_ctrl.constrain;
+
+addAttr -ln "parent"  -at "enum" -en "Main:Root:"  |charName|rig_grp|master_ctrl|main_ctrl|ctrl_grp|IK_grp|L_wrist_IK_ctrl_zero|L_wrist_IK_ctrl;
+setAttr -e-keyable true |charName|rig_grp|master_ctrl|main_ctrl|ctrl_grp|IK_grp|L_wrist_IK_ctrl_zero|L_wrist_IK_ctrl.parent;
+
+addAttr -ln "parent"  -at "enum" -en "Main:Root:"  |charName|rig_grp|master_ctrl|main_ctrl|ctrl_grp|IK_grp|R_wrist_IK_ctrl_zero|R_wrist_IK_ctrl;
+setAttr -e-keyable true |charName|rig_grp|master_ctrl|main_ctrl|ctrl_grp|IK_grp|R_wrist_IK_ctrl_zero|R_wrist_IK_ctrl.parent;
+
+addAttr -ln "constrain"  -at "enum" -en "To:"  |charName|rig_grp|master_ctrl|main_ctrl|ctrl_grp|IK_grp|L_IK_elbow_ctrl_zero|L_IK_elbow_ctrl;
+setAttr -e-channelBox true |charName|rig_grp|master_ctrl|main_ctrl|ctrl_grp|IK_grp|L_IK_elbow_ctrl_zero|L_IK_elbow_ctrl.constrain;
+
+addAttr -ln "constrain"  -at "enum" -en "To:"  |charName|rig_grp|master_ctrl|main_ctrl|ctrl_grp|IK_grp|R_IK_elbow_ctrl_zero|R_IK_elbow_ctrl;
+setAttr -e-channelBox true |charName|rig_grp|master_ctrl|main_ctrl|ctrl_grp|IK_grp|R_IK_elbow_ctrl_zero|R_IK_elbow_ctrl.constrain;
+
+addAttr -ln "parent"  -at "enum" -en "Main:Wrist:"  |charName|rig_grp|master_ctrl|main_ctrl|ctrl_grp|IK_grp|L_IK_elbow_ctrl_zero|L_IK_elbow_ctrl;
+setAttr -e-keyable true |charName|rig_grp|master_ctrl|main_ctrl|ctrl_grp|IK_grp|L_IK_elbow_ctrl_zero|L_IK_elbow_ctrl.parent;
+
+addAttr -ln "parent"  -at "enum" -en "Main:Wrist:"  |charName|rig_grp|master_ctrl|main_ctrl|ctrl_grp|IK_grp|R_IK_elbow_ctrl_zero|R_IK_elbow_ctrl;
+setAttr -e-keyable true |charName|rig_grp|master_ctrl|main_ctrl|ctrl_grp|IK_grp|R_IK_elbow_ctrl_zero|R_IK_elbow_ctrl.parent;
+
+select -r L_wrist_IK_ctrl_zero L_IK_elbow_ctrl_zero R_IK_elbow_ctrl_zero R_wrist_IK_ctrl_zero;
+    setAttr -lock false -keyable false -channelBox true ".tx";
+    setAttr -lock false -keyable false -channelBox true ".ty";
+    setAttr -lock false -keyable false -channelBox true ".tz";
+    setAttr -lock false -keyable false -channelBox true ".rx";
+    setAttr -lock false -keyable false -channelBox true ".ry";
+    setAttr -lock false -keyable false -channelBox true ".rz";
+    setAttr -lock false -keyable false -channelBox true ".sx";
+    setAttr -lock false -keyable false -channelBox true ".sy";
+    setAttr -lock false -keyable false -channelBox true ".sz";
+    setAttr -lock false -keyable false -channelBox true ".v";
+    setAttr -lock false -keyable false -channelBox true ".radi";
+
+select -r L_wrist_IK_ctrl L_IK_elbow_ctrl_zero ;
+doCreateParentConstraintArgList 1 { "1","0","0","0","0","0","0","1","","1" };
+parentConstraint -mo -weight 1;
+
+select -r R_wrist_IK_ctrl R_IK_elbow_ctrl_zero ;
+doCreateParentConstraintArgList 1 { "1","0","0","0","0","0","0","1","","1" };
+parentConstraint -mo -weight 1;
+
+select -r root_ctrl L_wrist_IK_ctrl_zero ;
+doCreateParentConstraintArgList 1 { "1","0","0","0","0","0","0","1","","1" };
+parentConstraint -mo -weight 1;
+
+select -r root_ctrl R_wrist_IK_ctrl_zero ;
+doCreateParentConstraintArgList 1 { "1","0","0","0","0","0","0","1","","1" };
+parentConstraint -mo -weight 1;
+
+connectAttr -f L_wrist_IK_ctrl.parent L_wrist_IK_ctrl_zero_parentConstraint1.root_ctrlW0;
+connectAttr -f R_wrist_IK_ctrl.parent R_wrist_IK_ctrl_zero_parentConstraint1.root_ctrlW0;
+connectAttr -f R_IK_elbow_ctrl.parent R_IK_elbow_ctrl_zero_parentConstraint1.R_wrist_IK_ctrlW0;
+connectAttr -f L_IK_elbow_ctrl.parent L_IK_elbow_ctrl_zero_parentConstraint1.L_wrist_IK_ctrlW0;
+
+cleanupZero();
+select -cl;
+//         
+//         
+//Leg Setup//////////////////////////////////////////////////////////////////////////////////////////////////////
+//         
+// 
+//Left leg//
+shadingNode -asUtility blendColors -n L_femur_BC;
+shadingNode -asUtility blendColors -n L_knee_BC;
+shadingNode -asUtility blendColors -n L_foot_BC;
+shadingNode -asUtility blendColors -n L_ball_BC;
+
+//femur blend attribute connections//
+
+    connectAttr -f L_femur_FK_ctrl.rotateX L_femur_BC.color1R;
+    connectAttr -f L_femur_FK_ctrl.rotateY L_femur_BC.color1G;
+    connectAttr -f L_femur_FK_ctrl.rotateZ L_femur_BC.color1B;
+    
+    connectAttr -f L_femur_IK_jnt.rotateX L_femur_BC.color2R;
+    connectAttr -f L_femur_IK_jnt.rotateY L_femur_BC.color2G;
+    connectAttr -f L_femur_IK_jnt.rotateZ L_femur_BC.color2B;
+    
+    connectAttr -f L_femur_BC.outputR L_femur_bnd_jnt.rotateX;
+    connectAttr -f L_femur_BC.outputG L_femur_bnd_jnt.rotateY;
+    connectAttr -f L_femur_BC.outputB L_femur_bnd_jnt.rotateZ;
+
+//knee blend attribute connections//
+
+    connectAttr -f L_knee_FK_ctrl.rotateX L_knee_BC.color1R;
+    connectAttr -f L_knee_FK_ctrl.rotateY L_knee_BC.color1G;
+    connectAttr -f L_knee_FK_ctrl.rotateZ L_knee_BC.color1B;
+    
+    connectAttr -f L_knee_IK_jnt.rotateX L_knee_BC.color2R;
+    connectAttr -f L_knee_IK_jnt.rotateY L_knee_BC.color2G;
+    connectAttr -f L_knee_IK_jnt.rotateZ L_knee_BC.color2B;
+    
+    connectAttr -f L_knee_BC.outputB L_knee_bnd_jnt.rotateZ;
+    connectAttr -f L_knee_BC.outputG L_knee_bnd_jnt.rotateY;
+    connectAttr -f L_knee_BC.outputR L_knee_bnd_jnt.rotateX;
+
+//foot blend attribute connections//
+
+    connectAttr -f L_foot_FK_ctrl.rotateX L_foot_BC.color1R;
+    connectAttr -f L_foot_FK_ctrl.rotateY L_foot_BC.color1G;
+    connectAttr -f L_foot_FK_ctrl.rotateZ L_foot_BC.color1B;
+    
+    connectAttr -f L_foot_IK_jnt.rotateX L_foot_BC.color2R;
+    connectAttr -f L_foot_IK_jnt.rotateY L_foot_BC.color2G;
+    connectAttr -f L_foot_IK_jnt.rotateZ L_foot_BC.color2B;
+    
+    connectAttr -f L_foot_BC.outputR L_foot_bnd_jnt.rotateX;
+    connectAttr -f L_foot_BC.outputG L_foot_bnd_jnt.rotateY;
+    connectAttr -f L_foot_BC.outputB L_foot_bnd_jnt.rotateZ;
+    
+//toe blend attribute connections//
+
+    connectAttr -f L_ball_FK_ctrl.rotateX L_ball_BC.color1R;
+    connectAttr -f L_ball_FK_ctrl.rotateY L_ball_BC.color1G;
+    connectAttr -f L_ball_FK_ctrl.rotateZ L_ball_BC.color1B;
+    
+    connectAttr -f L_ball_IK_jnt.rotateX L_ball_BC.color2R;
+    connectAttr -f L_ball_IK_jnt.rotateY L_ball_BC.color2G;
+    connectAttr -f L_ball_IK_jnt.rotateZ L_ball_BC.color2B;
+    
+    connectAttr -f L_ball_BC.outputR L_ball_bnd_jnt.rotateX;
+    connectAttr -f L_ball_BC.outputG L_ball_bnd_jnt.rotateY;
+    connectAttr -f L_ball_BC.outputB L_ball_bnd_jnt.rotateZ;
+
+/// IK setup///
+
+select -r L_knee_bnd_jnt L_IK_knee_ctrl;
+doCreateOrientConstraintArgList 1 { "0","0","0","0","0","0","0","1","","1" };
+orientConstraint -offset 0 0 0 -weight 1;
+delete "L_IK_knee_ctrl_orient*";
+
+select -cl; 
+joint -p 0 0 0 -n L_foot_IK_ctrl;
+select -r L_foot_IK_jnt L_foot_IK_ctrl ;
+doCreatePointConstraintArgList 1 { "0","0","0","0","0","0","0","1","","1" };
+delete "L_foot_IK_ctrl_point*";
+
+select -r L_foot_IK_ctrl L_IK_foot_ctrl_curve;
+    parentShape();
+    
+select -r L_foot_IK_ctrl;
+    rbZeroTransformer("_zero");
+
+//add knee control order//
+
+addAttr -ln "leg"  -at "enum" -en "Control:"  |L_foot_IK_ctrl_zero|L_foot_IK_ctrl;
+setAttr -e-channelBox true |L_foot_IK_ctrl_zero|L_foot_IK_ctrl.leg;
+
+//add poleVector/ noFlip switch//
+
+addAttr -ln "kneeControl"  -at "enum" -en "Pole Vector:No FLip:"  |L_foot_IK_ctrl_zero|L_foot_IK_ctrl;
+setAttr -e-keyable true |L_foot_IK_ctrl_zero|L_foot_IK_ctrl.kneeControl;
+
+//add knee attribute//
+
+addAttr -ln "knee"  -at double  |L_foot_IK_ctrl_zero|L_foot_IK_ctrl;
+setAttr -e-keyable true |L_foot_IK_ctrl_zero|L_foot_IK_ctrl.knee;
+
+//auto Stretch attribute//
+
+addAttr -ln "autoStretch"  -at "enum" -en "off:on:"  |L_foot_IK_ctrl_zero|L_foot_IK_ctrl;
+setAttr -e-keyable true |L_foot_IK_ctrl_zero|L_foot_IK_ctrl.autoStretch;
+
+//stretch Boost//
+
+addAttr -ln "stretchBoost"  -at double  -min 0 -dv 0 |L_foot_IK_ctrl_zero|L_foot_IK_ctrl;
+setAttr -e-keyable true |L_foot_IK_ctrl_zero|L_foot_IK_ctrl.stretchBoost;
+
+//add offset attribute//
+
+addAttr -ln "offset"  -at double  |L_foot_IK_ctrl_zero|L_foot_IK_ctrl;
+setAttr -e-keyable true |L_foot_IK_ctrl_zero|L_foot_IK_ctrl.offset;
+
+//add foot control order//
+
+addAttr -ln "foot"  -at "enum" -en "Control:"  |L_foot_IK_ctrl_zero|L_foot_IK_ctrl;
+setAttr -e-channelBox true |L_foot_IK_ctrl_zero|L_foot_IK_ctrl.foot;
+
+//heelRoll attribute//
+
+addAttr -ln "heelRoll"  -at double  |L_foot_IK_ctrl_zero|L_foot_IK_ctrl;
+setAttr -e-keyable true |L_foot_IK_ctrl_zero|L_foot_IK_ctrl.heelRoll;
+
+//ballRoll attribute//
+
+addAttr -ln "ballRoll"  -at double  |L_foot_IK_ctrl_zero|L_foot_IK_ctrl;
+setAttr -e-keyable true |L_foot_IK_ctrl_zero|L_foot_IK_ctrl.ballRoll;
+
+//toeRoll attribute//
+
+addAttr -ln "toeRoll"  -at double  |L_foot_IK_ctrl_zero|L_foot_IK_ctrl;
+setAttr -e-keyable true |L_foot_IK_ctrl_zero|L_foot_IK_ctrl.toeRoll;
+
+//heeltwist attribute//
+
+addAttr -ln "heelTwist"  -at double  |L_foot_IK_ctrl_zero|L_foot_IK_ctrl;
+setAttr -e-keyable true |L_foot_IK_ctrl_zero|L_foot_IK_ctrl.heelTwist;
+
+//ballTwist attribute//
+
+addAttr -ln "ballTwist"  -at double  |L_foot_IK_ctrl_zero|L_foot_IK_ctrl;
+setAttr -e-keyable true |L_foot_IK_ctrl_zero|L_foot_IK_ctrl.ballTwist;
+
+//toeTwist attribute//
+
+addAttr -ln "toeTwist"  -at double  |L_foot_IK_ctrl_zero|L_foot_IK_ctrl;
+setAttr -e-keyable true |L_foot_IK_ctrl_zero|L_foot_IK_ctrl.toeTwist;
+
+//noFlipSetup//
+select -d L_femur_IK_jnt ;
+select -r L_femur_IK_jnt.rotatePivot ;
+select -add L_foot_IK_jnt.rotatePivot ;
+ikHandle -sol ikRPsolver -n L_leg_IK_noFLip_handle;
+
+setAttr "L_leg_IK_noFLip_handle.poleVectorZ" 0;
+setAttr "L_leg_IK_noFLip_handle.poleVectorY" 0;
+setAttr "L_leg_IK_noFLip_handle.poleVectorX" .1;
+setAttr "L_leg_IK_noFLip_handle.twist" 90;
+setAttr "L_foot_IK_ctrl.offset" 90;
+
+shadingNode -asUtility plusMinusAverage -n L_leg_IK_noFlip_PMA;
+connectAttr -f L_foot_IK_ctrl.knee L_leg_IK_noFlip_PMA.input1D[0];
+connectAttr -f L_foot_IK_ctrl.offset L_leg_IK_noFlip_PMA.input1D[1];
+connectAttr -f L_leg_IK_noFlip_PMA.output1D L_leg_IK_noFLip_handle.twist;
+setAttr -lock true -keyable false -channelBox false "L_foot_IK_ctrl.offset";
+
+//polevectorHandle//
+select -r L_knee_bnd_jnt L_IK_knee_ctrl;
+doCreateOrientConstraintArgList 1 { "1","0","0","0","0","0","0","1","","1" };
+orientConstraint -weight 1;
+delete "L_IK_knee_ctrl_orient*";
+
+select -d L_femur_IK_jnt ;
+select -r L_femur_IK_jnt.rotatePivot ;
+select -add L_foot_IK_jnt.rotatePivot ;
+ikHandle -sol ikRPsolver -n L_leg_IK_poleVector_handle;
+
+select -r L_foot_IK_jnt.rotatePivot ;
+select -add L_ball_IK_jnt.rotatePivot ;
+ikHandle -n L_foot_IK_handle;
+
+select -r L_ball_IK_jnt.rotatePivot ;
+select -add L_toe_IK_end_jnt.rotatePivot ;
+ikHandle -n L_ball_IK_handle;
+
+//reverse footRoll//
+
+spaceLocator -n L_toe_loc;
+spaceLocator -n L_ball_loc;
+spaceLocator -n L_foot_loc;
+
+select -r L_toe_end_jnt L_toe_loc ;
+doCreatePointConstraintArgList 1 { "0","0","0","0","0","0","0","1","","1" };
+pointConstraint -offset 0 0 0 -weight 1;
+delete "L_toe_loc_point*";
+
+select -r L_ball_bnd_jnt L_ball_loc;
+doCreatePointConstraintArgList 1 { "0","0","0","0","0","0","0","1","","1" };
+pointConstraint -offset 0 0 0 -weight 1;
+delete "L_ball_loc_point*";
+
+select -r L_foot_bnd_jnt L_foot_loc;
+doCreatePointConstraintArgList 1 { "0","0","0","0","0","0","0","1","","1" };
+pointConstraint -offset 0 0 0 -weight 1;delete "L_foot_loc_point*";
+
+select -r L_heel_pivot_loc; 
+joint -n L_heel_rev;
+parent-w;
+select -r L_toe_loc;
+joint -n L_toe_rev;
+select -r L_ball_loc;
+joint -n L_ball_rev;
+select -r L_ball_loc;
+joint -n L_ball_twist_rev;
+select -r L_foot_loc;
+joint -n L_foot_rev;
+
+parent L_heel_rev L_ball_twist_rev;
+parent L_toe_rev L_heel_rev;
+parent L_ball_rev L_toe_rev;
+parent L_foot_rev L_ball_rev;
+
+parent L_ball_twist_rev L_foot_IK_ctrl;
+
+parent L_leg_IK_noFLip_handle L_foot_rev;
+parent L_leg_IK_poleVector_handle L_foot_rev;
+parent L_foot_IK_handle L_ball_rev;
+parent L_ball_IK_handle L_toe_rev;
+
+delete "*L_*_loc*";
+
+//connect rolls//
+
+connectAttr -f L_foot_IK_ctrl.ballRoll L_ball_rev.rotateX;
+connectAttr -f L_foot_IK_ctrl.toeRoll L_toe_rev.rotateX;
+connectAttr -f L_foot_IK_ctrl.heelRoll L_heel_rev.rotateX;
+
+//connect twists//
+
+connectAttr -f L_foot_IK_ctrl.ballTwist L_ball_twist_rev.rotateY;
+connectAttr -f L_foot_IK_ctrl.toeTwist L_toe_rev.rotateY;
+connectAttr -f L_foot_IK_ctrl.heelTwist L_heel_rev.rotateY;
+
+//connect ik handle switch//
+
+shadingNode -asUtility reverse -n L_IK_leg_REV;
+connectAttr -f L_foot_IK_ctrl.kneeControl L_leg_IK_noFLip_handle.ikBlend;
+connectAttr -f L_foot_IK_ctrl.kneeControl L_IK_leg_REV.inputX;
+connectAttr -f L_IK_leg_REV.outputX L_leg_IK_poleVector_handle.ikBlend;
+
+//knee ctrl
+
+select -r L_IK_knee_ctrl ;
+    rbZeroTransformer("_zero");
+    setAttr "L_IK_knee_ctrl.rotateZ" 0;
+    setAttr "L_IK_knee_ctrl.rotateX" 0;
+    setAttr "L_IK_knee_ctrl.rotateY" 0;
+
+select -r L_IK_knee_ctrl L_IK_knee_ctrl_curve;
+    parentShape();
+
+connectAttr -f L_IK_leg_REV.outputX L_IK_knee_ctrl.visibility;
+select -r L_IK_knee_ctrl L_leg_IK_poleVector_handle ;
+poleVectorConstraint -weight 1;
+
+//FK setup
+
+select -r L_femur_FK_ctrl L_FK_femur_ctrl_curve;
+    parentShape();
+
+select -r L_knee_FK_ctrl L_FK_knee_ctrl_curve;
+    parentShape();
+
+select -r L_foot_FK_ctrl L_FK_foot_ctrl_curve;
+parentShape();
+
+select -r L_ball_FK_ctrl L_FK_ball_ctrl_curve;
+    parentShape();
+
+cleanupZero();
+
+select -cl;
+
+//Right leg//
+shadingNode -asUtility blendColors -n R_femur_BC;
+shadingNode -asUtility blendColors -n R_knee_BC;
+shadingNode -asUtility blendColors -n R_foot_BC;
+shadingNode -asUtility blendColors -n R_ball_BC;
+
+//femur blend attribute connections//
+
+    connectAttr -f R_femur_FK_ctrl.rotateX R_femur_BC.color1R;
+    connectAttr -f R_femur_FK_ctrl.rotateY R_femur_BC.color1G;
+    connectAttr -f R_femur_FK_ctrl.rotateZ R_femur_BC.color1B;
+    
+    connectAttr -f R_femur_IK_jnt.rotateX R_femur_BC.color2R;
+    connectAttr -f R_femur_IK_jnt.rotateY R_femur_BC.color2G;
+    connectAttr -f R_femur_IK_jnt.rotateZ R_femur_BC.color2B;
+    
+    connectAttr -f R_femur_BC.outputR R_femur_bnd_jnt.rotateX;
+    connectAttr -f R_femur_BC.outputG R_femur_bnd_jnt.rotateY;
+    connectAttr -f R_femur_BC.outputB R_femur_bnd_jnt.rotateZ;
+
+//knee blend attribute connections//
+
+    connectAttr -f R_knee_FK_ctrl.rotateX R_knee_BC.color1R;
+    connectAttr -f R_knee_FK_ctrl.rotateY R_knee_BC.color1G;
+    connectAttr -f R_knee_FK_ctrl.rotateZ R_knee_BC.color1B;
+    
+    connectAttr -f R_knee_IK_jnt.rotateX R_knee_BC.color2R;
+    connectAttr -f R_knee_IK_jnt.rotateY R_knee_BC.color2G;
+    connectAttr -f R_knee_IK_jnt.rotateZ R_knee_BC.color2B;
+    
+    connectAttr -f R_knee_BC.outputB R_knee_bnd_jnt.rotateZ;
+    connectAttr -f R_knee_BC.outputG R_knee_bnd_jnt.rotateY;
+    connectAttr -f R_knee_BC.outputR R_knee_bnd_jnt.rotateX;
+
+//foot blend attribute connections//
+
+    connectAttr -f R_foot_FK_ctrl.rotateX R_foot_BC.color1R;
+    connectAttr -f R_foot_FK_ctrl.rotateY R_foot_BC.color1G;
+    connectAttr -f R_foot_FK_ctrl.rotateZ R_foot_BC.color1B;
+    
+    connectAttr -f R_foot_IK_jnt.rotateX R_foot_BC.color2R;
+    connectAttr -f R_foot_IK_jnt.rotateY R_foot_BC.color2G;
+    connectAttr -f R_foot_IK_jnt.rotateZ R_foot_BC.color2B;
+    
+    connectAttr -f R_foot_BC.outputR R_foot_bnd_jnt.rotateX;
+    connectAttr -f R_foot_BC.outputG R_foot_bnd_jnt.rotateY;
+    connectAttr -f R_foot_BC.outputB R_foot_bnd_jnt.rotateZ;
+    
+//toe blend attribute connections//
+
+    connectAttr -f R_ball_FK_ctrl.rotateX R_ball_BC.color1R;
+    connectAttr -f R_ball_FK_ctrl.rotateY R_ball_BC.color1G;
+    connectAttr -f R_ball_FK_ctrl.rotateZ R_ball_BC.color1B;
+    
+    connectAttr -f R_ball_IK_jnt.rotateX R_ball_BC.color2R;
+    connectAttr -f R_ball_IK_jnt.rotateY R_ball_BC.color2G;
+    connectAttr -f R_ball_IK_jnt.rotateZ R_ball_BC.color2B;
+    
+    connectAttr -f R_ball_BC.outputR R_ball_bnd_jnt.rotateX;
+    connectAttr -f R_ball_BC.outputG R_ball_bnd_jnt.rotateY;
+    connectAttr -f R_ball_BC.outputB R_ball_bnd_jnt.rotateZ;
+
+/// IK setup///
+
+select -r R_knee_bnd_jnt R_IK_knee_ctrl;
+doCreateOrientConstraintArgList 1 { "0","0","0","0","0","0","0","1","","1" };
+orientConstraint -offset 0 0 0 -weight 1;
+delete "R_IK_knee_ctrl_orient*";
+
+select -cl; 
+joint -p 0 0 0 -n R_foot_IK_ctrl;
+select -r R_foot_IK_jnt R_foot_IK_ctrl ;
+doCreatePointConstraintArgList 1 { "0","0","0","0","0","0","0","1","","1" };
+delete "R_foot_IK_ctrl_point*";
+
+select -r R_foot_IK_ctrl R_IK_foot_ctrl_curve;
+    parentShape();
+    
+select -r R_foot_IK_ctrl;
+    rbZeroTransformer("_zero");
+
+//add knee control order//
+
+addAttr -ln "leg"  -at "enum" -en "Control:"  |R_foot_IK_ctrl_zero|R_foot_IK_ctrl;
+setAttr -e-channelBox true |R_foot_IK_ctrl_zero|R_foot_IK_ctrl.leg;
+
+//add poleVector/ noFlip switch//
+
+addAttr -ln "kneeControl"  -at "enum" -en "Pole Vector:No FLip:"  |R_foot_IK_ctrl_zero|R_foot_IK_ctrl;
+setAttr -e-keyable true |R_foot_IK_ctrl_zero|R_foot_IK_ctrl.kneeControl;
+
+//add knee attribute//
+
+addAttr -ln "knee"  -at double  |R_foot_IK_ctrl_zero|R_foot_IK_ctrl;
+setAttr -e-keyable true |R_foot_IK_ctrl_zero|R_foot_IK_ctrl.knee;
+
+//auto Stretch attribute//
+
+addAttr -ln "autoStretch"  -at "enum" -en "off:on:"  |R_foot_IK_ctrl_zero|R_foot_IK_ctrl;
+setAttr -e-keyable true |R_foot_IK_ctrl_zero|R_foot_IK_ctrl.autoStretch;
+
+//stretch Boost//
+
+addAttr -ln "stretchBoost"  -at double  -min 0 -dv 0 |R_foot_IK_ctrl_zero|R_foot_IK_ctrl;
+setAttr -e-keyable true |R_foot_IK_ctrl_zero|R_foot_IK_ctrl.stretchBoost;
+
+//add offset attribute//
+
+addAttr -ln "offset"  -at double  |R_foot_IK_ctrl_zero|R_foot_IK_ctrl;
+setAttr -e-keyable true |R_foot_IK_ctrl_zero|R_foot_IK_ctrl.offset;
+
+//add foot control order//
+
+addAttr -ln "foot"  -at "enum" -en "Control:"  |R_foot_IK_ctrl_zero|R_foot_IK_ctrl;
+setAttr -e-channelBox true |R_foot_IK_ctrl_zero|R_foot_IK_ctrl.foot;
+
+//heelRoll attribute//
+
+addAttr -ln "heelRoll"  -at double  |R_foot_IK_ctrl_zero|R_foot_IK_ctrl;
+setAttr -e-keyable true |R_foot_IK_ctrl_zero|R_foot_IK_ctrl.heelRoll;
+
+//ballRoll attribute//
+
+addAttr -ln "ballRoll"  -at double  |R_foot_IK_ctrl_zero|R_foot_IK_ctrl;
+setAttr -e-keyable true |R_foot_IK_ctrl_zero|R_foot_IK_ctrl.ballRoll;
+
+//toeRoll attribute//
+
+addAttr -ln "toeRoll"  -at double  |R_foot_IK_ctrl_zero|R_foot_IK_ctrl;
+setAttr -e-keyable true |R_foot_IK_ctrl_zero|R_foot_IK_ctrl.toeRoll;
+
+//heeltwist attribute//
+
+addAttr -ln "heelTwist"  -at double  |R_foot_IK_ctrl_zero|R_foot_IK_ctrl;
+setAttr -e-keyable true |R_foot_IK_ctrl_zero|R_foot_IK_ctrl.heelTwist;
+
+//ballTwist attribute//
+
+addAttr -ln "ballTwist"  -at double  |R_foot_IK_ctrl_zero|R_foot_IK_ctrl;
+setAttr -e-keyable true |R_foot_IK_ctrl_zero|R_foot_IK_ctrl.ballTwist;
+
+//toeTwist attribute//
+
+addAttr -ln "toeTwist"  -at double  |R_foot_IK_ctrl_zero|R_foot_IK_ctrl;
+setAttr -e-keyable true |R_foot_IK_ctrl_zero|R_foot_IK_ctrl.toeTwist;
+
+//noFlipSetup//
+select -d R_femur_IK_jnt ;
+select -r R_femur_IK_jnt.rotatePivot ;
+select -add R_foot_IK_jnt.rotatePivot ;
+ikHandle -sol ikRPsolver -n R_leg_IK_noFLip_handle;
+
+setAttr "R_leg_IK_noFLip_handle.poleVectorZ" 0;
+setAttr "R_leg_IK_noFLip_handle.poleVectorY" 0;
+setAttr "R_leg_IK_noFLip_handle.poleVectorX" .1;
+setAttr "R_leg_IK_noFLip_handle.twist" 90;
+setAttr "R_foot_IK_ctrl.offset" 90;
+
+shadingNode -asUtility plusMinusAverage -n R_leg_IK_noFlip_PMA;
+connectAttr -f R_foot_IK_ctrl.knee R_leg_IK_noFlip_PMA.input1D[0];
+connectAttr -f R_foot_IK_ctrl.offset R_leg_IK_noFlip_PMA.input1D[1];
+connectAttr -f R_leg_IK_noFlip_PMA.output1D R_leg_IK_noFLip_handle.twist;
+setAttr -lock true -keyable false -channelBox false "R_foot_IK_ctrl.offset";
+
+//polevectorHandle//
+select -r R_knee_bnd_jnt R_IK_knee_ctrl;
+doCreateOrientConstraintArgList 1 { "1","0","0","0","0","0","0","1","","1" };
+orientConstraint -weight 1;
+delete "R_IK_knee_ctrl_orient*";
+
+select -d R_femur_IK_jnt ;
+select -r R_femur_IK_jnt.rotatePivot ;
+select -add R_foot_IK_jnt.rotatePivot ;
+ikHandle -sol ikRPsolver -n R_leg_IK_poleVector_handle;
+
+select -r R_foot_IK_jnt.rotatePivot ;
+select -add R_ball_IK_jnt.rotatePivot ;
+ikHandle -n R_foot_IK_handle;
+
+select -r R_ball_IK_jnt.rotatePivot ;
+select -add R_toe_IK_end_jnt.rotatePivot ;
+ikHandle -n R_ball_IK_handle;
+
+//reverse footRoll//
+
+spaceLocator -n R_toe_loc;
+spaceLocator -n R_ball_loc;
+spaceLocator -n R_foot_loc;
+
+select -r R_toe_end_jnt R_toe_loc ;
+doCreatePointConstraintArgList 1 { "0","0","0","0","0","0","0","1","","1" };
+pointConstraint -offset 0 0 0 -weight 1;
+delete "R_toe_loc_point*";
+
+select -r R_ball_bnd_jnt R_ball_loc;
+doCreatePointConstraintArgList 1 { "0","0","0","0","0","0","0","1","","1" };
+pointConstraint -offset 0 0 0 -weight 1;
+delete "R_ball_loc_point*";
+
+select -r R_foot_bnd_jnt R_foot_loc;
+doCreatePointConstraintArgList 1 { "0","0","0","0","0","0","0","1","","1" };
+pointConstraint -offset 0 0 0 -weight 1;
+delete "R_foot_loc_point*";
+
+select -r R_heel_pivot_loc; 
+joint -n R_heel_rev;
+parent-w;
+select -r R_toe_loc;
+joint -n R_toe_rev;
+select -r R_ball_loc;
+joint -n R_ball_rev;
+select -r R_ball_loc;
+joint -n R_ball_twist_rev;
+select -r R_foot_loc;
+joint -n R_foot_rev;
+
+parent R_heel_rev R_ball_twist_rev;
+parent R_toe_rev R_heel_rev;
+parent R_ball_rev R_toe_rev;
+parent R_foot_rev R_ball_rev;
+
+parent R_ball_twist_rev R_foot_IK_ctrl;
+
+parent R_leg_IK_noFLip_handle R_foot_rev;
+parent R_leg_IK_poleVector_handle R_foot_rev;
+parent R_foot_IK_handle R_ball_rev;
+parent R_ball_IK_handle R_toe_rev;
+
+delete "*R_*_loc*";
+
+//connect rolls//
+
+connectAttr -f R_foot_IK_ctrl.ballRoll R_ball_rev.rotateX;
+connectAttr -f R_foot_IK_ctrl.toeRoll R_toe_rev.rotateX;
+connectAttr -f R_foot_IK_ctrl.heelRoll R_heel_rev.rotateX;
+
+//connect twists//
+
+connectAttr -f R_foot_IK_ctrl.ballTwist R_ball_twist_rev.rotateY;
+connectAttr -f R_foot_IK_ctrl.toeTwist R_toe_rev.rotateY;
+connectAttr -f R_foot_IK_ctrl.heelTwist R_heel_rev.rotateY;
+
+//connect ik handle switch//
+
+shadingNode -asUtility reverse -n R_IK_leg_REV;
+connectAttr -f R_foot_IK_ctrl.kneeControl R_leg_IK_noFLip_handle.ikBlend;
+connectAttr -f R_foot_IK_ctrl.kneeControl R_IK_leg_REV.inputX;
+connectAttr -f R_IK_leg_REV.outputX R_leg_IK_poleVector_handle.ikBlend;
+
+//knee ctrl
+
+select -r R_IK_knee_ctrl ;
+    rbZeroTransformer("_zero");
+    setAttr "R_IK_knee_ctrl.rotateZ" 0;
+    setAttr "R_IK_knee_ctrl.rotateX" 0;
+    setAttr "R_IK_knee_ctrl.rotateY" 0;
+
+select -r R_IK_knee_ctrl R_IK_knee_ctrl_curve;
+    parentShape();
+
+connectAttr -f R_IK_leg_REV.outputX R_IK_knee_ctrl.visibility;
+select -r R_IK_knee_ctrl R_leg_IK_poleVector_handle ;
+poleVectorConstraint -weight 1;
+
+//FK setup
+
+select -r R_femur_FK_ctrl R_FK_femur_ctrl_curve;
+    parentShape();
+
+select -r R_knee_FK_ctrl R_FK_knee_ctrl_curve;
+    parentShape();
+
+select -r R_foot_FK_ctrl R_FK_foot_ctrl_curve;
+parentShape();
+
+select -r R_ball_FK_ctrl R_FK_ball_ctrl_curve;
+    parentShape();
+
+parent R_foot_IK_ctrl_zero IK_grp ;
+parent L_foot_IK_ctrl_zero IK_grp ;
+
+//switch setup
+connectAttr -f main_bnd.L_legIkFkSwitch L_femur_BC.blender;
+connectAttr -f main_bnd.L_legIkFkSwitch L_knee_BC.blender;
+connectAttr -f main_bnd.L_legIkFkSwitch L_foot_BC.blender;
+connectAttr -f main_bnd.L_legIkFkSwitch L_ball_BC.blender;
+connectAttr -f main_bnd.L_legIkFkSwitch L_femur_FK_ctrl.visibility;
+connectAttr -f main_bnd.L_legIkFkSwitch L_IK_leg_REV.inputY;
+connectAttr -f L_IK_leg_REV.outputY L_foot_IK_ctrl.visibility;
+
+connectAttr -f main_bnd.R_legIkFkSwitch R_femur_BC.blender;
+connectAttr -f main_bnd.R_legIkFkSwitch R_knee_BC.blender;
+connectAttr -f main_bnd.R_legIkFkSwitch R_foot_BC.blender;
+connectAttr -f main_bnd.R_legIkFkSwitch R_ball_BC.blender;
+connectAttr -f main_bnd.R_legIkFkSwitch R_femur_FK_ctrl.visibility;
+connectAttr -f main_bnd.R_legIkFkSwitch R_IK_leg_REV.inputY;
+connectAttr -f R_IK_leg_REV.outputY R_foot_IK_ctrl.visibility;
+
+setAttr -lock false -keyable false -channelBox true "R_IK_knee_ctrl_zero.v";
+setAttr -lock false -keyable false -channelBox true "L_IK_knee_ctrl_zero.v";
+
+connectAttr -f L_IK_leg_REV.outputY L_IK_knee_ctrl_zero.visibility;
+connectAttr -f R_IK_leg_REV.outputY R_IK_knee_ctrl_zero.visibility;
+
+addAttr -ln "constrain"  -at "enum" -en "To:"  |charName|rig_grp|master_ctrl|main_ctrl|ctrl_grp|IK_grp|L_foot_IK_ctrl_zero|L_foot_IK_ctrl;
+setAttr -e-channelBox true |charName|rig_grp|master_ctrl|main_ctrl|ctrl_grp|IK_grp|L_foot_IK_ctrl_zero|L_foot_IK_ctrl.constrain;
+addAttr -ln "constrain"  -at "enum" -en "To:"  |charName|rig_grp|master_ctrl|main_ctrl|ctrl_grp|IK_grp|R_foot_IK_ctrl_zero|R_foot_IK_ctrl;
+setAttr -e-channelBox true |charName|rig_grp|master_ctrl|main_ctrl|ctrl_grp|IK_grp|R_foot_IK_ctrl_zero|R_foot_IK_ctrl.constrain;
+addAttr -ln "constrain"  -at "enum" -en "To:"  |charName|rig_grp|master_ctrl|main_ctrl|ctrl_grp|IK_grp|L_IK_knee_ctrl_zero|L_IK_knee_ctrl;
+setAttr -e-channelBox true |charName|rig_grp|master_ctrl|main_ctrl|ctrl_grp|IK_grp|L_IK_knee_ctrl_zero|L_IK_knee_ctrl.constrain;
+addAttr -ln "constrain"  -at "enum" -en "To:"  |charName|rig_grp|master_ctrl|main_ctrl|ctrl_grp|IK_grp|R_IK_knee_ctrl_zero|R_IK_knee_ctrl;
+setAttr -e-channelBox true |charName|rig_grp|master_ctrl|main_ctrl|ctrl_grp|IK_grp|R_IK_knee_ctrl_zero|R_IK_knee_ctrl.constrain;
+
+addAttr -ln "parent"  -at "enum" -en "Main:Root:"  |charName|rig_grp|master_ctrl|main_ctrl|ctrl_grp|IK_grp|L_foot_IK_ctrl_zero|L_foot_IK_ctrl;
+setAttr -e-keyable true |charName|rig_grp|master_ctrl|main_ctrl|ctrl_grp|IK_grp|L_foot_IK_ctrl_zero|L_foot_IK_ctrl.parent;
+addAttr -ln "parent"  -at "enum" -en "Main:Root:"  |charName|rig_grp|master_ctrl|main_ctrl|ctrl_grp|IK_grp|R_foot_IK_ctrl_zero|R_foot_IK_ctrl;
+setAttr -e-keyable true |charName|rig_grp|master_ctrl|main_ctrl|ctrl_grp|IK_grp|R_foot_IK_ctrl_zero|R_foot_IK_ctrl.parent;
+
+addAttr -ln "parent"  -at "enum" -en "Main:Foot:"  |charName|rig_grp|master_ctrl|main_ctrl|ctrl_grp|IK_grp|R_IK_knee_ctrl_zero|R_IK_knee_ctrl;
+setAttr -e-keyable true |charName|rig_grp|master_ctrl|main_ctrl|ctrl_grp|IK_grp|R_IK_knee_ctrl_zero|R_IK_knee_ctrl.parent;
+addAttr -ln "parent"  -at "enum" -en "Main:Foot:"  |charName|rig_grp|master_ctrl|main_ctrl|ctrl_grp|IK_grp|L_IK_knee_ctrl_zero|L_IK_knee_ctrl;
+setAttr -e-keyable true |charName|rig_grp|master_ctrl|main_ctrl|ctrl_grp|IK_grp|L_IK_knee_ctrl_zero|L_IK_knee_ctrl.parent;
+
+select -r L_IK_knee_ctrl_zero R_IK_knee_ctrl_zero L_foot_IK_ctrl_zero R_foot_IK_ctrl_zero;
+    setAttr -lock false -keyable false -channelBox true ".tx";
+    setAttr -lock false -keyable false -channelBox true ".ty";
+    setAttr -lock false -keyable false -channelBox true ".tz";
+    setAttr -lock false -keyable false -channelBox true ".rx";
+    setAttr -lock false -keyable false -channelBox true ".ry";
+    setAttr -lock false -keyable false -channelBox true ".rz";
+    setAttr -lock false -keyable false -channelBox true ".sx";
+    setAttr -lock false -keyable false -channelBox true ".sy";
+    setAttr -lock false -keyable false -channelBox true ".sz";
+    setAttr -lock false -keyable false -channelBox true ".v";
+    setAttr -lock false -keyable false -channelBox true ".radi";
+
+select -r L_foot_IK_ctrl L_IK_knee_ctrl_zero;
+doCreateParentConstraintArgList 1 { "1","0","0","0","0","0","0","1","","1" };
+parentConstraint -mo -weight 1;
+
+select -r R_foot_IK_ctrl R_IK_knee_ctrl_zero;
+doCreateParentConstraintArgList 1 { "1","0","0","0","0","0","0","1","","1" };
+parentConstraint -mo -weight 1;
+
+select -r root_ctrl L_foot_IK_ctrl_zero ;
+doCreateParentConstraintArgList 1 { "1","0","0","0","0","0","0","1","","1" };
+parentConstraint -mo -weight 1;
+
+select -r root_ctrl R_foot_IK_ctrl_zero ;
+doCreateParentConstraintArgList 1 { "1","0","0","0","0","0","0","1","","1" };
+parentConstraint -mo -weight 1;
+
+connectAttr -f L_foot_IK_ctrl.parent L_foot_IK_ctrl_zero_parentConstraint1.root_ctrlW0;
+connectAttr -f L_IK_knee_ctrl.parent L_IK_knee_ctrl_zero_parentConstraint1.L_foot_IK_ctrlW0;
+connectAttr -f R_foot_IK_ctrl.parent R_foot_IK_ctrl_zero_parentConstraint1.root_ctrlW0;
+connectAttr -f R_IK_knee_ctrl.parent R_IK_knee_ctrl_zero_parentConstraint1.R_foot_IK_ctrlW0;
+
+select -cl;
+//         
+//         
+//Last Locking//////////////////////////////////////////////////////////////////////////////////////////////////////
+//         
+// 
+select -r L_foot_IK_ctrl R_foot_IK_ctrl root_ctrl;
+    setAttr -lock true -keyable false -channelBox false ".sx";
+    setAttr -lock true -keyable false -channelBox false ".sy";
+    setAttr -lock true -keyable false -channelBox false ".sz";
+    setAttr -lock true -keyable false -channelBox false ".v";
+    setAttr -lock true -keyable false -channelBox false ".radi";
+    
+select -r torso_ctrl spine_01_ctrl hip_ctrl L_thumb_01_ctrl L_thumb_02_ctrl L_index_01_ctrl L_index_02_ctrl L_middle_02_ctrl L_middle_01_ctrl R_thumb_01_ctrl R_thumb_02_ctrl R_index_02_ctrl R_index_01_ctrl R_middle_02_ctrl R_middle_01_ctrl L_ball_FK_ctrl L_foot_FK_ctrl L_knee_FK_ctrl L_femur_FK_ctrl R_ball_FK_ctrl R_foot_FK_ctrl R_knee_FK_ctrl R_femur_FK_ctrl head_ctrl neck_ctrl L_shoulder_FK_ctrl R_shoulder_FK_ctrl L_elbow_FK_ctrl R_elbow_FK_ctrl L_wrist_FK_ctrl R_wrist_FK_ctrl;
+    setAttr -lock true -keyable false -channelBox false ".tx";
+    setAttr -lock true -keyable false -channelBox false ".ty";
+    setAttr -lock true -keyable false -channelBox false ".tz";
+    setAttr -lock true -keyable false -channelBox false ".sx";
+    setAttr -lock true -keyable false -channelBox false ".sy";
+    setAttr -lock true -keyable false -channelBox false ".sz";
+    setAttr -lock true -keyable false -channelBox false ".v";
+    setAttr -lock true -keyable false -channelBox false ".radi";
+    
+select -r L_IK_knee_ctrl R_IK_knee_ctrl R_IK_elbow_ctrl L_IK_elbow_ctrl ;
+    setAttr -lock true -keyable false -channelBox false ".rx";
+    setAttr -lock true -keyable false -channelBox false ".ry";
+    setAttr -lock true -keyable false -channelBox false ".rz";
+    setAttr -lock true -keyable false -channelBox false ".sx";
+    setAttr -lock true -keyable false -channelBox false ".sy";
+    setAttr -lock true -keyable false -channelBox false ".sz";
+    setAttr -lock true -keyable false -channelBox false ".v";
+    setAttr -lock true -keyable false -channelBox false ".radi";
+
+select -r L_wrist_IK_ctrl R_wrist_IK_ctrl L_clavicle_ctrl R_clavicle_ctrl;
+    setAttr -lock true -keyable false -channelBox false ".sx";
+    setAttr -lock true -keyable false -channelBox false ".sy";
+    setAttr -lock true -keyable false -channelBox false ".sz";
+    setAttr -lock true -keyable false -channelBox false ".v";
+    setAttr -lock true -keyable false -channelBox false ".radi";
+    
+delete transform1;
+print "Rig Complete";
+select -cl;
+}
+//         
+//         
+//Reusable Scripts//////////////////////////////////////////////////////////////////////////////////////////////////////
+//         
+// 
+
+    //CleanupZero
+global proc cleanupZero(){
+if (`objExists "*_zero*"`)
+{
+    select -r "*_zero*";
+setAttr -lock true .tx;
+setAttr -lock true .ty;
+setAttr -lock true .tz;
+setAttr -lock true .rx;
+setAttr -lock true .ry;
+setAttr -lock true .rz;
+setAttr -lock true .sx;
+setAttr -lock true .sy;
+setAttr -lock true .sz;
+setAttr -lock true .v;
+setAttr -lock true .radi;
+setAttr -keyable false -channelBox true .tx;
+setAttr -keyable false -channelBox true .ty;
+setAttr -keyable false -channelBox true .tz;
+setAttr -keyable false -channelBox true .rx;
+setAttr -keyable false -channelBox true .ry;
+setAttr -keyable false -channelBox true .rz;
+setAttr -keyable false -channelBox true .sx;
+setAttr -keyable false -channelBox true .sy;
+setAttr -keyable false -channelBox true .sz;
+setAttr -keyable false -channelBox true .v;
+setAttr -keyable false -channelBox true .radi;
+}
+}
+
+    //CleanupZero
+
+global proc parentShape(){
+string $currentSelObjs[] = `ls -sl`;
+// $currentSelObjs[0] = Joint
+// $currentSelObjs[n] = Controllers
+
+int $SelObjSize = size($currentSelObjs);
+int $i;
+
+for ($i=1; $i<$SelObjSize; $i++)
+{
+	select $currentSelObjs[$i];
+	string $ControllerShape[] = `listRelatives -shapes`;
+
+	string $shape;
+	for ($shape in $ControllerShape)
+	{
+		string $ControllerShape = `rename ($shape) ($currentSelObjs[0] + "Shape_" + $i)`;
+		parent $currentSelObjs[$i] $currentSelObjs[0];
+		select $currentSelObjs[$i];
+		makeIdentity -apply true -t 1 -r 1 -s 1 -n 0;
+		parent -w;
+		parent -r -shape $ControllerShape $currentSelObjs[0];
+	}
+	delete $currentSelObjs[$i];
+}
+select $currentSelObjs[0];
+}
+
+    //ZeroTransformer
+    
+global proc rbZeroTransformer(string $suffix){
+	
+	
+	string $objName[] = `ls -sl`;
+	string $newBone[] = `duplicate -po $objName[0]`;
+	parent $objName[0] $newBone[0];
+	$newBone[0] = `rename $newBone[0] ($objName[0] + $suffix)`;
+
+
+setAttr -keyable false -channelBox true ($newBone[0] + ".tx");
+setAttr -keyable false -channelBox true ($newBone[0] + ".ty");
+setAttr -keyable false -channelBox true ($newBone[0] + ".tz");
+
+setAttr -keyable false -channelBox true ($newBone[0] + ".rx");
+setAttr -keyable false -channelBox true ($newBone[0] + ".ry");
+setAttr -keyable false -channelBox true ($newBone[0] + ".rz");
+
+setAttr -keyable false -channelBox true ($newBone[0] + ".sx");
+setAttr -keyable false -channelBox true ($newBone[0] + ".sy");
+setAttr -keyable false -channelBox true ($newBone[0] + ".sz");
+
+setAttr -keyable false -channelBox true ($newBone[0] + ".v");
+}
