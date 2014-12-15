@@ -65,7 +65,7 @@ def exportAnimFBX():
 
         # select bind joints
         def selectBNDJNTS():
-            select("*:*_geo", "*:main_bnd*", "*:bindPose1", r=1)
+            select("*:*_geo", "*:main_bnd*", r=1)
 
         selectBNDJNTS()
 
